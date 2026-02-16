@@ -22,16 +22,14 @@ const projects = [
     title: "MD-Ingelligence",
     description:
       "Proyecto publico enfocado en automatizacion, integraciones y herramientas para sistemas reales.",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
+    type: "Automation / Integrations",
     href: "http://md.lucasvicente.es/",
   },
   {
     title: "Hytalia (www.hytalia.net)",
     description:
       "Network usando motor de Hytale, web propia, tienda, sistemas internos, APIs e infraestructura.",
-    image:
-      "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
+    type: "Network / Infrastructure",
     href: "https://www.hytalia.net",
   },
 ];
@@ -277,12 +275,16 @@ function App() {
                   key={project.title}
                   className="group overflow-hidden rounded-2xl border border-white/15 bg-card/70 shadow-glow backdrop-blur-sm"
                 >
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
-                    loading="lazy"
-                  />
+                  <div className="relative h-40 overflow-hidden border-b border-white/10 bg-gradient-to-br from-cyan-500/20 via-sky-400/10 to-emerald-500/15">
+                    <div className="absolute -left-8 -top-8 h-24 w-24 rounded-full bg-cyan-400/20 blur-2xl" />
+                    <div className="absolute -right-8 -bottom-8 h-28 w-28 rounded-full bg-emerald-400/20 blur-2xl" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_45%)]" />
+                    <div className="relative flex h-full items-end p-5">
+                      <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
+                        {project.type}
+                      </span>
+                    </div>
+                  </div>
                   <div className="space-y-3 p-5">
                     <h3 className="text-lg font-semibold text-card-foreground">{project.title}</h3>
                     <p className="text-sm text-muted-foreground">{project.description}</p>
