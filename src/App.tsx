@@ -24,7 +24,7 @@ const projects = [
       "Proyecto publico enfocado en automatizacion, integraciones y herramientas para sistemas reales.",
     image:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-    href: "https://github.com/lucksgg7/MD-Intelligence",
+    href: "http://md.lucasvicente.es/",
   },
   {
     title: "Hytalia (www.hytalia.net)",
