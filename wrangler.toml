@@ -1,6 +1,12 @@
 name = "lucasvicente-es"
 main = "worker/index.ts"
 compatibility_date = "2026-02-16"
+workers_dev = false
+
+routes = [
+  { pattern = "lucasvicente.es/*", zone_name = "lucasvicente.es" },
+  { pattern = "www.lucasvicente.es/*", zone_name = "lucasvicente.es" }
+]
 
 [assets]
 directory = "./dist"
