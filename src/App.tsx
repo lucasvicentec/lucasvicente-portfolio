@@ -141,9 +141,9 @@ function App() {
           <nav className="flex items-center justify-between gap-3 text-sm text-white/80">
             <a href="#inicio" className="flex items-center gap-2 rounded-full px-3 py-2 text-white">
               <img
-                src="/favicon/logo.png"
+                src="/favicon/favicon-32x32.png"
                 alt="Lucas Vicente logo"
-                className="h-7 w-7 rounded-md object-cover"
+                className="h-6 w-6 rounded-sm object-contain"
               />
               <span className="font-semibold tracking-wide">lucasvicente.es</span>
             </a>
