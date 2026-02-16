@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Linkedin, Orbit, Sparkles } from "lucide-react";
 import { InteractiveNebulaShader } from "@/components/ui/liquid-shader";
 
@@ -13,34 +13,14 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "hytalia-web",
+    title: "MD-Intelligence",
     description: {
-      es: "Frontend y experiencia de usuario para la plataforma web principal de Hytalia.",
-      en: "Frontend and user experience work for the main Hytalia web platform.",
+      es: "Proyecto publico enfocado en inteligencia aplicada, automatizacion y sistemas conectados.",
+      en: "Public project focused on applied intelligence, automation, and connected systems.",
     },
     image:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-    href: "https://github.com/HytaliaNetwork/hytalia-web",
-  },
-  {
-    title: "hytale-plugin-journey",
-    description: {
-      es: "Plugin de gameplay con logica propia para servidores, orientado a progresion y sistemas.",
-      en: "Gameplay plugin with custom server-side logic focused on progression and systems.",
-    },
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
-    href: "https://github.com/HytaliaNetwork/hytale-plugin-journey",
-  },
-  {
-    title: "ServerMappings",
-    description: {
-      es: "Mapeo publico de IPs de servidores Minecraft a nombres legibles para clientes.",
-      en: "Public mapping of Minecraft server IPs to readable display names.",
-    },
-    image:
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80",
-    href: "https://github.com/lucksgg7/ServerMappings",
+    href: "https://github.com/lucksgg7/MD-Intelligence",
   },
 ];
 
@@ -52,14 +32,15 @@ const copy = {
     heroTag: "Hey, soy Lucas (Lucks)",
     heroTitle: "Desarrollador Full Stack construyendo sistemas reales.",
     heroDescription:
-      "Trabajo en paneles, APIs, automatizacion, servidores e infraestructura. Proyecto actual: Hytalia (Network + sistemas propios). En febrero de 2026: 189 commits en hytalia-web y 37 en hytale-plugin-journey.",
+      "Trabajo en paneles, APIs, automatizacion, servidores e infraestructura. Proyecto actual: Hytalia (Network + sistemas propios).",
     collab: "Abierto a colaboraciones",
     ctaProjects: "Ver proyectos",
     ctaGithub: "Ir a Github",
-    sectionTitle: "Proyectos destacados",
-    statsFollowers: "GitHub followers: 3",
-    statsFollowing: "GitHub following: 5",
-    statsContrib: "Contribuciones ultimos 12 meses: 1,162",
+    sectionTitle: "Proyectos publicos",
+    statsFollowers: "Followers",
+    statsFollowing: "Following",
+    statsRepos: "Repos publicos",
+    statsCommits: "Commits este mes (live)",
     stackTitle: "Stack tecnico",
     stack: [
       "TypeScript / JavaScript",
@@ -77,14 +58,15 @@ const copy = {
     heroTag: "Hey, I'm Lucas (Lucks)",
     heroTitle: "Full Stack developer building real systems.",
     heroDescription:
-      "I work on panels, APIs, automation, servers, and infrastructure. Current focus: Hytalia (Network + internal systems). In February 2026: 189 commits in hytalia-web and 37 in hytale-plugin-journey.",
+      "I work on panels, APIs, automation, servers, and infrastructure. Current focus: Hytalia (Network + internal systems).",
     collab: "Open to collaborations",
     ctaProjects: "View projects",
     ctaGithub: "Open Github",
-    sectionTitle: "Featured projects",
-    statsFollowers: "GitHub followers: 3",
-    statsFollowing: "GitHub following: 5",
-    statsContrib: "Contributions in last 12 months: 1,162",
+    sectionTitle: "Public projects",
+    statsFollowers: "Followers",
+    statsFollowing: "Following",
+    statsRepos: "Public repos",
+    statsCommits: "Commits this month (live)",
     stackTitle: "Tech stack",
     stack: [
       "TypeScript / JavaScript",
@@ -99,7 +81,63 @@ const copy = {
 
 function App() {
   const [locale, setLocale] = useState<Locale>("es");
+  const [stats, setStats] = useState({
+    followers: null as number | null,
+    following: null as number | null,
+    publicRepos: null as number | null,
+    monthCommits: null as number | null,
+  });
   const t = useMemo(() => copy[locale], [locale]);
+
+  useEffect(() => {
+    const getCommitCount = async (repo: string, since: string, until: string): Promise<number> => {
+      const url = `https://api.github.com/repos/${repo}/commits?author=lucksgg7&since=${since}&until=${until}&per_page=1`;
+      const res = await fetch(url);
+      if (!res.ok) return 0;
+
+      const link = res.headers.get("link");
+      if (link) {
+        const last = link.match(/&page=(\d+)>; rel="last"/);
+        if (last?.[1]) return Number(last[1]);
+      }
+
+      const items = (await res.json()) as unknown[];
+      return items.length;
+    };
+
+    const load = async () => {
+      try {
+        const now = new Date();
+        const sinceDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0));
+        const since = sinceDate.toISOString();
+        const until = now.toISOString();
+
+        const [userRes, hytaliaWebCount, journeyCount] = await Promise.all([
+          fetch("https://api.github.com/users/lucksgg7"),
+          getCommitCount("HytaliaNetwork/hytalia-web", since, until),
+          getCommitCount("HytaliaNetwork/hytale-plugin-journey", since, until),
+        ]);
+
+        if (userRes.ok) {
+          const user = (await userRes.json()) as {
+            followers: number;
+            following: number;
+            public_repos: number;
+          };
+          setStats({
+            followers: user.followers,
+            following: user.following,
+            publicRepos: user.public_repos,
+            monthCommits: hytaliaWebCount + journeyCount,
+          });
+        }
+      } catch {
+        // Keep fallbacks when GitHub API is unavailable.
+      }
+    };
+
+    load();
+  }, []);
 
   return (
     <div className="relative isolate min-h-screen overflow-hidden bg-background">
@@ -187,10 +225,19 @@ function App() {
 
             <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">{t.heroDescription}</p>
 
-            <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/75">
-              <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">{t.statsFollowers}</span>
-              <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">{t.statsFollowing}</span>
-              <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">{t.statsContrib}</span>
+            <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/90">
+              <span className="rounded-full border border-cyan-300/40 bg-cyan-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(34,211,238,0.18)]">
+                {t.statsFollowers}: {stats.followers ?? "--"}
+              </span>
+              <span className="rounded-full border border-blue-300/40 bg-blue-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(96,165,250,0.18)]">
+                {t.statsFollowing}: {stats.following ?? "--"}
+              </span>
+              <span className="rounded-full border border-violet-300/40 bg-violet-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(167,139,250,0.2)]">
+                {t.statsRepos}: {stats.publicRepos ?? "--"}
+              </span>
+              <span className="rounded-full border border-emerald-300/40 bg-emerald-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(52,211,153,0.2)]">
+                {t.statsCommits}: {stats.monthCommits ?? "--"}
+              </span>
             </div>
 
             <div className="mt-6">
