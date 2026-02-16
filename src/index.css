@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 224 58% 4%;
+    --foreground: 210 40% 98%;
+    --card: 226 44% 7%;
+    --card-foreground: 210 40% 96%;
+    --muted: 225 28% 14%;
+    --muted-foreground: 215 16% 72%;
+    --border: 215 26% 20%;
+    --popover: 226 44% 7%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 224 58% 4%;
+    --secondary: 215 26% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --accent: 218 34% 18%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 73% 52%;
+    --destructive-foreground: 210 40% 98%;
+    --input: 215 26% 20%;
+    --ring: 216 34% 84%;
+    --chart-1: 204 70% 53%;
+    --chart-2: 164 66% 48%;
+    --chart-3: 30 84% 63%;
+    --chart-4: 267 66% 62%;
+    --chart-5: 344 74% 57%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

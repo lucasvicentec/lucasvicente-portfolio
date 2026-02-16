@@ -1,0 +1,7 @@
+name = "lucasvicente-es"
+main = "worker/index.ts"
+compatibility_date = "2026-02-16"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
