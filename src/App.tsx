@@ -1,97 +1,71 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, Linkedin, Orbit, Sparkles } from "lucide-react";
+import {
+  SiDocker,
+  SiGithubactions,
+  SiJavascript,
+  SiLinux,
+  SiNginx,
+  SiPostgresql,
+  SiPython,
+  SiReact,
+  SiRedis,
+  SiSqlite,
+  SiTailwindcss,
+  SiTypescript,
+  SiVite,
+} from "react-icons/si";
 import { InteractiveNebulaShader } from "@/components/ui/liquid-shader";
 
-type Locale = "es" | "en";
-
-type Project = {
-  title: string;
-  image: string;
-  href: string;
-  description: Record<Locale, string>;
-};
-
-const projects: Project[] = [
+const projects = [
   {
-    title: "MD-Intelligence",
-    description: {
-      es: "Proyecto publico enfocado en inteligencia aplicada, automatizacion y sistemas conectados.",
-      en: "Public project focused on applied intelligence, automation, and connected systems.",
-    },
+    title: "MD-Ingelligence",
+    description:
+      "Proyecto publico enfocado en automatizacion, integraciones y herramientas para sistemas reales.",
     image:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
     href: "https://github.com/lucksgg7/MD-Intelligence",
   },
+  {
+    title: "Hytalia (www.hytalia.net)",
+    description:
+      "Network usando motor de Hytale, web propia, tienda, sistemas internos, APIs e infraestructura.",
+    image:
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
+    href: "https://www.hytalia.net",
+  },
 ];
 
-const copy = {
-  es: {
-    projects: "Proyectos",
-    github: "Github",
-    about: "Sobre mi",
-    heroTag: "Hey, soy Lucas (Lucks)",
-    heroTitle: "Desarrollador Full Stack construyendo sistemas reales.",
-    heroDescription:
-      "Trabajo en paneles, APIs, automatizacion, servidores e infraestructura. Proyecto actual: Hytalia (Network + sistemas propios).",
-    collab: "Abierto a colaboraciones",
-    ctaProjects: "Ver proyectos",
-    ctaGithub: "Ir a Github",
-    sectionTitle: "Proyectos publicos",
-    statsFollowers: "Followers",
-    statsFollowing: "Following",
-    statsRepos: "Repos publicos",
-    statsCommits: "Commits este mes (live)",
-    stackTitle: "Stack tecnico",
-    stack: [
-      "TypeScript / JavaScript",
-      "Python",
-      "React / Vite / Tailwind",
-      "Docker / Nginx / GitHub Actions",
-      "PostgreSQL / SQLite / Redis",
-      "Linux",
-    ],
-  },
-  en: {
-    projects: "Projects",
-    github: "Github",
-    about: "About",
-    heroTag: "Hey, I'm Lucas (Lucks)",
-    heroTitle: "Full Stack developer building real systems.",
-    heroDescription:
-      "I work on panels, APIs, automation, servers, and infrastructure. Current focus: Hytalia (Network + internal systems).",
-    collab: "Open to collaborations",
-    ctaProjects: "View projects",
-    ctaGithub: "Open Github",
-    sectionTitle: "Public projects",
-    statsFollowers: "Followers",
-    statsFollowing: "Following",
-    statsRepos: "Public repos",
-    statsCommits: "Commits this month (live)",
-    stackTitle: "Tech stack",
-    stack: [
-      "TypeScript / JavaScript",
-      "Python",
-      "React / Vite / Tailwind",
-      "Docker / Nginx / GitHub Actions",
-      "PostgreSQL / SQLite / Redis",
-      "Linux",
-    ],
-  },
-} as const;
+const trackedRepos = [
+  "HytaliaNetwork/hytalia-web",
+  "HytaliaNetwork/hytale-plugin-journey",
+  "lucksgg7/lucasvicente-portfolio",
+  "lucksgg7/ServerMappings",
+  "lucksgg7/MD-Intelligence",
+];
+
+const stack = [
+  { label: "TypeScript", icon: SiTypescript },
+  { label: "JavaScript", icon: SiJavascript },
+  { label: "Python", icon: SiPython },
+  { label: "React", icon: SiReact },
+  { label: "Vite", icon: SiVite },
+  { label: "Tailwind", icon: SiTailwindcss },
+  { label: "Docker", icon: SiDocker },
+  { label: "Nginx", icon: SiNginx },
+  { label: "GitHub Actions", icon: SiGithubactions },
+  { label: "PostgreSQL", icon: SiPostgresql },
+  { label: "SQLite", icon: SiSqlite },
+  { label: "Redis", icon: SiRedis },
+  { label: "Linux", icon: SiLinux },
+];
 
 function App() {
-  const [locale, setLocale] = useState<Locale>("es");
-  const [stats, setStats] = useState({
-    followers: null as number | null,
-    following: null as number | null,
-    publicRepos: null as number | null,
-    monthCommits: null as number | null,
-  });
-  const t = useMemo(() => copy[locale], [locale]);
+  const [commits, setCommits] = useState<number | null>(null);
 
   useEffect(() => {
-    const getCommitCount = async (repo: string, since: string, until: string): Promise<number> => {
-      const url = `https://api.github.com/repos/${repo}/commits?author=lucksgg7&since=${since}&until=${until}&per_page=1`;
+    const getCount = async (repo: string): Promise<number> => {
+      const url = `https://api.github.com/repos/${repo}/commits?author=lucksgg7&per_page=1`;
       const res = await fetch(url);
       if (!res.ok) return 0;
 
@@ -105,38 +79,16 @@ function App() {
       return items.length;
     };
 
-    const load = async () => {
+    const loadCommits = async () => {
       try {
-        const now = new Date();
-        const sinceDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0));
-        const since = sinceDate.toISOString();
-        const until = now.toISOString();
-
-        const [userRes, hytaliaWebCount, journeyCount] = await Promise.all([
-          fetch("https://api.github.com/users/lucksgg7"),
-          getCommitCount("HytaliaNetwork/hytalia-web", since, until),
-          getCommitCount("HytaliaNetwork/hytale-plugin-journey", since, until),
-        ]);
-
-        if (userRes.ok) {
-          const user = (await userRes.json()) as {
-            followers: number;
-            following: number;
-            public_repos: number;
-          };
-          setStats({
-            followers: user.followers,
-            following: user.following,
-            publicRepos: user.public_repos,
-            monthCommits: hytaliaWebCount + journeyCount,
-          });
-        }
+        const counts = await Promise.all(trackedRepos.map((repo) => getCount(repo)));
+        setCommits(counts.reduce((acc, count) => acc + count, 0));
       } catch {
-        // Keep fallbacks when GitHub API is unavailable.
+        setCommits(null);
       }
     };
 
-    load();
+    loadCommits();
   }, []);
 
   return (
@@ -156,7 +108,7 @@ function App() {
                 href="#proyectos"
                 className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
               >
-                {t.projects}
+                Proyectos
               </a>
               <a
                 href="https://github.com/lucksgg7"
@@ -164,88 +116,60 @@ function App() {
                 rel="noreferrer"
                 className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
               >
-                {t.github}
+                Github
               </a>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="rounded-2xl border border-white/20 bg-white/5 p-1">
-                <button
-                  type="button"
-                  onClick={() => setLocale("es")}
-                  className={`rounded-xl px-3 py-2 text-xs font-semibold transition ${
-                    locale === "es" ? "bg-white/20 text-white" : "text-white/70 hover:text-white"
-                  }`}
-                  aria-label="Cambiar idioma a espanol"
-                >
-                  ES
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLocale("en")}
-                  className={`rounded-xl px-3 py-2 text-xs font-semibold transition ${
-                    locale === "en" ? "bg-white/20 text-white" : "text-white/70 hover:text-white"
-                  }`}
-                  aria-label="Switch language to english"
-                >
-                  EN
-                </button>
-              </div>
-
-              <a
-                href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-black transition hover:bg-white/90"
-              >
-                <Linkedin className="h-4 w-4" />
-                LinkedIn
-              </a>
-            </div>
+            <a
+              href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-black transition hover:bg-white/90"
+            >
+              <Linkedin className="h-4 w-4" />
+              LinkedIn
+            </a>
           </nav>
         </header>
 
         <main id="inicio" className="pt-20">
           <section className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3">
-              <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/80">
-                <Sparkles className="h-3.5 w-3.5" />
-                {t.heroTag}
-              </p>
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-200">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.8)]" />
-                </span>
-                {t.collab}
-              </span>
-            </div>
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/80">
+              <Sparkles className="h-3.5 w-3.5" />
+              Hey, soy Lucas (Lucks)
+            </p>
 
-            <h1 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">{t.heroTitle}</h1>
+            <h1 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">
+              Desarrollador Full Stack.
+            </h1>
 
-            <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">{t.heroDescription}</p>
-
-            <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/90">
-              <span className="rounded-full border border-cyan-300/40 bg-cyan-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(34,211,238,0.18)]">
-                {t.statsFollowers}: {stats.followers ?? "--"}
-              </span>
-              <span className="rounded-full border border-blue-300/40 bg-blue-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(96,165,250,0.18)]">
-                {t.statsFollowing}: {stats.following ?? "--"}
-              </span>
-              <span className="rounded-full border border-violet-300/40 bg-violet-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(167,139,250,0.2)]">
-                {t.statsRepos}: {stats.publicRepos ?? "--"}
-              </span>
-              <span className="rounded-full border border-emerald-300/40 bg-emerald-500/10 px-3 py-1.5 font-medium shadow-[0_0_16px_rgba(52,211,153,0.2)]">
-                {t.statsCommits}: {stats.monthCommits ?? "--"}
-              </span>
-            </div>
+            <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">
+              Trabajo en paneles, APIs, automatizacion, servidores e infraestructura.
+              <br />
+              Proyecto actual: Hytalia (Network + Sistemas propios) y construyendo en UEFN (Unreal Engine for
+              Fortnite)
+            </p>
 
             <div className="mt-6">
-              <p className="mb-2 text-sm font-semibold text-white/90">{t.stackTitle}</p>
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-200 shadow-[0_0_18px_rgba(16,185,129,0.22)]">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
+                </span>
+                Commits totales: {commits ?? "...."}
+              </span>
+            </div>
+
+            <div className="mt-8">
+              <p className="mb-3 text-sm font-semibold text-white/90">Stack Tecnico</p>
               <div className="flex flex-wrap gap-2">
-                {t.stack.map((item) => (
-                  <span key={item} className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs">
-                    {item}
+                {stack.map(({ label, icon: Icon }) => (
+                  <span
+                    key={label}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {label}
                   </span>
                 ))}
               </div>
@@ -256,7 +180,7 @@ function App() {
                 href="#proyectos"
                 className="rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
               >
-                {t.ctaProjects}
+                Ver proyectos
               </a>
               <a
                 href="https://github.com/lucksgg7"
@@ -264,15 +188,15 @@ function App() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
               >
-                {t.ctaGithub}
+                Ir a Github
                 <ArrowUpRight className="h-4 w-4" />
               </a>
             </div>
           </section>
 
           <section id="proyectos" className="mt-16">
-            <h2 className="text-2xl font-semibold sm:text-3xl">{t.sectionTitle}</h2>
-            <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <h2 className="text-2xl font-semibold sm:text-3xl">Proyectos publicos</h2>
+            <div className="mt-6 grid gap-6 md:grid-cols-2">
               {projects.map((project) => (
                 <article
                   key={project.title}
@@ -281,19 +205,19 @@ function App() {
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="h-44 w-full object-cover transition duration-500 group-hover:scale-105"
+                    className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
                     loading="lazy"
                   />
                   <div className="space-y-3 p-5">
                     <h3 className="text-lg font-semibold text-card-foreground">{project.title}</h3>
-                    <p className="text-sm text-muted-foreground">{project.description[locale]}</p>
+                    <p className="text-sm text-muted-foreground">{project.description}</p>
                     <a
                       href={project.href}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white"
                     >
-                      Github
+                      Ver proyecto
                       <ArrowUpRight className="h-4 w-4" />
                     </a>
                   </div>
