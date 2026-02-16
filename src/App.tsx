@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Linkedin, Mail, Orbit, Sparkles } from "lucide-react";
+import { ArrowUpRight, Linkedin, Mail, Sparkles } from "lucide-react";
 import {
   SiDocker,
   SiGithubactions,
@@ -140,8 +140,11 @@ function App() {
         <header className="mx-auto w-full max-w-5xl rounded-full border border-white/15 bg-black/55 p-2 backdrop-blur-xl">
           <nav className="flex items-center justify-between gap-3 text-sm text-white/80">
             <a href="#inicio" className="flex items-center gap-2 rounded-full px-3 py-2 text-white">
-              <Orbit className="h-5 w-5" />
-              <span className="font-semibold tracking-wide">lucasvicente.es</span>
+              <img
+                src="/favicon/logo.png"
+                alt="Lucas Vicente logo"
+                className="h-7 w-auto object-contain"
+              />
             </a>
 
             <div className="hidden items-center gap-1 sm:flex">
