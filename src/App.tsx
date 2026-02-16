@@ -19,7 +19,7 @@ import { InteractiveNebulaShader } from "@/components/ui/liquid-shader";
 
 const projects = [
   {
-    title: "MD-Ingelligence",
+    title: "UTS-MD",
     description:
       "Proyecto publico enfocado en automatizacion, integraciones y herramientas para sistemas reales.",
     type: "Automation / Integrations",
