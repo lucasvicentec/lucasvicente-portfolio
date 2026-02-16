@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Linkedin, Orbit, Sparkles } from "lucide-react";
+import { ArrowUpRight, Linkedin, Mail, Orbit, Sparkles } from "lucide-react";
 import {
   SiDocker,
   SiGithubactions,
@@ -36,14 +36,6 @@ const projects = [
   },
 ];
 
-const trackedRepos = [
-  "HytaliaNetwork/hytalia-web",
-  "HytaliaNetwork/hytale-plugin-journey",
-  "lucksgg7/lucasvicente-portfolio",
-  "lucksgg7/ServerMappings",
-  "lucksgg7/MD-Intelligence",
-];
-
 const stack = [
   { label: "TypeScript", icon: SiTypescript },
   { label: "JavaScript", icon: SiJavascript },
@@ -61,30 +53,81 @@ const stack = [
 ];
 
 function App() {
-  const [commits, setCommits] = useState<number | null>(null);
+  const [lang, setLang] = useState<"es" | "en">("es");
+  const [commitStats, setCommitStats] = useState<{ total: number | null; month: number | null }>({
+    total: null,
+    month: null,
+  });
+  const t =
+    lang === "es"
+      ? {
+          projects: "Proyectos",
+          contact: "Contacto",
+          github: "Github",
+          hey: "Hey, soy Lucas (Lucks)",
+          title: "Desarrollador Full Stack.",
+          description:
+            "Trabajo en paneles, APIs, automatizacion, servidores e infraestructura.",
+          current:
+            "Proyecto actual: Hytalia (Network + Sistemas propios) y construyendo en UEFN (Unreal Engine for Fortnite)",
+          total: "Commits totales",
+          month: "Commits este mes",
+          stack: "Stack Tecnico",
+          viewProjects: "Ver proyectos",
+          goGithub: "Ir a Github",
+          publicProjects: "Proyectos publicos",
+          seeProject: "Ver proyecto",
+          contactTitle: "Contacto",
+          contactText: "Si quieres colaborar o hablar de un proyecto, puedes escribirme directamente por email.",
+          sendEmail: "Enviar email",
+        }
+      : {
+          projects: "Projects",
+          contact: "Contact",
+          github: "Github",
+          hey: "Hey, I'm Lucas (Lucks)",
+          title: "Full Stack Developer.",
+          description:
+            "I build dashboards, APIs, automation, servers, and infrastructure.",
+          current:
+            "Current project: Hytalia (Network + internal systems) and building in UEFN (Unreal Engine for Fortnite)",
+          total: "Total commits",
+          month: "Commits this month",
+          stack: "Tech Stack",
+          viewProjects: "View projects",
+          goGithub: "Open Github",
+          publicProjects: "Public projects",
+          seeProject: "View project",
+          contactTitle: "Contact",
+          contactText: "If you want to collaborate or discuss a project, send me an email directly.",
+          sendEmail: "Send email",
+        };
 
   useEffect(() => {
-    const getCount = async (repo: string): Promise<number> => {
-      const url = `https://api.github.com/repos/${repo}/commits?author=lucksgg7&per_page=1`;
-      const res = await fetch(url);
-      if (!res.ok) return 0;
-
-      const link = res.headers.get("link");
-      if (link) {
-        const last = link.match(/&page=(\d+)>; rel="last"/);
-        if (last?.[1]) return Number(last[1]);
-      }
-
-      const items = (await res.json()) as unknown[];
-      return items.length;
-    };
-
     const loadCommits = async () => {
       try {
-        const counts = await Promise.all(trackedRepos.map((repo) => getCount(repo)));
-        setCommits(counts.reduce((acc, count) => acc + count, 0));
+        const res = await fetch("https://github-contributions-api.jogruber.de/v4/lucksgg7");
+        if (!res.ok) return;
+
+        const data = (await res.json()) as {
+          total: Record<string, number>;
+          contributions: Array<{ date: string; count: number }>;
+        };
+
+        const now = new Date();
+        const y = now.getUTCFullYear();
+        const m = now.getUTCMonth();
+
+        const total = Object.values(data.total ?? {}).reduce((acc, value) => acc + value, 0);
+        const month = (data.contributions ?? []).reduce((acc, item) => {
+          const d = new Date(`${item.date}T00:00:00Z`);
+          if (d.getUTCFullYear() === y && d.getUTCMonth() === m) return acc + item.count;
+          return acc;
+        }, 0);
+
+        setCommitStats({ total, month });
       } catch {
-        setCommits(null);
+        setCommitStats({ total: null, month: null });
       }
     };
 
@@ -108,7 +151,13 @@ function App() {
                 href="#proyectos"
                 className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
               >
-                Proyectos
+                {t.projects}
+              </a>
+              <a
+                href="#contacto"
+                className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
+              >
+                {t.contact}
               </a>
               <a
                 href="https://github.com/lucksgg7"
@@ -116,19 +165,41 @@ function App() {
                 rel="noreferrer"
                 className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
               >
-                Github
+                {t.github}
               </a>
             </div>
 
-            <a
-              href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-black transition hover:bg-white/90"
-            >
-              <Linkedin className="h-4 w-4" />
-              LinkedIn
-            </a>
+            <div className="flex items-center gap-2">
+              <div className="rounded-xl border border-white/20 bg-white/5 p-1">
+                <button
+                  type="button"
+                  onClick={() => setLang("es")}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
+                    lang === "es" ? "bg-white/20 text-white" : "text-white/70"
+                  }`}
+                >
+                  ES
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang("en")}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
+                    lang === "en" ? "bg-white/20 text-white" : "text-white/70"
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+              <a
+                href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-black transition hover:bg-white/90"
+              >
+                <Linkedin className="h-4 w-4" />
+                LinkedIn
+              </a>
+            </div>
           </nav>
         </header>
 
@@ -136,18 +207,15 @@ function App() {
           <section className="max-w-4xl">
             <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/80">
               <Sparkles className="h-3.5 w-3.5" />
-              Hey, soy Lucas (Lucks)
+              {t.hey}
             </p>
 
-            <h1 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">
-              Desarrollador Full Stack.
-            </h1>
+            <h1 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">{t.title}</h1>
 
             <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">
-              Trabajo en paneles, APIs, automatizacion, servidores e infraestructura.
+              {t.description}
               <br />
-              Proyecto actual: Hytalia (Network + Sistemas propios) y construyendo en UEFN (Unreal Engine for
-              Fortnite)
+              {t.current}
             </p>
 
             <div className="mt-6">
@@ -156,12 +224,19 @@ function App() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
                 </span>
-                Commits totales: {commits ?? "...."}
+                {t.total}: {commitStats.total ?? "...."}
+              </span>
+              <span className="ml-2 mt-2 inline-flex items-center gap-2 rounded-full border border-emerald-300/35 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-100 shadow-[0_0_16px_rgba(16,185,129,0.16)] sm:mt-0">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-65" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
+                </span>
+                {t.month}: {commitStats.month ?? "...."}
               </span>
             </div>
 
             <div className="mt-8">
-              <p className="mb-3 text-sm font-semibold text-white/90">Stack Tecnico</p>
+              <p className="mb-3 text-sm font-semibold text-white/90">{t.stack}</p>
               <div className="flex flex-wrap gap-2">
                 {stack.map(({ label, icon: Icon }) => (
                   <span
@@ -180,7 +255,7 @@ function App() {
                 href="#proyectos"
                 className="rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
               >
-                Ver proyectos
+                {t.viewProjects}
               </a>
               <a
                 href="https://github.com/lucksgg7"
@@ -188,14 +263,14 @@ function App() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
               >
-                Ir a Github
+                {t.goGithub}
                 <ArrowUpRight className="h-4 w-4" />
               </a>
             </div>
           </section>
 
           <section id="proyectos" className="mt-16">
-            <h2 className="text-2xl font-semibold sm:text-3xl">Proyectos publicos</h2>
+            <h2 className="text-2xl font-semibold sm:text-3xl">{t.publicProjects}</h2>
             <div className="mt-6 grid gap-6 md:grid-cols-2">
               {projects.map((project) => (
                 <article
@@ -217,13 +292,25 @@ function App() {
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white"
                     >
-                      Ver proyecto
+                      {t.seeProject}
                       <ArrowUpRight className="h-4 w-4" />
                     </a>
                   </div>
                 </article>
               ))}
             </div>
+          </section>
+
+          <section id="contacto" className="mt-16">
+            <h2 className="text-2xl font-semibold sm:text-3xl">{t.contactTitle}</h2>
+            <p className="mt-3 max-w-2xl text-white/75">{t.contactText}</p>
+            <a
+              href="mailto:lucasvicentecerri6@gmail.com?subject=Contacto%20desde%20portfolio&body=Hola%20Lucas%2C%20te%20escribo%20porque..."
+              className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
+            >
+              <Mail className="h-4 w-4" />
+              {t.sendEmail}
+            </a>
           </section>
         </main>
       </div>
