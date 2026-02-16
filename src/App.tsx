@@ -143,8 +143,9 @@ function App() {
               <img
                 src="/favicon/logo.png"
                 alt="Lucas Vicente logo"
-                className="h-7 w-auto object-contain"
+                className="h-7 w-7 rounded-md object-cover"
               />
+              <span className="font-semibold tracking-wide">lucasvicente.es</span>
             </a>
 
             <div className="hidden items-center gap-1 sm:flex">
