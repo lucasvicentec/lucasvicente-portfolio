@@ -19,35 +19,58 @@ import { InteractiveNebulaShader } from "@/components/ui/liquid-shader";
 
 const projects = [
   {
-    title: "UTS-MD",
-    description:
-      "Proyecto publico enfocado en automatizacion, integraciones y herramientas para sistemas reales.",
+    title: "MD-Ingelligence",
+    problem: "Centralizar consulta de UT y reducir tiempo operativo en busquedas manuales.",
+    solution: "Plataforma con busqueda inteligente, utilidades SAP y flujos orientados a operacion real.",
+    stack: "Next.js, TypeScript, PostgreSQL, Tailwind, APIs",
+    challenge: "Normalizar datos heterogeneos y mantener respuesta rapida con filtros complejos.",
+    impact: "Mejora de productividad y menor friccion en tareas repetitivas de operacion.",
+    learned: "Disenar producto tecnico con foco en uso diario y mantenibilidad.",
     type: "Automation / Integrations",
     href: "http://md.lucasvicente.es/",
   },
   {
     title: "Hytalia (www.hytalia.net)",
-    description:
-      "Network usando motor de Hytale, web propia, tienda, sistemas internos, APIs e infraestructura.",
+    problem: "Construir ecosistema tecnico completo para una network con operaciones continuas.",
+    solution: "Infraestructura, web, tienda, APIs y paneles internos conectados entre si.",
+    stack: "TypeScript, Python, Nginx, Docker, Redis, PostgreSQL",
+    challenge: "Coordinar sistemas internos con requisitos de disponibilidad y evolucion constante.",
+    impact: "Base tecnica escalable para producto, gestion interna y crecimiento de plataforma.",
+    learned: "Pensar arquitectura como sistema completo, no como piezas aisladas.",
     type: "Network / Infrastructure",
     href: "https://www.hytalia.net",
   },
 ];
 
-const stack = [
-  { label: "TypeScript", icon: SiTypescript },
-  { label: "JavaScript", icon: SiJavascript },
-  { label: "Python", icon: SiPython },
-  { label: "React", icon: SiReact },
-  { label: "Vite", icon: SiVite },
-  { label: "Tailwind", icon: SiTailwindcss },
-  { label: "Docker", icon: SiDocker },
-  { label: "Nginx", icon: SiNginx },
-  { label: "GitHub Actions", icon: SiGithubactions },
-  { label: "PostgreSQL", icon: SiPostgresql },
-  { label: "SQLite", icon: SiSqlite },
-  { label: "Redis", icon: SiRedis },
-  { label: "Linux", icon: SiLinux },
+const stackByCategory = [
+  {
+    category: "Frontend",
+    items: [
+      { label: "React", icon: SiReact },
+      { label: "TypeScript", icon: SiTypescript },
+      { label: "Vite", icon: SiVite },
+      { label: "Tailwind", icon: SiTailwindcss },
+      { label: "JavaScript", icon: SiJavascript },
+    ],
+  },
+  {
+    category: "Backend",
+    items: [
+      { label: "Python", icon: SiPython },
+      { label: "PostgreSQL", icon: SiPostgresql },
+      { label: "SQLite", icon: SiSqlite },
+      { label: "Redis", icon: SiRedis },
+    ],
+  },
+  {
+    category: "Infra / DevOps",
+    items: [
+      { label: "Docker", icon: SiDocker },
+      { label: "Nginx", icon: SiNginx },
+      { label: "GitHub Actions", icon: SiGithubactions },
+      { label: "Linux", icon: SiLinux },
+    ],
+  },
 ];
 
 function App() {
@@ -63,20 +86,42 @@ function App() {
           contact: "Contacto",
           github: "Github",
           hey: "Hey, soy Lucas (Lucks)",
-          title: "Desarrollador Full Stack.",
+          title: "Ingeniero de software enfocado en automatizacion, infraestructura y sistemas reales.",
           description:
-            "Trabajo en paneles, APIs, automatizacion, servidores e infraestructura.",
+            "Desarrollo sistemas internos, automatizaciones y APIs para proyectos que requieren estabilidad y evolucion constante.",
           current:
             "Proyecto actual: Hytalia (Network + Sistemas propios) y construyendo en UEFN (Unreal Engine for Fortnite)",
           total: "Commits totales",
           month: "Commits este mes",
           stack: "Stack Tecnico",
+          stackHint: "Stack agrupado por areas para reflejar criterio arquitectonico.",
           viewProjects: "Ver proyectos",
           goGithub: "Ir a Github",
           publicProjects: "Proyectos publicos",
           seeProject: "Ver proyecto",
+          consistency: "Consistencia diaria en desarrollo y contribucion activa.",
+          problem: "Problema",
+          solution: "Solucion",
+          usedStack: "Stack usado",
+          challenge: "Reto tecnico",
+          impact: "Impacto",
+          learned: "Aprendizaje",
+          workTitle: "Como trabajo",
+          workItems: [
+            "Arquitectura clara y mantenible",
+            "Automatizacion de procesos repetitivos",
+            "Infraestructura reproducible",
+            "Iteracion rapida con foco en estabilidad",
+          ],
+          learningTitle: "Actualmente aprendiendo",
+          learningItems: [
+            "Escalabilidad backend para cargas reales",
+            "Sistemas distribuidos y eventos",
+            "Mejoras de DX para herramientas internas",
+          ],
           contactTitle: "Contacto",
-          contactText: "Si quieres colaborar o hablar de un proyecto, puedes escribirme directamente por email.",
+          contactText:
+            "Abierto a oportunidades remotas o hibridas (freelance, contrato o full-time). Si quieres colaborar o hablar de un proyecto, escribeme.",
           sendEmail: "Enviar email",
         }
       : {
@@ -84,20 +129,42 @@ function App() {
           contact: "Contact",
           github: "Github",
           hey: "Hey, I'm Lucas (Lucks)",
-          title: "Full Stack Developer.",
+          title: "Software engineer focused on automation, infrastructure, and real-world systems.",
           description:
-            "I build dashboards, APIs, automation, servers, and infrastructure.",
+            "I build internal systems, automations, and APIs for projects that need reliability and long-term scalability.",
           current:
             "Current project: Hytalia (Network + internal systems) and building in UEFN (Unreal Engine for Fortnite)",
           total: "Total commits",
           month: "Commits this month",
           stack: "Tech Stack",
+          stackHint: "Stack grouped by area to show architectural ownership.",
           viewProjects: "View projects",
           goGithub: "Open Github",
           publicProjects: "Public projects",
           seeProject: "View project",
+          consistency: "Daily consistency in development and active contributions.",
+          problem: "Problem",
+          solution: "Solution",
+          usedStack: "Stack used",
+          challenge: "Technical challenge",
+          impact: "Impact",
+          learned: "What I learned",
+          workTitle: "How I work",
+          workItems: [
+            "Clear, maintainable architecture",
+            "Automation of repetitive workflows",
+            "Reproducible infrastructure",
+            "Fast iteration with reliability in mind",
+          ],
+          learningTitle: "Currently learning",
+          learningItems: [
+            "Backend scalability under real load",
+            "Distributed and event-driven systems",
+            "Developer experience for internal tooling",
+          ],
           contactTitle: "Contact",
-          contactText: "If you want to collaborate or discuss a project, send me an email directly.",
+          contactText:
+            "Open to remote or hybrid opportunities (freelance, contract, or full-time). If you want to collaborate or discuss a project, email me.",
           sendEmail: "Send email",
         };
 
@@ -149,16 +216,10 @@ function App() {
             </a>
 
             <div className="hidden items-center gap-1 sm:flex">
-              <a
-                href="#proyectos"
-                className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
-              >
+              <a href="#proyectos" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">
                 {t.projects}
               </a>
-              <a
-                href="#contacto"
-                className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
-              >
+              <a href="#contacto" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">
                 {t.contact}
               </a>
               <a
@@ -235,19 +296,38 @@ function App() {
                 </span>
                 {t.month}: {commitStats.month ?? "...."}
               </span>
+              <p className="mt-3 text-sm text-white/70">
+                {t.consistency}{" "}
+                <a
+                  href="https://github.com/lucksgg7"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 font-medium text-emerald-200 hover:text-emerald-100"
+                >
+                  Github <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              </p>
             </div>
 
             <div className="mt-8">
               <p className="mb-3 text-sm font-semibold text-white/90">{t.stack}</p>
-              <div className="flex flex-wrap gap-2">
-                {stack.map(({ label, icon: Icon }) => (
-                  <span
-                    key={label}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white"
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    {label}
-                  </span>
+              <p className="mb-4 text-xs text-white/60">{t.stackHint}</p>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {stackByCategory.map((group) => (
+                  <div key={group.category} className="rounded-2xl border border-white/15 bg-white/5 p-4">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-white/70">{group.category}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {group.items.map(({ label, icon: Icon }) => (
+                        <span
+                          key={label}
+                          className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white"
+                        >
+                          <Icon className="h-3.5 w-3.5" />
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -291,7 +371,26 @@ function App() {
                   </div>
                   <div className="space-y-3 p-5">
                     <h3 className="text-lg font-semibold text-card-foreground">{project.title}</h3>
-                    <p className="text-sm text-muted-foreground">{project.description}</p>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <p>
+                        <span className="font-semibold text-white/85">{t.problem}:</span> {project.problem}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white/85">{t.solution}:</span> {project.solution}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white/85">{t.usedStack}:</span> {project.stack}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white/85">{t.challenge}:</span> {project.challenge}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white/85">{t.impact}:</span> {project.impact}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white/85">{t.learned}:</span> {project.learned}
+                      </p>
+                    </div>
                     <a
                       href={project.href}
                       target="_blank"
@@ -307,16 +406,46 @@ function App() {
             </div>
           </section>
 
+          <section className="mt-16 grid gap-6 md:grid-cols-2">
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6">
+              <h2 className="text-2xl font-semibold sm:text-3xl">{t.workTitle}</h2>
+              <ul className="mt-4 space-y-2 text-sm text-white/75">
+                {t.workItems.map((item) => (
+                  <li key={item}>- {item}</li>
+                ))}
+              </ul>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6">
+              <h2 className="text-2xl font-semibold sm:text-3xl">{t.learningTitle}</h2>
+              <ul className="mt-4 space-y-2 text-sm text-white/75">
+                {t.learningItems.map((item) => (
+                  <li key={item}>- {item}</li>
+                ))}
+              </ul>
+            </article>
+          </section>
+
           <section id="contacto" className="mt-16">
             <h2 className="text-2xl font-semibold sm:text-3xl">{t.contactTitle}</h2>
             <p className="mt-3 max-w-2xl text-white/75">{t.contactText}</p>
-            <a
-              href="mailto:lucasvicentecerri6@gmail.com?subject=Contacto%20desde%20portfolio&body=Hola%20Lucas%2C%20te%20escribo%20porque..."
-              className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
-            >
-              <Mail className="h-4 w-4" />
-              {t.sendEmail}
-            </a>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a
+                href="mailto:lucasvicentecerri6@gmail.com?subject=Contacto%20desde%20portfolio&body=Hola%20Lucas%2C%20te%20escribo%20porque..."
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
+              >
+                <Mail className="h-4 w-4" />
+                {t.sendEmail}
+              </a>
+              <a
+                href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+              >
+                <Linkedin className="h-4 w-4" />
+                LinkedIn
+              </a>
+            </div>
           </section>
         </main>
       </div>
