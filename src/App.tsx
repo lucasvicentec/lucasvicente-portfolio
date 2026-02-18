@@ -3,6 +3,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BriefcaseBusiness,
+  CircleHelp,
   Github,
   Linkedin,
   Mail,
@@ -461,7 +462,7 @@ function App() {
                           href={project.repo}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-2 border border-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+                          className="inline-flex items-center gap-2 border border-emerald-300/55 bg-emerald-500/18 px-4 py-2 text-sm font-medium text-emerald-50 transition hover:bg-emerald-500/30"
                         >
                           <Github className="h-4 w-4" />
                           {t.viewRepo}
@@ -472,7 +473,7 @@ function App() {
                           href={project.live}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-2 border border-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+                          className="inline-flex items-center gap-2 border border-cyan-300/55 bg-cyan-500/18 px-4 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-500/30"
                         >
                           <ArrowUpRight className="h-4 w-4" />
                           {t.viewLive}
@@ -583,13 +584,16 @@ function App() {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-white/55">{t.portfolioSourceLabel}</p>
-                <p className="mt-1">{t.portfolioSourceText}</p>
+                <p className="mt-1 inline-flex items-center gap-2">
+                  <CircleHelp className="h-4 w-4 text-amber-200" />
+                  {t.portfolioSourceText}
+                </p>
               </div>
               <a
                 href="https://github.com/lucksgg7/lucasvicente-portfolio"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 border border-white/20 px-4 py-2 font-medium text-white transition hover:bg-white/10"
+                className="inline-flex items-center gap-2 border border-rose-300/60 bg-rose-500/22 px-4 py-2 font-medium text-rose-50 shadow-[0_0_14px_rgba(244,63,94,0.24)] transition hover:bg-rose-500/36"
               >
                 <Github className="h-4 w-4" />
                 {t.portfolioSourceCta}
