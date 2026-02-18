@@ -1,4 +1,4 @@
-﻿# Portfolio profesional orientado a reclutadores tecnicos
+﻿# Portfolio profesional 
 
 Portfolio de Lucas Vicente (`lucksgg7`) enfocado en demostrar ejecucion real, criterio tecnico y ownership end-to-end.
 
