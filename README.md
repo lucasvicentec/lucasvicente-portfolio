@@ -1,35 +1,34 @@
-﻿# Lucas Vicente Portfolio
+﻿# Portfolio profesional orientado a reclutadores tecnicos
 
-Portfolio profesional de Lucas Vicente (`lucksgg7`) construido para mostrar capacidad real de ejecucion full-stack: producto, backend, infraestructura y despliegue.
+Portfolio de Lucas Vicente (`lucksgg7`) enfocado en demostrar ejecucion real, criterio tecnico y ownership end-to-end.
 
-No es una landing de plantilla. Este repo esta mantenido como software de produccion:
-- interfaz bilingue (ES/EN),
-- casos tecnicos con foco en reto/arquitectura/impacto,
-- build reproducible,
-- despliegue automatico en Cloudflare Workers con GitHub Actions.
+## Este proyecto demuestra
 
-## Que demuestra este proyecto
+- Diseno de arquitectura frontend con enfoque producto y conversion.
+- Integracion CI/CD real con despliegue continuo en Cloudflare Workers.
+- Optimizacion de rendimiento (lazy loading del shader con Three.js).
+- Internacionalizacion funcional ES/EN.
+- Mantenimiento iterativo en produccion (UX, copy, SEO tecnico).
 
-- Capacidad de llevar una web desde idea hasta deploy continuo.
-- Criterio de producto: estructura pensada para conversion de recruiter/cliente.
-- Criterio tecnico: React + TypeScript + optimizacion de carga (lazy loading del shader).
-- Mantenimiento real: iteracion continua sobre contenido, UX y arquitectura.
+## Ver portfolio
 
-## Stack
+- Produccion: `https://lucasvicente.es`
+
+## Stack principal
 
 - `React 19` + `TypeScript` + `Vite`
 - `Tailwind CSS`
-- `Three.js` (fondo interactivo)
-- `Cloudflare Workers` + `Wrangler`
-- `GitHub Actions` (CI/CD)
+- `Three.js`
+- `Cloudflare Workers`
+- `GitHub Actions`
 
-## Estructura clave
+## Detalle tecnico (engineering)
 
 - `src/App.tsx`: layout principal, i18n ES/EN, casos de proyectos y CTA de contratacion.
-- `src/components/ui/liquid-shader.tsx`: shader de fondo con Three.js (cargado de forma diferida).
+- `src/components/ui/liquid-shader.tsx`: shader de fondo con carga diferida.
 - `index.html`: metadatos SEO + OpenGraph + JSON-LD.
 - `.github/workflows/deploy-cloudflare-worker.yml`: pipeline de build/deploy.
-- `wrangler.toml`: configuracion de Cloudflare Worker.
+- `wrangler.toml`: configuracion de runtime/deploy en Cloudflare.
 
 ## Desarrollo local
 
@@ -38,33 +37,12 @@ npm install
 npm run dev -- --host 0.0.0.0 --port 3000
 ```
 
-## Calidad y build
+## Calidad
 
 ```bash
 npm run lint
 npm run build
 ```
-
-## Deploy
-
-El deploy a produccion se ejecuta al hacer push en `main`.
-
-Requisitos de secrets en GitHub:
-- `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
-
-Comandos utiles:
-
-```bash
-npm run deploy:cf
-npm run cf:dev
-```
-
-## Dominio
-
-Configurado para:
-- `lucasvicente.es/*`
-- `www.lucasvicente.es/*`
 
 ## Contacto
 
