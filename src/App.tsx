@@ -44,43 +44,118 @@ type Project = {
   live?: string;
 };
 
-const projects: Project[] = [
-  {
-    title: "StackWatch",
-    tag: "New",
-    type: "Monitoring Platform",
-    headline: "Public status page + private admin + incident lifecycle for VPS monitoring.",
-    challenge:
-      "Build a self-hosted monitor that is easy to run but still production ready: auth, rate-limit, historical metrics, and reliable checks.",
-    architecture:
-      "Next.js app with public/admin surfaces, PostgreSQL persistence, internal check runner, and worker loop for periodic checks and incident open/close logic.",
-    impact: "Turns infrastructure health into a clear product surface with real-time state and historical context.",
-    stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
-    repo: "https://github.com/lucksgg7/stackwatch",
-  },
-  {
-    title: "MD-Ingelligence",
-    tag: "Production",
-    type: "Automation / Integrations",
-    headline: "Operational platform to reduce manual UT searches and repetitive internal tasks.",
-    challenge: "Normalize heterogeneous data while keeping fast response times across complex filters.",
-    architecture: "Product-oriented platform with focused utilities, SAP-related workflows, and maintainable backend logic.",
-    impact: "Lower friction for daily operations and better throughput in repetitive processes.",
-    stack: "Next.js, TypeScript, PostgreSQL, Tailwind, APIs",
-    live: "http://md.lucasvicente.es/",
-  },
-  {
-    title: "Hytalia",
-    tag: "Production",
-    type: "Network / Infrastructure",
-    headline: "End-to-end technical ecosystem: web, store, APIs, infra, and internal management tools.",
-    challenge: "Coordinate multiple systems with evolving requirements and continuous availability needs.",
-    architecture: "Unified platform design connecting product, internal operations, and deployment infrastructure.",
-    impact: "Scalable technical base for platform growth and continuous product evolution.",
-    stack: "TypeScript, Python, Nginx, Docker, Redis, PostgreSQL",
-    live: "https://www.hytalia.net",
-  },
-];
+const projectsByLocale: Record<Locale, Project[]> = {
+  es: [
+    {
+      title: "StackWatch",
+      tag: "Nuevo",
+      type: "Plataforma de monitorizacion",
+      headline: "Pagina publica de estado + panel admin privado + ciclo de incidentes para monitorizacion VPS.",
+      challenge:
+        "Construir un monitor autohospedado facil de operar pero listo para produccion: auth, rate-limit, metricas historicas y checks fiables.",
+      architecture:
+        "Aplicacion Next.js con superficies publica/admin, persistencia en PostgreSQL, check runner interno y worker para checks periodicos con logica de apertura/cierre de incidentes.",
+      impact: "Convierte la salud de infraestructura en una superficie clara de producto con estado en tiempo real e historico.",
+      stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
+      repo: "https://github.com/lucksgg7/stackwatch",
+      live: "https://status.lucasvicente.es/",
+    },
+    {
+      title: "MD-Ingelligence",
+      tag: "Privado",
+      type: "MadridDigital / Herramienta interna",
+      headline: "Plataforma interna UTS-MD para busqueda de ubicaciones tecnicas (UT) y aceleracion de consultas operativas.",
+      challenge:
+        "Gestionar datasets UT grandes y heterogeneos con ranking por relevancia, filtros y respuesta rapida para uso operativo diario.",
+      architecture:
+        "Next.js 15 + React 19 + TypeScript, API routes sobre runtime Node, PostgreSQL con fallback local JSON, panel admin con analitica/feedback y routing LLM opcional para ATUSUDOC.",
+      impact:
+        "Centraliza criterios operativos, reduce friccion en busquedas manuales y crea base escalable para analitica, feedback y flujos internos de automatizacion.",
+      stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
+    },
+    {
+      title: "Hytalia Web",
+      tag: "Produccion",
+      type: "Plataforma de comunidad / Infra",
+      headline: "Frontend principal de Hytalia Network con auth, panel admin, leaderboards, tienda y modulos de comunidad.",
+      challenge: "Sostener entrega continua de funcionalidades mientras se migra codigo legado hacia un modelo unificado de API interna.",
+      architecture:
+        "Next.js App Router + NextAuth (Discord), arquitectura transicional mixta (api-internal + rutas legacy a DB), despliegue con Docker/GHCR/Swarm.",
+      impact: "Permite evolucion continua de producto en produccion con modulos reutilizables e infraestructura lista para despliegue.",
+      stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
+      live: "https://www.hytalia.net",
+    },
+    {
+      title: "Hytale Plugin Journey",
+      tag: "Activo",
+      type: "Servidor de juego / Ecosistema Java",
+      headline: "Suite amplia de plugins para operacion de servidores Hytale, sistemas de jugabilidad y herramientas.",
+      challenge: "Coordinar muchos modulos y ciclos rapidos de iteracion entre gameplay, conectores de infra y plugins operativos.",
+      architecture:
+        "Ecosistema de plugins Java estilo monorepo con pipelines de build en Gradle, workflows de CI y commons compartidos para funcionalidades reutilizables.",
+      impact: "Permite entrega rapida de features y mantenimiento continuo en un entorno multijugador en crecimiento.",
+      stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
+      repo: "https://github.com/HytaliaNetwork/hytale-plugin-journey",
+      live: "https://www.hytalia.net",
+    },
+  ],
+  en: [
+    {
+      title: "StackWatch",
+      tag: "New",
+      type: "Monitoring platform",
+      headline: "Public status page + private admin panel + incident lifecycle for VPS monitoring.",
+      challenge:
+        "Build a self-hosted monitor that is easy to operate but still production ready: auth, rate limiting, historical metrics, and reliable checks.",
+      architecture:
+        "Next.js application with public/admin surfaces, PostgreSQL persistence, internal check runner, and worker loop for periodic checks and incident open/close logic.",
+      impact: "Turns infrastructure health into a clear product surface with real-time and historical status.",
+      stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
+      repo: "https://github.com/lucksgg7/stackwatch",
+      live: "https://status.lucasvicente.es/",
+    },
+    {
+      title: "MD-Ingelligence",
+      tag: "Private",
+      type: "MadridDigital / Internal tooling",
+      headline: "Internal UTS-MD platform for technical location (UT) search and faster operational queries.",
+      challenge:
+        "Handle large heterogeneous UT datasets with relevance ranking, filters, and low-latency responses for daily operational usage.",
+      architecture:
+        "Next.js 15 + React 19 + TypeScript, Node runtime API routes, PostgreSQL with local JSON fallback, admin analytics/feedback panel, and optional LLM routing for ATUSUDOC.",
+      impact:
+        "Centralizes operational criteria, reduces manual lookup friction, and provides a scalable base for analytics, feedback, and internal automation flows.",
+      stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
+    },
+    {
+      title: "Hytalia Web",
+      tag: "Production",
+      type: "Community platform / Infra",
+      headline: "Main frontend for Hytalia Network with auth, admin panel, leaderboards, store, and community modules.",
+      challenge:
+        "Sustain continuous feature delivery while migrating legacy paths toward a unified internal API model.",
+      architecture:
+        "Next.js App Router + NextAuth (Discord), mixed transitional architecture (api-internal + legacy DB paths), deployed with Docker/GHCR/Swarm.",
+      impact: "Enables continuous product evolution in production with reusable modules and deployment-ready infrastructure.",
+      stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
+      live: "https://www.hytalia.net",
+    },
+    {
+      title: "Hytale Plugin Journey",
+      tag: "Active",
+      type: "Game server / Java ecosystem",
+      headline: "Large plugin suite for Hytale server operations, gameplay systems, and tooling.",
+      challenge:
+        "Coordinate many modules and fast iteration cycles across gameplay, infra connectors, and operational plugins.",
+      architecture:
+        "Java plugin ecosystem in a monorepo-style structure with Gradle build pipelines, CI workflows, and shared commons for reusable server features.",
+      impact: "Enables fast feature delivery and continuous maintenance for a growing multiplayer environment.",
+      stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
+      repo: "https://github.com/HytaliaNetwork/hytale-plugin-journey",
+      live: "https://www.hytalia.net",
+    },
+  ],
+};
 
 const stackByCategory = [
   {
@@ -117,23 +192,17 @@ const copy = {
   es: {
     navProjects: "Casos",
     navProcess: "Metodo",
-    navHiring: "Hiring",
+    navHiring: "Contratacion",
     openToWork: "Disponible para remoto o hibrido",
-    eyebrow: "Full-stack engineer con foco en sistemas reales",
+    eyebrow: "Ingeniero full-stack con foco en sistemas reales",
     title: "Construyo software que mejora operaciones y escala sin romperse.",
     intro:
-      "Diseno y entrego productos tecnicos end-to-end: frontend, backend, automatizacion, infraestructura y despliegue. Mi foco es impacto real y mantenibilidad.",
+      "Diseno y entrego productos tecnicos de extremo a extremo: frontend, backend, automatizacion, infraestructura y despliegue. Mi foco es impacto real y mantenibilidad.",
     ctaProjects: "Ver casos",
     ctaContact: "Contactar",
     ctaGitHub: "Github",
-    proofTitle: "Senales que importan a reclutadores y equipos",
-    proofItems: [
-      { label: "Ownership", value: "End-to-end" },
-      { label: "Entorno", value: "Produccion" },
-      { label: "Especialidad", value: "Automation + Infra" },
-      { label: "Modo", value: "Build / Operate / Improve" },
-    ],
-    featuredTitle: "Featured Case Studies",
+    featuredLabel: "Casos",
+    featuredTitle: "Casos destacados",
     featuredSubtitle: "Cada proyecto esta presentado con reto, arquitectura e impacto.",
     challenge: "Reto",
     architecture: "Arquitectura",
@@ -141,6 +210,7 @@ const copy = {
     stack: "Stack",
     viewRepo: "Ver repo",
     viewLive: "Ver online",
+    processLabel: "Metodo",
     processTitle: "Como trabajo para entregar valor rapido y estable",
     processItems: [
       "Empiezo por problema de negocio y criterio de exito medible.",
@@ -148,32 +218,31 @@ const copy = {
       "Automatizo despliegues y operaciones repetitivas desde el inicio.",
       "Priorizo observabilidad y fiabilidad en produccion.",
     ],
-    hiringTitle: "Si buscas alguien que tome ownership tecnico real",
+    toolingLabel: "Herramientas",
+    stackTitle: "Stack tecnico",
+    stackSubtitle: "herramientas usadas en producto, backend e infraestructura.",
+    hiringBadge: "Contratacion",
+    hiringTitle: "Si buscas alguien que asuma responsabilidad tecnica real",
     hiringText:
       "Estoy abierto a freelance, contrato o full-time. Puedo entrar en proyectos existentes o construir desde cero con enfoque de producto y operaciones.",
     hiringPoints: ["Rapido en ejecucion", "Solido en produccion", "Comunicacion clara con negocio y equipo"],
     sendEmail: "Enviar email",
+    emailSubject: "Conversacion de contratacion",
   },
   en: {
     navProjects: "Cases",
     navProcess: "Process",
     navHiring: "Hiring",
-    openToWork: "Open to remote or hybrid roles",
+    openToWork: "Open to remote or hybrid",
     eyebrow: "Full-stack engineer focused on real-world systems",
     title: "I build software that improves operations and scales without breaking.",
     intro:
-      "I design and ship end-to-end technical products: frontend, backend, automation, infrastructure, and deployment. My focus is measurable impact and maintainability.",
+      "I design and ship end-to-end technical products: frontend, backend, automation, infrastructure, and deployment. My focus is real impact and maintainability.",
     ctaProjects: "View cases",
     ctaContact: "Contact",
     ctaGitHub: "Github",
-    proofTitle: "Signals recruiters and teams actually care about",
-    proofItems: [
-      { label: "Ownership", value: "End-to-end" },
-      { label: "Environment", value: "Production" },
-      { label: "Specialty", value: "Automation + Infra" },
-      { label: "Mode", value: "Build / Operate / Improve" },
-    ],
-    featuredTitle: "Featured Case Studies",
+    featuredLabel: "Case studies",
+    featuredTitle: "Featured cases",
     featuredSubtitle: "Each project is presented by challenge, architecture, and impact.",
     challenge: "Challenge",
     architecture: "Architecture",
@@ -181,24 +250,31 @@ const copy = {
     stack: "Stack",
     viewRepo: "Open repo",
     viewLive: "Open live",
+    processLabel: "Process",
     processTitle: "How I work to deliver value fast and reliably",
     processItems: [
-      "Start from business problem and measurable success criteria.",
-      "Design architecture simple for now, extensible for later.",
-      "Automate deploy and repetitive operations from day one.",
+      "Start from the business problem and measurable success criteria.",
+      "Design architecture simple for today and extensible for tomorrow.",
+      "Automate deploys and repetitive operations from day one.",
       "Prioritize observability and production reliability.",
     ],
+    toolingLabel: "Tooling",
+    stackTitle: "Tech stack",
+    stackSubtitle: "tools used across product, backend, and infrastructure.",
+    hiringBadge: "Hiring",
     hiringTitle: "If you need someone with real technical ownership",
     hiringText:
-      "Open to freelance, contract, or full-time opportunities. I can join existing systems or build from scratch with product and operations mindset.",
-    hiringPoints: ["Fast execution", "Production reliability", "Clear communication with product and team"],
+      "I am open to freelance, contract, or full-time roles. I can join existing systems or build from scratch with a product and operations mindset.",
+    hiringPoints: ["Fast execution", "Production reliability", "Clear communication with business and team"],
     sendEmail: "Send email",
+    emailSubject: "Hiring conversation",
   },
 } as const;
 
 function App() {
   const [lang, setLang] = useState<Locale>("es");
   const t = copy[lang];
+  const projects = projectsByLocale[lang];
 
   const skillsCount = useMemo(() => stackByCategory.reduce((acc, group) => acc + group.items.length, 0), []);
 
@@ -213,16 +289,16 @@ function App() {
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-24 pt-6 sm:px-6 lg:px-8">
         <header className="border-y border-white/20 bg-black/35 px-3 py-3 backdrop-blur-xl">
           <nav className="flex items-center justify-between gap-3 text-sm text-white/80">
-            <a href="#inicio" className="flex items-center gap-2 px-1 py-2 text-white">
+            <a href="#home" className="flex items-center gap-2 px-1 py-2 text-white">
               <img src="/favicon/favicon-32x32.png" alt="Lucas Vicente logo" className="h-6 w-6 object-contain" />
               <span className="font-semibold tracking-[0.1em]">lucasvicente.es</span>
             </a>
 
             <div className="hidden items-center gap-6 sm:flex">
-              <a href="#casos" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
+              <a href="#projects" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
                 {t.navProjects}
               </a>
-              <a href="#metodo" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
+              <a href="#process" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
                 {t.navProcess}
               </a>
               <a href="#hiring" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
@@ -260,8 +336,8 @@ function App() {
           </nav>
         </header>
 
-        <main id="inicio" className="pt-16">
-          <section className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+        <main id="home" className="pt-16">
+          <section>
             <div>
               <p className="mb-4 inline-flex items-center gap-2 border border-emerald-300/40 bg-emerald-500/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-emerald-100">
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -278,7 +354,7 @@ function App() {
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
-                  href="#casos"
+                  href="#projects"
                   className="inline-flex items-center gap-2 border border-white/25 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/20"
                 >
                   {t.ctaProjects}
@@ -301,25 +377,12 @@ function App() {
                 </a>
               </div>
             </div>
-
-            <aside className="border-l border-white/20 pl-5">
-              <p className="text-xs uppercase tracking-[0.22em] text-white/60">Proof</p>
-              <h2 className="mt-2 text-base font-semibold text-white/90">{t.proofTitle}</h2>
-              <div className="mt-4 space-y-3">
-                {t.proofItems.map((item) => (
-                  <div key={item.label} className="border-b border-white/10 pb-2">
-                    <p className="text-xs uppercase tracking-wide text-white/55">{item.label}</p>
-                    <p className="text-lg font-semibold text-white">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-            </aside>
           </section>
 
-          <section id="casos" className="mt-20">
+          <section id="projects" className="mt-20">
             <div className="mb-7 flex flex-wrap items-end justify-between gap-3 border-b border-white/20 pb-3">
               <div>
-                <p className="text-xs uppercase tracking-[0.24em] text-cyan-200/80">Case studies</p>
+                <p className="text-xs uppercase tracking-[0.24em] text-cyan-200/80">{t.featuredLabel}</p>
                 <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">{t.featuredTitle}</h2>
               </div>
               <p className="max-w-xl text-sm text-white/70">{t.featuredSubtitle}</p>
@@ -391,9 +454,9 @@ function App() {
             </div>
           </section>
 
-          <section id="metodo" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
+          <section id="process" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
             <article className="border border-white/20 bg-black/30 p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">Method</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">{t.processLabel}</p>
               <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.processTitle}</h2>
 
               <ol className="mt-5 space-y-3 text-sm text-white/80">
@@ -407,9 +470,11 @@ function App() {
             </article>
 
             <article className="border border-white/20 bg-black/30 p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">Tooling</p>
-              <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">Tech Stack</h2>
-              <p className="mt-2 text-xs text-white/60">{skillsCount} herramientas usadas en producto, backend e infraestructura.</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">{t.toolingLabel}</p>
+              <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.stackTitle}</h2>
+              <p className="mt-2 text-xs text-white/60">
+                {skillsCount} {t.stackSubtitle}
+              </p>
 
               <div className="mt-5 space-y-4">
                 {stackByCategory.map((group) => (
@@ -437,7 +502,7 @@ function App() {
               <div>
                 <p className="inline-flex items-center gap-2 border border-white/20 bg-black/30 px-3 py-1 text-xs uppercase tracking-[0.16em] text-white/80">
                   <BriefcaseBusiness className="h-3.5 w-3.5" />
-                  Hiring
+                  {t.hiringBadge}
                 </p>
                 <h2 className="mt-4 text-2xl font-semibold sm:text-3xl">{t.hiringTitle}</h2>
                 <p className="mt-3 max-w-3xl text-white/75">{t.hiringText}</p>
@@ -452,7 +517,7 @@ function App() {
 
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="mailto:lucasvicentecerri6@gmail.com?subject=Hiring%20conversation&body=Hola%20Lucas%2C%20quiero%20hablar%20sobre%20una%20oportunidad..."
+                  href={`mailto:lucasvicentecerri6@gmail.com?subject=${encodeURIComponent(t.emailSubject)}&body=Hola%20Lucas%2C%20quiero%20hablar%20sobre%20una%20oportunidad...`}
                   className="inline-flex items-center gap-2 border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
                 >
                   <Mail className="h-4 w-4" />
