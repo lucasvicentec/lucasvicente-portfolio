@@ -46,5 +46,5 @@ npm run build
 
 ## Contacto
 
-- GitHub: `https://github.com/lucksgg7`
+- Email: `contacto@lucasvicente.es`
 - LinkedIn: `https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/`
