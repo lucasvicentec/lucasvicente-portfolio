@@ -10,7 +10,6 @@ export interface InteractiveNebulaShaderProps {
 
 /**
  * Full-screen nebula shader background.
- * Props drive three GLSL uniforms.
  */
 export function InteractiveNebulaShader({
   hasActiveReminders = false,
@@ -19,23 +18,13 @@ export function InteractiveNebulaShader({
   className = "",
 }: InteractiveNebulaShaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-
-  useEffect(() => {
-    const mat = materialRef.current;
-    if (mat) {
-      mat.uniforms.hasActiveReminders.value = hasActiveReminders;
-      mat.uniforms.hasUpcomingReminders.value = hasUpcomingReminders;
-      mat.uniforms.disableCenterDimming.value = disableCenterDimming;
-    }
-  }, [hasActiveReminders, hasUpcomingReminders, disableCenterDimming]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -118,7 +107,6 @@ export function InteractiveNebulaShader({
     };
 
     const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
-    materialRef.current = material;
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
     scene.add(mesh);
 
@@ -153,7 +141,7 @@ export function InteractiveNebulaShader({
       mesh.geometry.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [disableCenterDimming, hasActiveReminders, hasUpcomingReminders]);
 
   return (
     <div

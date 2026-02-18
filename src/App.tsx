@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ArrowUpRight, Linkedin, Mail, Sparkles } from "lucide-react";
+import { lazy, Suspense, useMemo, useState } from "react";
+import { ArrowUpRight, BriefcaseBusiness, Github, Linkedin, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import {
   SiDocker,
   SiGithubactions,
@@ -15,30 +15,61 @@ import {
   SiTypescript,
   SiVite,
 } from "react-icons/si";
-import { InteractiveNebulaShader } from "@/components/ui/liquid-shader";
 
-const projects = [
+const InteractiveNebulaShader = lazy(() =>
+  import("@/components/ui/liquid-shader").then((module) => ({ default: module.InteractiveNebulaShader })),
+);
+
+type Locale = "es" | "en";
+
+type Project = {
+  title: string;
+  tag: string;
+  type: string;
+  headline: string;
+  challenge: string;
+  architecture: string;
+  impact: string;
+  stack: string;
+  repo?: string;
+  live?: string;
+};
+
+const projects: Project[] = [
   {
-    title: "MD-Ingelligence",
-    problem: "Centralizar consulta de UT y reducir tiempo operativo en busquedas manuales.",
-    solution: "Plataforma con busqueda inteligente, utilidades SAP y flujos orientados a operacion real.",
-    stack: "Next.js, TypeScript, PostgreSQL, Tailwind, APIs",
-    challenge: "Normalizar datos heterogeneos y mantener respuesta rapida con filtros complejos.",
-    impact: "Mejora de productividad y menor friccion en tareas repetitivas de operacion.",
-    learned: "Disenar producto tecnico con foco en uso diario y mantenibilidad.",
-    type: "Automation / Integrations",
-    href: "http://md.lucasvicente.es/",
+    title: "StackWatch",
+    tag: "New",
+    type: "Monitoring Platform",
+    headline: "Public status page + private admin + incident lifecycle for VPS monitoring.",
+    challenge:
+      "Build a self-hosted monitor that is easy to run but still production ready: auth, rate-limit, historical metrics, and reliable checks.",
+    architecture:
+      "Next.js app with public/admin surfaces, PostgreSQL persistence, internal check runner, and worker loop for periodic checks and incident open/close logic.",
+    impact: "Turns infrastructure health into a clear product surface with real-time state and historical context.",
+    stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
+    repo: "https://github.com/lucksgg7/stackwatch",
   },
   {
-    title: "Hytalia (www.hytalia.net)",
-    problem: "Construir ecosistema tecnico completo para una network con operaciones continuas.",
-    solution: "Infraestructura, web, tienda, APIs y paneles internos conectados entre si.",
-    stack: "TypeScript, Python, Nginx, Docker, Redis, PostgreSQL",
-    challenge: "Coordinar sistemas internos con requisitos de disponibilidad y evolucion constante.",
-    impact: "Base tecnica escalable para producto, gestion interna y crecimiento de plataforma.",
-    learned: "Pensar arquitectura como sistema completo, no como piezas aisladas.",
+    title: "MD-Ingelligence",
+    tag: "Production",
+    type: "Automation / Integrations",
+    headline: "Operational platform to reduce manual UT searches and repetitive internal tasks.",
+    challenge: "Normalize heterogeneous data while keeping fast response times across complex filters.",
+    architecture: "Product-oriented platform with focused utilities, SAP-related workflows, and maintainable backend logic.",
+    impact: "Lower friction for daily operations and better throughput in repetitive processes.",
+    stack: "Next.js, TypeScript, PostgreSQL, Tailwind, APIs",
+    live: "http://md.lucasvicente.es/",
+  },
+  {
+    title: "Hytalia",
+    tag: "Production",
     type: "Network / Infrastructure",
-    href: "https://www.hytalia.net",
+    headline: "End-to-end technical ecosystem: web, store, APIs, infra, and internal management tools.",
+    challenge: "Coordinate multiple systems with evolving requirements and continuous availability needs.",
+    architecture: "Unified platform design connecting product, internal operations, and deployment infrastructure.",
+    impact: "Scalable technical base for platform growth and continuous product evolution.",
+    stack: "TypeScript, Python, Nginx, Docker, Redis, PostgreSQL",
+    live: "https://www.hytalia.net",
   },
 ];
 
@@ -73,162 +104,120 @@ const stackByCategory = [
   },
 ];
 
+const copy = {
+  es: {
+    navProjects: "Casos",
+    navProcess: "Metodo",
+    navHiring: "Hiring",
+    openToWork: "Disponible para remoto o hibrido",
+    eyebrow: "Full-stack engineer con foco en sistemas reales",
+    title: "Construyo software que mejora operaciones y escala sin romperse.",
+    intro:
+      "Diseño y entrego productos tecnicos end-to-end: frontend, backend, automatizacion, infraestructura y despliegue. Mi foco es impacto real y mantenibilidad.",
+    ctaProjects: "Ver casos destacados",
+    ctaContact: "Contactar",
+    ctaGitHub: "Github",
+    proofTitle: "Senales que importan a reclutadores y equipos",
+    proofItems: [
+      { label: "Ownership", value: "End-to-end" },
+      { label: "Entorno", value: "Produccion" },
+      { label: "Especialidad", value: "Automation + Infra" },
+      { label: "Modo", value: "Build / Operate / Improve" },
+    ],
+    featuredTitle: "Featured Case Studies",
+    featuredSubtitle: "Cada proyecto esta presentado con reto, arquitectura e impacto.",
+    challenge: "Reto",
+    architecture: "Arquitectura",
+    impact: "Impacto",
+    stack: "Stack",
+    viewRepo: "Ver repo",
+    viewLive: "Ver online",
+    processTitle: "Como trabajo para entregar valor rapido y estable",
+    processItems: [
+      "Empiezo por problema de negocio y criterio de exito medible.",
+      "Diseño arquitectura simple para hoy, extensible para manana.",
+      "Automatizo despliegues y operaciones repetitivas desde el inicio.",
+      "Priorizo observabilidad y fiabilidad en produccion.",
+    ],
+    hiringTitle: "Si buscas alguien que tome ownership tecnico real",
+    hiringText:
+      "Estoy abierto a freelance, contrato o full-time. Puedo entrar en proyectos existentes o construir desde cero con enfoque de producto y operaciones.",
+    hiringPoints: ["Rapido en ejecucion", "Solido en produccion", "Comunicacion clara con negocio y equipo"],
+    hireNow: "Hablemos",
+    sendEmail: "Enviar email",
+  },
+  en: {
+    navProjects: "Cases",
+    navProcess: "Process",
+    navHiring: "Hiring",
+    openToWork: "Open to remote or hybrid roles",
+    eyebrow: "Full-stack engineer focused on real-world systems",
+    title: "I build software that improves operations and scales without breaking.",
+    intro:
+      "I design and ship end-to-end technical products: frontend, backend, automation, infrastructure, and deployment. My focus is measurable impact and maintainability.",
+    ctaProjects: "View featured cases",
+    ctaContact: "Contact",
+    ctaGitHub: "Github",
+    proofTitle: "Signals recruiters and teams actually care about",
+    proofItems: [
+      { label: "Ownership", value: "End-to-end" },
+      { label: "Environment", value: "Production" },
+      { label: "Specialty", value: "Automation + Infra" },
+      { label: "Mode", value: "Build / Operate / Improve" },
+    ],
+    featuredTitle: "Featured Case Studies",
+    featuredSubtitle: "Each project is presented by challenge, architecture, and impact.",
+    challenge: "Challenge",
+    architecture: "Architecture",
+    impact: "Impact",
+    stack: "Stack",
+    viewRepo: "Open repo",
+    viewLive: "Open live",
+    processTitle: "How I work to deliver value fast and reliably",
+    processItems: [
+      "Start from business problem and measurable success criteria.",
+      "Design architecture simple for now, extensible for later.",
+      "Automate deploy and repetitive operations from day one.",
+      "Prioritize observability and production reliability.",
+    ],
+    hiringTitle: "If you need someone with real technical ownership",
+    hiringText:
+      "Open to freelance, contract, or full-time opportunities. I can join existing systems or build from scratch with product and operations mindset.",
+    hiringPoints: ["Fast execution", "Production reliability", "Clear communication with product and team"],
+    hireNow: "Let us talk",
+    sendEmail: "Send email",
+  },
+} as const;
+
 function App() {
-  const [lang, setLang] = useState<"es" | "en">("es");
-  const [commitStats, setCommitStats] = useState<{ total: number | null; month: number | null }>({
-    total: null,
-    month: null,
-  });
-  const t =
-    lang === "es"
-      ? {
-          projects: "Proyectos",
-          contact: "Contacto",
-          github: "Github",
-          hey: "Hey, soy Lucas (Lucks)",
-          title: "Ingeniero de software enfocado en automatizacion, infraestructura y sistemas reales.",
-          description:
-            "Desarrollo sistemas internos, automatizaciones y APIs para proyectos que requieren estabilidad y evolucion constante.",
-          current:
-            "Proyecto actual: Hytalia (Network + Sistemas propios) y construyendo en UEFN (Unreal Engine for Fortnite)",
-          total: "Commits totales",
-          month: "Commits este mes",
-          stack: "Stack Tecnico",
-          stackHint: "Stack agrupado por areas para reflejar criterio arquitectonico.",
-          viewProjects: "Ver proyectos",
-          goGithub: "Ir a Github",
-          publicProjects: "Proyectos publicos",
-          seeProject: "Ver proyecto",
-          consistency: "Consistencia diaria en desarrollo y contribucion activa.",
-          problem: "Problema",
-          solution: "Solucion",
-          usedStack: "Stack usado",
-          challenge: "Reto tecnico",
-          impact: "Impacto",
-          learned: "Aprendizaje",
-          workTitle: "Como trabajo",
-          workItems: [
-            "Arquitectura clara y mantenible",
-            "Automatizacion de procesos repetitivos",
-            "Infraestructura reproducible",
-            "Iteracion rapida con foco en estabilidad",
-          ],
-          learningTitle: "Actualmente aprendiendo",
-          learningItems: [
-            "Escalabilidad backend para cargas reales",
-            "Sistemas distribuidos y eventos",
-            "Mejoras de DX para herramientas internas",
-          ],
-          contactTitle: "Contacto",
-          contactText:
-            "Abierto a oportunidades remotas o hibridas (freelance, contrato o full-time). Si quieres colaborar o hablar de un proyecto, escribeme.",
-          sendEmail: "Enviar email",
-        }
-      : {
-          projects: "Projects",
-          contact: "Contact",
-          github: "Github",
-          hey: "Hey, I'm Lucas (Lucks)",
-          title: "Software engineer focused on automation, infrastructure, and real-world systems.",
-          description:
-            "I build internal systems, automations, and APIs for projects that need reliability and long-term scalability.",
-          current:
-            "Current project: Hytalia (Network + internal systems) and building in UEFN (Unreal Engine for Fortnite)",
-          total: "Total commits",
-          month: "Commits this month",
-          stack: "Tech Stack",
-          stackHint: "Stack grouped by area to show architectural ownership.",
-          viewProjects: "View projects",
-          goGithub: "Open Github",
-          publicProjects: "Public projects",
-          seeProject: "View project",
-          consistency: "Daily consistency in development and active contributions.",
-          problem: "Problem",
-          solution: "Solution",
-          usedStack: "Stack used",
-          challenge: "Technical challenge",
-          impact: "Impact",
-          learned: "What I learned",
-          workTitle: "How I work",
-          workItems: [
-            "Clear, maintainable architecture",
-            "Automation of repetitive workflows",
-            "Reproducible infrastructure",
-            "Fast iteration with reliability in mind",
-          ],
-          learningTitle: "Currently learning",
-          learningItems: [
-            "Backend scalability under real load",
-            "Distributed and event-driven systems",
-            "Developer experience for internal tooling",
-          ],
-          contactTitle: "Contact",
-          contactText:
-            "Open to remote or hybrid opportunities (freelance, contract, or full-time). If you want to collaborate or discuss a project, email me.",
-          sendEmail: "Send email",
-        };
+  const [lang, setLang] = useState<Locale>("es");
+  const t = copy[lang];
 
-  useEffect(() => {
-    const loadCommits = async () => {
-      try {
-        const res = await fetch("https://github-contributions-api.jogruber.de/v4/lucksgg7");
-        if (!res.ok) return;
-
-        const data = (await res.json()) as {
-          total: Record<string, number>;
-          contributions: Array<{ date: string; count: number }>;
-        };
-
-        const now = new Date();
-        const y = now.getUTCFullYear();
-        const m = now.getUTCMonth();
-
-        const total = Object.values(data.total ?? {}).reduce((acc, value) => acc + value, 0);
-        const month = (data.contributions ?? []).reduce((acc, item) => {
-          const d = new Date(`${item.date}T00:00:00Z`);
-          if (d.getUTCFullYear() === y && d.getUTCMonth() === m) return acc + item.count;
-          return acc;
-        }, 0);
-
-        setCommitStats({ total, month });
-      } catch {
-        setCommitStats({ total: null, month: null });
-      }
-    };
-
-    loadCommits();
-  }, []);
+  const skillsCount = useMemo(() => stackByCategory.reduce((acc, group) => acc + group.items.length, 0), []);
 
   return (
-    <div className="relative isolate min-h-screen overflow-hidden bg-background">
-      <InteractiveNebulaShader className="opacity-95" />
+    <div className="relative isolate min-h-screen overflow-hidden bg-background text-white">
+      <Suspense fallback={null}>
+        <InteractiveNebulaShader className="opacity-95" />
+      </Suspense>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col px-4 pb-24 pt-6 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-24 pt-6 sm:px-6 lg:px-8">
         <header className="mx-auto w-full max-w-5xl rounded-full border border-white/15 bg-black/55 p-2 backdrop-blur-xl">
           <nav className="flex items-center justify-between gap-3 text-sm text-white/80">
             <a href="#inicio" className="flex items-center gap-2 rounded-full px-3 py-2 text-white">
-              <img
-                src="/favicon/favicon-32x32.png"
-                alt="Lucas Vicente logo"
-                className="h-6 w-6 rounded-sm object-contain"
-              />
+              <img src="/favicon/favicon-32x32.png" alt="Lucas Vicente logo" className="h-6 w-6 rounded-sm object-contain" />
               <span className="font-semibold tracking-wide">lucasvicente.es</span>
             </a>
 
             <div className="hidden items-center gap-1 sm:flex">
-              <a href="#proyectos" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">
-                {t.projects}
+              <a href="#casos" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">
+                {t.navProjects}
               </a>
-              <a href="#contacto" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">
-                {t.contact}
+              <a href="#metodo" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">
+                {t.navProcess}
               </a>
-              <a
-                href="https://github.com/lucksgg7"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
-              >
-                {t.github}
+              <a href="#hiring" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">
+                {t.navHiring}
               </a>
             </div>
 
@@ -237,18 +226,14 @@ function App() {
                 <button
                   type="button"
                   onClick={() => setLang("es")}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
-                    lang === "es" ? "bg-white/20 text-white" : "text-white/70"
-                  }`}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${lang === "es" ? "bg-white/20 text-white" : "text-white/70"}`}
                 >
                   ES
                 </button>
                 <button
                   type="button"
                   onClick={() => setLang("en")}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
-                    lang === "en" ? "bg-white/20 text-white" : "text-white/70"
-                  }`}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${lang === "en" ? "bg-white/20 text-white" : "text-white/70"}`}
                 >
                   EN
                 </button>
@@ -268,54 +253,143 @@ function App() {
 
         <main id="inicio" className="pt-20">
           <section className="max-w-4xl">
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/80">
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/35 bg-emerald-500/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-emerald-200">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              {t.openToWork}
+            </p>
+
+            <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.18em] text-white/80">
               <Sparkles className="h-3.5 w-3.5" />
-              {t.hey}
+              {t.eyebrow}
             </p>
 
             <h1 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">{t.title}</h1>
 
-            <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">
-              {t.description}
-              <br />
-              {t.current}
-            </p>
+            <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">{t.intro}</p>
 
-            <div className="mt-6">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-200 shadow-[0_0_18px_rgba(16,185,129,0.22)]">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
-                </span>
-                {t.total}: {commitStats.total ?? "...."}
-              </span>
-              <span className="ml-2 mt-2 inline-flex items-center gap-2 rounded-full border border-emerald-300/35 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-100 shadow-[0_0_16px_rgba(16,185,129,0.16)] sm:mt-0">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-65" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
-                </span>
-                {t.month}: {commitStats.month ?? "...."}
-              </span>
-              <p className="mt-3 text-sm text-white/70">
-                {t.consistency}{" "}
-                <a
-                  href="https://github.com/lucksgg7"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1 font-medium text-emerald-200 hover:text-emerald-100"
-                >
-                  Github <ArrowUpRight className="h-3.5 w-3.5" />
-                </a>
-              </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#casos"
+                className="rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
+              >
+                {t.ctaProjects}
+              </a>
+              <a
+                href="#hiring"
+                className="rounded-full border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+              >
+                {t.ctaContact}
+              </a>
+              <a
+                href="https://github.com/lucksgg7"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+              >
+                {t.ctaGitHub}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
             </div>
+          </section>
 
-            <div className="mt-8">
-              <p className="mb-3 text-sm font-semibold text-white/90">{t.stack}</p>
-              <p className="mb-4 text-xs text-white/60">{t.stackHint}</p>
-              <div className="grid gap-4 sm:grid-cols-3">
+          <section className="mt-12">
+            <h2 className="text-base font-semibold text-white/90">{t.proofTitle}</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {t.proofItems.map((item) => (
+                <article key={item.label} className="rounded-2xl border border-white/15 bg-white/5 p-4 backdrop-blur-sm">
+                  <p className="text-xs uppercase tracking-wide text-white/60">{item.label}</p>
+                  <p className="mt-2 text-lg font-semibold text-white">{item.value}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section id="casos" className="mt-16">
+            <h2 className="text-2xl font-semibold sm:text-3xl">{t.featuredTitle}</h2>
+            <p className="mt-2 max-w-2xl text-sm text-white/70">{t.featuredSubtitle}</p>
+
+            <div className="mt-6 grid gap-6">
+              {projects.map((project) => (
+                <article
+                  key={project.title}
+                  className="overflow-hidden rounded-2xl border border-white/15 bg-card/75 shadow-glow backdrop-blur-sm"
+                >
+                  <div className="flex flex-wrap items-center gap-3 border-b border-white/10 bg-white/[0.03] px-5 py-4">
+                    <span className="rounded-full border border-cyan-300/35 bg-cyan-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">
+                      {project.tag}
+                    </span>
+                    <span className="text-xs uppercase tracking-wide text-white/60">{project.type}</span>
+                  </div>
+
+                  <div className="space-y-4 p-5">
+                    <div>
+                      <h3 className="text-xl font-semibold text-card-foreground">{project.title}</h3>
+                      <p className="mt-2 text-sm text-white/80">{project.headline}</p>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-3">
+                      <p className="rounded-xl border border-white/10 bg-white/[0.02] p-3 text-sm text-white/75">
+                        <span className="font-semibold text-white/90">{t.challenge}:</span> {project.challenge}
+                      </p>
+                      <p className="rounded-xl border border-white/10 bg-white/[0.02] p-3 text-sm text-white/75">
+                        <span className="font-semibold text-white/90">{t.architecture}:</span> {project.architecture}
+                      </p>
+                      <p className="rounded-xl border border-white/10 bg-white/[0.02] p-3 text-sm text-white/75">
+                        <span className="font-semibold text-white/90">{t.impact}:</span> {project.impact}
+                      </p>
+                    </div>
+
+                    <p className="text-sm text-white/70">
+                      <span className="font-semibold text-white/90">{t.stack}:</span> {project.stack}
+                    </p>
+
+                    <div className="flex flex-wrap gap-3">
+                      {project.repo ? (
+                        <a
+                          href={project.repo}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+                        >
+                          <Github className="h-4 w-4" />
+                          {t.viewRepo}
+                        </a>
+                      ) : null}
+                      {project.live ? (
+                        <a
+                          href={project.live}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+                        >
+                          <ArrowUpRight className="h-4 w-4" />
+                          {t.viewLive}
+                        </a>
+                      ) : null}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section id="metodo" className="mt-16 grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6">
+              <h2 className="text-2xl font-semibold sm:text-3xl">{t.processTitle}</h2>
+              <ul className="mt-4 space-y-2 text-sm text-white/75">
+                {t.processItems.map((item) => (
+                  <li key={item}>- {item}</li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6">
+              <h2 className="text-2xl font-semibold sm:text-3xl">Tech Stack</h2>
+              <p className="mt-2 text-xs text-white/60">{skillsCount} herramientas usadas en producto, backend e infraestructura.</p>
+              <div className="mt-4 grid gap-4">
                 {stackByCategory.map((group) => (
-                  <div key={group.category} className="rounded-2xl border border-white/15 bg-white/5 p-4">
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-white/70">{group.category}</p>
+                  <div key={group.category} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">{group.category}</p>
                     <div className="flex flex-wrap gap-2">
                       {group.items.map(({ label, icon: Icon }) => (
                         <span
@@ -330,107 +404,26 @@ function App() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#proyectos"
-                className="rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
-              >
-                {t.viewProjects}
-              </a>
-              <a
-                href="https://github.com/lucksgg7"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
-              >
-                {t.goGithub}
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
-            </div>
+            </article>
           </section>
 
-          <section id="proyectos" className="mt-16">
-            <h2 className="text-2xl font-semibold sm:text-3xl">{t.publicProjects}</h2>
-            <div className="mt-6 grid gap-6 md:grid-cols-2">
-              {projects.map((project) => (
-                <article
-                  key={project.title}
-                  className="group overflow-hidden rounded-2xl border border-white/15 bg-card/70 shadow-glow backdrop-blur-sm"
-                >
-                  <div className="relative h-40 overflow-hidden border-b border-white/10 bg-gradient-to-br from-cyan-500/20 via-sky-400/10 to-emerald-500/15">
-                    <div className="absolute -left-8 -top-8 h-24 w-24 rounded-full bg-cyan-400/20 blur-2xl" />
-                    <div className="absolute -right-8 -bottom-8 h-28 w-28 rounded-full bg-emerald-400/20 blur-2xl" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_45%)]" />
-                    <div className="relative flex h-full items-end p-5">
-                      <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
-                        {project.type}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="space-y-3 p-5">
-                    <h3 className="text-lg font-semibold text-card-foreground">{project.title}</h3>
-                    <div className="space-y-2 text-sm text-muted-foreground">
-                      <p>
-                        <span className="font-semibold text-white/85">{t.problem}:</span> {project.problem}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white/85">{t.solution}:</span> {project.solution}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white/85">{t.usedStack}:</span> {project.stack}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white/85">{t.challenge}:</span> {project.challenge}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white/85">{t.impact}:</span> {project.impact}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-white/85">{t.learned}:</span> {project.learned}
-                      </p>
-                    </div>
-                    <a
-                      href={project.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white"
-                    >
-                      {t.seeProject}
-                      <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                  </div>
-                </article>
+          <section id="hiring" className="mt-16 rounded-2xl border border-white/20 bg-white/[0.06] p-6 sm:p-8">
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.16em] text-white/80">
+              <BriefcaseBusiness className="h-3.5 w-3.5" />
+              Hiring
+            </p>
+            <h2 className="mt-4 text-2xl font-semibold sm:text-3xl">{t.hiringTitle}</h2>
+            <p className="mt-3 max-w-3xl text-white/75">{t.hiringText}</p>
+            <ul className="mt-4 flex flex-wrap gap-2 text-sm text-white/85">
+              {t.hiringPoints.map((point) => (
+                <li key={point} className="rounded-full border border-emerald-300/35 bg-emerald-500/10 px-3 py-1">
+                  {point}
+                </li>
               ))}
-            </div>
-          </section>
-
-          <section className="mt-16 grid gap-6 md:grid-cols-2">
-            <article className="rounded-2xl border border-white/15 bg-white/5 p-6">
-              <h2 className="text-2xl font-semibold sm:text-3xl">{t.workTitle}</h2>
-              <ul className="mt-4 space-y-2 text-sm text-white/75">
-                {t.workItems.map((item) => (
-                  <li key={item}>- {item}</li>
-                ))}
-              </ul>
-            </article>
-            <article className="rounded-2xl border border-white/15 bg-white/5 p-6">
-              <h2 className="text-2xl font-semibold sm:text-3xl">{t.learningTitle}</h2>
-              <ul className="mt-4 space-y-2 text-sm text-white/75">
-                {t.learningItems.map((item) => (
-                  <li key={item}>- {item}</li>
-                ))}
-              </ul>
-            </article>
-          </section>
-
-          <section id="contacto" className="mt-16">
-            <h2 className="text-2xl font-semibold sm:text-3xl">{t.contactTitle}</h2>
-            <p className="mt-3 max-w-2xl text-white/75">{t.contactText}</p>
-            <div className="mt-5 flex flex-wrap gap-3">
+            </ul>
+            <div className="mt-6 flex flex-wrap gap-3">
               <a
-                href="mailto:lucasvicentecerri6@gmail.com?subject=Contacto%20desde%20portfolio&body=Hola%20Lucas%2C%20te%20escribo%20porque..."
+                href="mailto:lucasvicentecerri6@gmail.com?subject=Hiring%20conversation&body=Hola%20Lucas%2C%20quiero%20hablar%20sobre%20una%20oportunidad..."
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
               >
                 <Mail className="h-4 w-4" />
@@ -444,6 +437,15 @@ function App() {
               >
                 <Linkedin className="h-4 w-4" />
                 LinkedIn
+              </a>
+              <a
+                href="https://github.com/lucksgg7"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+              >
+                <Github className="h-4 w-4" />
+                Github
               </a>
             </div>
           </section>
