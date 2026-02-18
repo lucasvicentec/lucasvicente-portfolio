@@ -344,14 +344,16 @@ function App() {
         <main id="home" className="pt-16">
           <section>
             <div>
-              <p className="mb-4 inline-flex items-center gap-2 border border-emerald-300/40 bg-emerald-500/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-emerald-100">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                {t.openToWork}
-              </p>
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <p className="inline-flex h-9 items-center gap-2 border border-emerald-300/40 bg-emerald-500/10 px-3 text-xs uppercase tracking-[0.2em] text-emerald-100">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  {t.openToWork}
+                </p>
 
-              <p className="mb-4 inline-flex items-center gap-2 border border-amber-300/40 bg-amber-500/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-amber-100">
-                {t.eyebrow}
-              </p>
+                <p className="inline-flex h-9 items-center gap-2 border border-amber-300/40 bg-amber-500/10 px-3 text-xs uppercase tracking-[0.18em] text-amber-100">
+                  {t.eyebrow}
+                </p>
+              </div>
 
               <h1 className="max-w-4xl text-balance text-4xl font-semibold leading-tight sm:text-6xl">{t.title}</h1>
               <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">{t.intro}</p>
@@ -359,14 +361,14 @@ function App() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href="#projects"
-                  className="inline-flex items-center gap-2 border border-white/25 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/20"
+                  className="inline-flex items-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_14px_rgba(16,185,129,0.28)] transition hover:bg-emerald-500/45"
                 >
                   {t.ctaProjects}
                   <ArrowRight className="h-4 w-4" />
                 </a>
                 <a
                   href="#hiring"
-                  className="border border-white/25 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+                  className="border border-emerald-200/35 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
                 >
                   {t.ctaContact}
                 </a>
@@ -394,18 +396,43 @@ function App() {
 
             <div className="space-y-8">
               {projects.map((project, index) => (
-                <article key={project.title} className="grid gap-4 border-l-2 border-white/25 pl-4 md:grid-cols-[160px_1fr] md:gap-6 md:pl-6">
+                <article
+                  key={project.title}
+                  className={`grid gap-4 border-l-2 pl-4 md:grid-cols-[160px_1fr] md:gap-6 md:pl-6 ${
+                    project.title === "StackWatch"
+                      ? "border-emerald-300/60"
+                      : "border-white/25"
+                  }`}
+                >
                   <div className="flex items-start justify-between md:block">
-                    <span className="inline-flex border border-white/20 bg-black/35 px-2 py-1 text-xs uppercase tracking-wide text-white/80">
+                    <span
+                      className={`inline-flex border px-2 py-1 text-xs uppercase tracking-wide ${
+                        project.title === "StackWatch"
+                          ? "border-emerald-300/45 bg-emerald-500/15 text-emerald-100"
+                          : "border-white/20 bg-black/35 text-white/80"
+                      }`}
+                    >
                       {project.tag}
                     </span>
                     <p className="text-xs uppercase tracking-[0.18em] text-white/50">{String(index + 1).padStart(2, "0")}</p>
                   </div>
 
-                  <div className="space-y-3 bg-black/25 p-4">
+                  <div
+                    className={`space-y-3 p-4 ${
+                      project.title === "StackWatch"
+                        ? "border border-emerald-300/25 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.20)]"
+                        : "bg-black/25"
+                    }`}
+                  >
                     <div className="flex flex-wrap items-center gap-3">
                       <h3 className="text-xl font-semibold text-card-foreground">{project.title}</h3>
-                      <span className="border border-cyan-300/35 bg-cyan-400/10 px-2 py-0.5 text-xs uppercase tracking-wide text-cyan-200">
+                      <span
+                        className={`border px-2 py-0.5 text-xs uppercase tracking-wide ${
+                          project.title === "StackWatch"
+                            ? "border-emerald-300/45 bg-emerald-500/15 text-emerald-100"
+                            : "border-cyan-300/35 bg-cyan-400/10 text-cyan-200"
+                        }`}
+                      >
                         {project.type}
                       </span>
                     </div>
@@ -460,13 +487,13 @@ function App() {
 
           <section id="process" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
             <article className="border border-white/20 bg-black/30 p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">{t.processLabel}</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-amber-200/85">{t.processLabel}</p>
               <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.processTitle}</h2>
 
               <ol className="mt-5 space-y-3 text-sm text-white/80">
                 {t.processItems.map((item, idx) => (
                   <li key={item} className="grid grid-cols-[28px_1fr] gap-3 border-t border-white/10 pt-3">
-                    <span className="text-sm font-semibold text-cyan-200">{idx + 1}.</span>
+                    <span className="text-sm font-semibold text-amber-200">{idx + 1}.</span>
                     <span>{item}</span>
                   </li>
                 ))}
