@@ -552,7 +552,7 @@ function App() {
 
               <div className="flex flex-wrap gap-3">
                 <a
-                  href={`mailto:lucasvicentecerri6@gmail.com?subject=${encodeURIComponent(t.emailSubject)}&body=Hola%20Lucas%2C%20quiero%20hablar%20sobre%20una%20oportunidad...`}
+                  href={`mailto:contacto@lucasvicente.es?subject=${encodeURIComponent(t.emailSubject)}&body=Hola%20Lucas%2C%20quiero%20hablar%20sobre%20una%20oportunidad...`}
                   className="inline-flex items-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_18px_rgba(16,185,129,0.35)] transition hover:bg-emerald-500/45"
                 >
                   <Mail className="h-4 w-4" />
