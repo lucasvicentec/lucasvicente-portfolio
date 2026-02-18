@@ -7,7 +7,6 @@ import {
   Linkedin,
   Mail,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import {
   SiDocker,
@@ -228,6 +227,9 @@ const copy = {
     hiringPoints: ["Rapido en ejecucion", "Solido en produccion", "Comunicacion clara con negocio y equipo"],
     sendEmail: "Enviar email",
     emailSubject: "Conversacion de contratacion",
+    portfolioSourceLabel: "Codigo de este portfolio",
+    portfolioSourceText: "Quieres revisar implementacion, estructura y despliegue de esta web?",
+    portfolioSourceCta: "Ver codigo fuente",
   },
   en: {
     navProjects: "Cases",
@@ -268,6 +270,9 @@ const copy = {
     hiringPoints: ["Fast execution", "Production reliability", "Clear communication with business and team"],
     sendEmail: "Send email",
     emailSubject: "Hiring conversation",
+    portfolioSourceLabel: "Portfolio source",
+    portfolioSourceText: "Want to review implementation, structure, and deployment of this site?",
+    portfolioSourceCta: "View source code",
   },
 } as const;
 
@@ -344,8 +349,7 @@ function App() {
                 {t.openToWork}
               </p>
 
-              <p className="mb-4 inline-flex items-center gap-2 border border-white/15 bg-black/35 px-3 py-1 text-xs uppercase tracking-[0.18em] text-white/80">
-                <Sparkles className="h-3.5 w-3.5" />
+              <p className="mb-4 inline-flex items-center gap-2 border border-amber-300/40 bg-amber-500/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-amber-100">
                 {t.eyebrow}
               </p>
 
@@ -497,10 +501,13 @@ function App() {
             </article>
           </section>
 
-          <section id="hiring" className="mt-20 border border-white/25 bg-[linear-gradient(120deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] p-6 sm:p-8">
+          <section
+            id="hiring"
+            className="mt-20 border border-emerald-300/40 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.30),transparent_45%),linear-gradient(120deg,rgba(6,20,16,0.90),rgba(4,16,12,0.92))] p-6 shadow-[0_0_35px_rgba(16,185,129,0.28)] sm:p-8"
+          >
             <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
-                <p className="inline-flex items-center gap-2 border border-white/20 bg-black/30 px-3 py-1 text-xs uppercase tracking-[0.16em] text-white/80">
+                <p className="inline-flex items-center gap-2 border border-emerald-300/45 bg-emerald-500/15 px-3 py-1 text-xs uppercase tracking-[0.16em] text-emerald-100">
                   <BriefcaseBusiness className="h-3.5 w-3.5" />
                   {t.hiringBadge}
                 </p>
@@ -508,7 +515,7 @@ function App() {
                 <p className="mt-3 max-w-3xl text-white/75">{t.hiringText}</p>
                 <ul className="mt-4 flex flex-wrap gap-2 text-sm text-white/85">
                   {t.hiringPoints.map((point) => (
-                    <li key={point} className="border border-emerald-300/35 bg-emerald-500/10 px-3 py-1">
+                    <li key={point} className="border border-emerald-300/50 bg-emerald-500/18 px-3 py-1 text-emerald-50">
                       {point}
                     </li>
                   ))}
@@ -518,7 +525,7 @@ function App() {
               <div className="flex flex-wrap gap-3">
                 <a
                   href={`mailto:lucasvicentecerri6@gmail.com?subject=${encodeURIComponent(t.emailSubject)}&body=Hola%20Lucas%2C%20quiero%20hablar%20sobre%20una%20oportunidad...`}
-                  className="inline-flex items-center gap-2 border border-white/20 bg-white/10 px-5 py-2.5 font-medium text-white transition hover:bg-white/15"
+                  className="inline-flex items-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_18px_rgba(16,185,129,0.35)] transition hover:bg-emerald-500/45"
                 >
                   <Mail className="h-4 w-4" />
                   {t.sendEmail}
@@ -527,7 +534,7 @@ function App() {
                   href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+                  className="inline-flex items-center gap-2 border border-emerald-200/35 bg-black/25 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
                 >
                   <Linkedin className="h-4 w-4" />
                   LinkedIn
@@ -536,7 +543,7 @@ function App() {
                   href="https://github.com/lucksgg7"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 border border-white/20 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+                  className="inline-flex items-center gap-2 border border-emerald-200/35 bg-black/25 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
                 >
                   <Github className="h-4 w-4" />
                   Github
@@ -544,6 +551,25 @@ function App() {
               </div>
             </div>
           </section>
+
+          <footer className="mt-14 border-t border-white/20 py-8 text-sm text-white/70">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-white/55">{t.portfolioSourceLabel}</p>
+                <p className="mt-1">{t.portfolioSourceText}</p>
+              </div>
+              <a
+                href="https://github.com/lucksgg7/lucasvicente-portfolio"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 border border-white/20 px-4 py-2 font-medium text-white transition hover:bg-white/10"
+              >
+                <Github className="h-4 w-4" />
+                {t.portfolioSourceCta}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
+          </footer>
         </main>
       </div>
     </div>
