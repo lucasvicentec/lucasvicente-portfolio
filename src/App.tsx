@@ -1009,8 +1009,8 @@ function App() {
             </div>
           </section>
 
-          <section id="process" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
-            <article className="border border-white/20 bg-black/30 p-6">
+          <section id="process" className="mt-20 grid gap-8 lg:grid-cols-2">
+            <article className="min-w-0 border border-white/20 bg-black/30 p-6">
               <p className="text-xs uppercase tracking-[0.2em] text-amber-200/85">{t.processLabel}</p>
               <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.processTitle}</h2>
 
@@ -1026,7 +1026,7 @@ function App() {
               </ol>
             </article>
 
-            <article className="border border-white/20 bg-black/30 p-6">
+            <article className="min-w-0 overflow-hidden border border-white/20 bg-black/30 p-6">
               <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">{t.toolingLabel}</p>
               <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.stackTitle}</h2>
               <p className="mt-2 text-xs text-white/60">
