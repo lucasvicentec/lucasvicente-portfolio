@@ -44,59 +44,68 @@ type Project = {
   live?: string;
 };
 
+const LINKS = {
+  githubProfile: "https://github.com/lucasvicentec",
+  githubStackWatch: "https://github.com/lucasvicentec/stackwatch",
+  githubPortfolio: "https://github.com/lucasvicentec/lucasvicente-portfolio",
+  linkedinProfile: "https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/",
+  statusPage: "https://status.lucasvicente.es/",
+  hytaliaSite: "https://www.hytalia.net",
+} as const;
+
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
     {
       title: "StackWatch",
       tag: "Nuevo",
-      type: "Plataforma de monitorizacion",
-      headline: "Pagina publica de estado + panel admin privado + ciclo de incidentes para monitorizacion VPS.",
+      type: "Plataforma de monitorización",
+      headline: "Página pública de estado + panel admin privado + ciclo de incidentes para monitorización de VPS.",
       challenge:
-        "Construir un monitor autohospedado facil de operar pero listo para produccion: auth, rate-limit, metricas historicas y checks fiables.",
+        "Construir un monitor autohospedado fácil de operar, pero listo para producción: auth, rate-limit, métricas históricas y checks fiables.",
       architecture:
-        "Aplicacion Next.js con superficies publica/admin, persistencia en PostgreSQL, check runner interno y worker para checks periodicos con logica de apertura/cierre de incidentes.",
-      impact: "Convierte la salud de infraestructura en una superficie clara de producto con estado en tiempo real e historico.",
+        "Aplicación en Next.js con superficies pública/admin, persistencia en PostgreSQL, check runner interno y worker para checks periódicos con lógica de apertura/cierre de incidentes.",
+      impact: "Convierte la salud de la infraestructura en una superficie clara de producto, con estado en tiempo real e histórico.",
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
-      repo: "https://github.com/lucksgg7/stackwatch",
-      live: "https://status.lucasvicente.es/",
+      repo: LINKS.githubStackWatch,
+      live: LINKS.statusPage,
     },
     {
       title: "MD-Ingelligence",
       tag: "Privado",
       type: "MadridDigital / Herramienta interna",
-      headline: "Plataforma interna UTS-MD para busqueda de ubicaciones tecnicas (UT) y aceleracion de consultas operativas.",
+      headline: "Plataforma interna UTS-MD para búsqueda de ubicaciones técnicas (UT) y aceleración de consultas operativas.",
       challenge:
-        "Gestionar datasets UT grandes y heterogeneos con ranking por relevancia, filtros y respuesta rapida para uso operativo diario.",
+        "Gestionar datasets UT grandes y heterogéneos con ranking por relevancia, filtros y respuesta rápida para uso operativo diario.",
       architecture:
-        "Next.js 15 + React 19 + TypeScript, API routes sobre runtime Node, PostgreSQL con fallback local JSON, panel admin con analitica/feedback y routing LLM opcional para ATUSUDOC.",
+        "Next.js 15 + React 19 + TypeScript, API routes sobre runtime Node, PostgreSQL con fallback local JSON, panel admin con analítica/feedback y routing LLM opcional para ATUSUDOC.",
       impact:
-        "Centraliza criterios operativos, reduce friccion en busquedas manuales y crea base escalable para analitica, feedback y flujos internos de automatizacion.",
+        "Centraliza criterios operativos, reduce fricción en búsquedas manuales y crea una base escalable para analítica, feedback y flujos internos de automatización.",
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
     },
     {
       title: "Hytalia Web",
       tag: "Produccion",
       type: "Plataforma de comunidad / Infra",
-      headline: "Frontend principal de Hytalia Network con auth, panel admin, leaderboards, tienda y modulos de comunidad.",
-      challenge: "Sostener entrega continua de funcionalidades mientras se migra codigo legado hacia un modelo unificado de API interna.",
+      headline: "Frontend principal de Hytalia Network con auth, panel admin, leaderboards, tienda y módulos de comunidad.",
+      challenge: "Sostener la entrega continua de funcionalidades mientras se migra código legado hacia un modelo unificado de API interna.",
       architecture:
         "Next.js App Router + NextAuth (Discord), arquitectura transicional mixta (api-internal + rutas legacy a DB), despliegue con Docker/GHCR/Swarm.",
-      impact: "Permite evolucion continua de producto en produccion con modulos reutilizables e infraestructura lista para despliegue.",
+      impact: "Permite evolución continua de producto en producción con módulos reutilizables e infraestructura lista para despliegue.",
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
-      live: "https://www.hytalia.net",
+      live: LINKS.hytaliaSite,
     },
     {
       title: "Hytale Plugin Journey",
       tag: "Activo",
       type: "Servidor de juego / Ecosistema Java",
-      headline: "Suite amplia de plugins para operacion de servidores Hytale, sistemas de jugabilidad y herramientas.",
-      challenge: "Coordinar muchos modulos y ciclos rapidos de iteracion entre gameplay, conectores de infra y plugins operativos.",
+      headline: "Suite amplia de plugins para operación de servidores Hytale, sistemas de jugabilidad y herramientas.",
+      challenge: "Coordinar muchos módulos y ciclos rápidos de iteración entre gameplay, conectores de infra y plugins operativos.",
       architecture:
         "Ecosistema de plugins Java estilo monorepo con pipelines de build en Gradle, workflows de CI y commons compartidos para funcionalidades reutilizables.",
-      impact: "Permite entrega rapida de features y mantenimiento continuo en un entorno multijugador en crecimiento.",
+      impact: "Permite una entrega rápida de features y mantenimiento continuo en un entorno multijugador en crecimiento.",
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
-      repo: "https://github.com/HytaliaNetwork/hytale-plugin-journey",
-      live: "https://www.hytalia.net",
+      repo: LINKS.githubProfile,
+      live: LINKS.hytaliaSite,
     },
   ],
   en: [
@@ -111,8 +120,8 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Next.js application with public/admin surfaces, PostgreSQL persistence, internal check runner, and worker loop for periodic checks and incident open/close logic.",
       impact: "Turns infrastructure health into a clear product surface with real-time and historical status.",
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
-      repo: "https://github.com/lucksgg7/stackwatch",
-      live: "https://status.lucasvicente.es/",
+      repo: LINKS.githubStackWatch,
+      live: LINKS.statusPage,
     },
     {
       title: "MD-Ingelligence",
@@ -138,7 +147,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Next.js App Router + NextAuth (Discord), mixed transitional architecture (api-internal + legacy DB paths), deployed with Docker/GHCR/Swarm.",
       impact: "Enables continuous product evolution in production with reusable modules and deployment-ready infrastructure.",
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
-      live: "https://www.hytalia.net",
+      live: LINKS.hytaliaSite,
     },
     {
       title: "Hytale Plugin Journey",
@@ -151,8 +160,8 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Java plugin ecosystem in a monorepo-style structure with Gradle build pipelines, CI workflows, and shared commons for reusable server features.",
       impact: "Enables fast feature delivery and continuous maintenance for a growing multiplayer environment.",
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
-      repo: "https://github.com/HytaliaNetwork/hytale-plugin-journey",
-      live: "https://www.hytalia.net",
+      repo: LINKS.githubProfile,
+      live: LINKS.hytaliaSite,
     },
   ],
 };
@@ -191,45 +200,45 @@ const stackByCategory = [
 const copy = {
   es: {
     navProjects: "Casos",
-    navProcess: "Metodo",
-    navHiring: "Contratacion",
-    openToWork: "Disponible para remoto o hibrido",
+    navProcess: "Método",
+    navHiring: "Contratación",
+    openToWork: "Disponible para remoto o híbrido",
     eyebrow: "Ingeniero full-stack con foco en sistemas reales",
     title: "Construyo software que mejora operaciones y escala sin romperse.",
     intro:
-      "Diseno y entrego productos tecnicos de extremo a extremo: frontend, backend, automatizacion, infraestructura y despliegue. Mi foco es impacto real y mantenibilidad.",
+      "Diseño y entrego productos técnicos de extremo a extremo: frontend, backend, automatización, infraestructura y despliegue. Mi foco es el impacto real y la mantenibilidad.",
     ctaProjects: "Ver casos",
     ctaContact: "Contactar",
-    ctaGitHub: "Github",
+    ctaGitHub: "GitHub",
     featuredLabel: "Casos",
     featuredTitle: "Casos destacados",
-    featuredSubtitle: "Cada proyecto esta presentado con reto, arquitectura e impacto.",
+    featuredSubtitle: "Cada proyecto está presentado con reto, arquitectura e impacto.",
     challenge: "Reto",
     architecture: "Arquitectura",
     impact: "Impacto",
     stack: "Stack",
     viewRepo: "Ver repo",
     viewLive: "Ver online",
-    processLabel: "Metodo",
-    processTitle: "Como trabajo para entregar valor rapido y estable",
+    processLabel: "Método",
+    processTitle: "Cómo trabajo para entregar valor rápido y estable",
     processItems: [
-      "Empiezo por problema de negocio y criterio de exito medible.",
-      "Diseno arquitectura simple para hoy, extensible para manana.",
+      "Empiezo por el problema de negocio y un criterio de éxito medible.",
+      "Diseño una arquitectura simple para hoy y extensible para mañana.",
       "Automatizo despliegues y operaciones repetitivas desde el inicio.",
-      "Priorizo observabilidad y fiabilidad en produccion.",
+      "Priorizo observabilidad y fiabilidad en producción.",
     ],
     toolingLabel: "Herramientas",
-    stackTitle: "Stack tecnico",
+    stackTitle: "Stack técnico",
     stackSubtitle: "herramientas usadas en producto, backend e infraestructura.",
-    hiringBadge: "Contratacion",
-    hiringTitle: "Si buscas alguien que asuma responsabilidad tecnica real",
+    hiringBadge: "Contratación",
+    hiringTitle: "Si buscas a alguien que asuma responsabilidad técnica real",
     hiringText:
       "Estoy abierto a freelance, contrato o full-time. Puedo entrar en proyectos existentes o construir desde cero con enfoque de producto y operaciones.",
-    hiringPoints: ["Rapido en ejecucion", "Solido en produccion", "Comunicacion clara con negocio y equipo"],
+    hiringPoints: ["Rápido en ejecución", "Sólido en producción", "Comunicación clara con negocio y equipo"],
     sendEmail: "Enviar email",
-    emailSubject: "Conversacion de contratacion",
-    portfolioSourceLabel: "Codigo de este portfolio",
-    portfolioSourceText: "Quieres revisar implementacion, estructura y despliegue de esta web?",
+    emailSubject: "Conversación de contratación",
+    portfolioSourceLabel: "Código de este portfolio",
+    portfolioSourceText: "¿Quieres revisar la implementación, estructura y despliegue de esta web?",
     portfolioSourceCta: "Ver codigo fuente",
   },
   en: {
@@ -243,7 +252,7 @@ const copy = {
       "I design and ship end-to-end technical products: frontend, backend, automation, infrastructure, and deployment. My focus is real impact and maintainability.",
     ctaProjects: "View cases",
     ctaContact: "Contact",
-    ctaGitHub: "Github",
+    ctaGitHub: "GitHub",
     featuredLabel: "Case studies",
     featuredTitle: "Featured cases",
     featuredSubtitle: "Each project is presented by challenge, architecture, and impact.",
@@ -317,6 +326,8 @@ function App() {
                 <button
                   type="button"
                   onClick={() => setLang("es")}
+                  aria-label="Cambiar idioma a español"
+                  aria-pressed={lang === "es"}
                   className={`px-3 py-1.5 text-xs font-semibold ${lang === "es" ? "bg-white/20 text-white" : "text-white/70"}`}
                 >
                   ES
@@ -324,13 +335,15 @@ function App() {
                 <button
                   type="button"
                   onClick={() => setLang("en")}
+                  aria-label="Switch language to English"
+                  aria-pressed={lang === "en"}
                   className={`px-3 py-1.5 text-xs font-semibold ${lang === "en" ? "bg-white/20 text-white" : "text-white/70"}`}
                 >
                   EN
                 </button>
               </div>
               <a
-                href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
+                href={LINKS.linkedinProfile}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 border border-white/35 bg-white px-4 py-2 font-semibold text-black transition hover:bg-white/90"
@@ -374,7 +387,7 @@ function App() {
                   {t.ctaContact}
                 </a>
                 <a
-                  href="https://github.com/lucksgg7"
+                  href={LINKS.githubProfile}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 border border-white/25 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
@@ -559,7 +572,7 @@ function App() {
                   {t.sendEmail}
                 </a>
                 <a
-                  href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
+                  href={LINKS.linkedinProfile}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 border border-emerald-200/35 bg-black/25 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
@@ -568,13 +581,13 @@ function App() {
                   LinkedIn
                 </a>
                 <a
-                  href="https://github.com/lucksgg7"
+                  href={LINKS.githubProfile}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 border border-emerald-200/35 bg-black/25 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
                 >
                   <Github className="h-4 w-4" />
-                  Github
+                  GitHub
                 </a>
               </div>
             </div>
@@ -590,7 +603,7 @@ function App() {
                 </p>
               </div>
               <a
-                href="https://github.com/lucksgg7/lucasvicente-portfolio"
+                href={LINKS.githubPortfolio}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 border border-rose-300/60 bg-rose-500/22 px-4 py-2 font-medium text-rose-50 shadow-[0_0_14px_rgba(244,63,94,0.24)] transition hover:bg-rose-500/36"
@@ -608,3 +621,4 @@ function App() {
 }
 
 export default App;
+

@@ -1,18 +1,18 @@
-﻿# Portfolio profesional 
+﻿# Portfolio profesional orientado a reclutadores técnicos
 
-Portfolio de Lucas Vicente (`lucksgg7`) enfocado en demostrar ejecucion real, criterio tecnico y ownership end-to-end.
+Portfolio de Lucas Vicente (`lucasvicentec`) enfocado en demostrar ejecución real, criterio técnico y ownership end-to-end.
 
 ## Este proyecto demuestra
 
-- Diseno de arquitectura frontend con enfoque producto y conversion.
-- Integracion CI/CD real con despliegue continuo en Cloudflare Workers.
-- Optimizacion de rendimiento (lazy loading del shader con Three.js).
-- Internacionalizacion funcional ES/EN.
-- Mantenimiento iterativo en produccion (UX, copy, SEO tecnico).
+- Diseño de arquitectura frontend con enfoque de producto y conversión.
+- Integración CI/CD real con despliegue continuo en Cloudflare Workers.
+- Optimización de rendimiento (lazy loading del shader con Three.js).
+- Internacionalización funcional ES/EN.
+- Mantenimiento iterativo en producción (UX, copy, SEO técnico).
 
 ## Ver portfolio
 
-- Produccion: `https://lucasvicente.es`
+- Producción: `https://lucasvicente.es`
 
 ## Stack principal
 
@@ -22,13 +22,13 @@ Portfolio de Lucas Vicente (`lucksgg7`) enfocado en demostrar ejecucion real, cr
 - `Cloudflare Workers`
 - `GitHub Actions`
 
-## Detalle tecnico (engineering)
+## Detalle técnico (engineering)
 
-- `src/App.tsx`: layout principal, i18n ES/EN, casos de proyectos y CTA de contratacion.
+- `src/App.tsx`: layout principal, i18n ES/EN, casos de proyectos y CTA de contratación.
 - `src/components/ui/liquid-shader.tsx`: shader de fondo con carga diferida.
 - `index.html`: metadatos SEO + OpenGraph + JSON-LD.
 - `.github/workflows/deploy-cloudflare-worker.yml`: pipeline de build/deploy.
-- `wrangler.toml`: configuracion de runtime/deploy en Cloudflare.
+- `wrangler.toml`: configuración de runtime/deploy en Cloudflare.
 
 ## Desarrollo local
 
@@ -47,4 +47,5 @@ npm run build
 ## Contacto
 
 - Email: `contacto@lucasvicente.es`
+- GitHub: `https://github.com/lucasvicentec`
 - LinkedIn: `https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/`
