@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+﻿import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -43,6 +43,7 @@ import {
   SiVite,
   SiVuedotjs,
 } from "react-icons/si";
+import MagicBento from "@/components/MagicBento";
 
 const InteractiveNebulaShader = lazy(() =>
   import("@/components/ui/liquid-shader").then((module) => ({ default: module.InteractiveNebulaShader })),
@@ -63,6 +64,19 @@ type Project = {
   live?: string;
   keyCommit?: string;
   nda?: boolean;
+  insight?: PsiSnapshot;
+};
+
+type PsiSnapshot = {
+  url: string;
+  strategy: "mobile" | "desktop";
+  updatedAt: string;
+  score?: number;
+  lcp: string;
+  inp: string;
+  cls: string;
+  sourceLabel: string;
+  reportUrl?: string;
 };
 
 const LINKS = {
@@ -78,6 +92,8 @@ const LINKS = {
   postmortem: "#postmortem",
   cv: "mailto:contacto@lucasvicente.es?subject=CV%20Lucas%20Vicente",
 } as const;
+
+const psiReportUrl = (url: string) => `https://pagespeed.web.dev/report?url=${encodeURIComponent(url)}`;
 
 const TERMINAL_STORAGE_KEY = "lucas_portfolio_terminal_history_v1";
 
@@ -150,6 +166,40 @@ const projectsByLocale: Record<Locale, Project[]> = {
       repo: LINKS.githubStackWatch,
       live: LINKS.statusPage,
       keyCommit: LINKS.githubStackWatch,
+      insight: {
+        url: LINKS.statusPage,
+        strategy: "desktop",
+        updatedAt: "2026-02-19",
+        score: 97,
+        lcp: "0.6 s",
+        inp: "N/D (Lighthouse muestra TBT 140 ms)",
+        cls: "0.005",
+        sourceLabel: "PageSpeed snapshot (manual)",
+        reportUrl: psiReportUrl(LINKS.statusPage),
+      },
+    },
+    {
+      title: "VarynHost",
+      tag: "Producción",
+      type: "Hosting / Infra y automatización",
+      context: "Servicio de hosting con paneles custom, automatizaciones y operación diaria para clientes reales.",
+      decision: "Se combinó Pterodactyl + WHMCS + APIs para balancear velocidad de entrega y operación mantenible.",
+      result:
+        "Más de 60 clientes y más de 60 servidores activos, con soporte técnico y comunidad orientada al lanzamiento oficial de Hytale.",
+      evidence: ["Sitio público activo", "Operación con clientes reales", "Automatizaciones y paneles custom en producción"],
+      stack: "Pterodactyl, WHMCS, APIs, automatización operativa",
+      live: "https://varynhost.com/",
+      insight: {
+        url: "https://varynhost.com/",
+        strategy: "mobile",
+        updatedAt: "2026-02-19",
+        score: 97,
+        lcp: "0.5 s",
+        inp: "N/D (Lighthouse muestra TBT 10 ms)",
+        cls: "0.000",
+        sourceLabel: "PageSpeed snapshot (manual)",
+        reportUrl: psiReportUrl("https://varynhost.com/"),
+      },
     },
     {
       title: "MD-Ingelligence",
@@ -162,6 +212,16 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Arquitectura high-level compartible", "Decisiones de rendimiento y ranking sin datos sensibles"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
+      insight: {
+        url: "Privado (NDA)",
+        strategy: "mobile",
+        updatedAt: "2026-02-19",
+        score: 100,
+        lcp: "0.5 s",
+        inp: "N/D (Lighthouse muestra TBT 0 ms)",
+        cls: "0.006",
+        sourceLabel: "Última medición (PSI, entorno privado)",
+      },
     },
     {
       title: "Hytalia Web",
@@ -173,6 +233,16 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Sitio en producción", "Despliegue con contenedores y Swarm"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
+      insight: {
+        url: LINKS.hytaliaSite,
+        strategy: "mobile",
+        updatedAt: "2026-02-19",
+        lcp: "1.8 s",
+        inp: "146 ms",
+        cls: "0.02",
+        sourceLabel: "Core Web Vitals (CrUX, últimas 4 semanas)",
+        reportUrl: psiReportUrl(LINKS.hytaliaSite),
+      },
     },
     {
       title: "Hytale Plugin Journey",
@@ -202,6 +272,40 @@ const projectsByLocale: Record<Locale, Project[]> = {
       repo: LINKS.githubStackWatch,
       live: LINKS.statusPage,
       keyCommit: LINKS.githubStackWatch,
+      insight: {
+        url: LINKS.statusPage,
+        strategy: "desktop",
+        updatedAt: "2026-02-19",
+        score: 97,
+        lcp: "0.6 s",
+        inp: "N/A (Lighthouse reports TBT 140 ms)",
+        cls: "0.005",
+        sourceLabel: "PageSpeed snapshot (manual)",
+        reportUrl: psiReportUrl(LINKS.statusPage),
+      },
+    },
+    {
+      title: "VarynHost",
+      tag: "Production",
+      type: "Hosting / Infra and automation",
+      context: "Hosting service with custom panels, automations, and day-to-day operations for real clients.",
+      decision: "Pterodactyl + WHMCS + APIs were combined to balance delivery speed with maintainable operations.",
+      result:
+        "More than 60 clients and more than 60 active servers, including technical support and community workflows for Hytale launch timing.",
+      evidence: ["Public live website", "Real client operations", "Production automations and custom panels"],
+      stack: "Pterodactyl, WHMCS, APIs, operational automation",
+      live: "https://varynhost.com/",
+      insight: {
+        url: "https://varynhost.com/",
+        strategy: "mobile",
+        updatedAt: "2026-02-19",
+        score: 97,
+        lcp: "0.5 s",
+        inp: "N/A (Lighthouse reports TBT 10 ms)",
+        cls: "0.000",
+        sourceLabel: "PageSpeed snapshot (manual)",
+        reportUrl: psiReportUrl("https://varynhost.com/"),
+      },
     },
     {
       title: "MD-Ingelligence",
@@ -214,6 +318,16 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Shareable high-level architecture", "Performance/relevance decisions without sensitive data"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
+      insight: {
+        url: "Private (NDA)",
+        strategy: "mobile",
+        updatedAt: "2026-02-19",
+        score: 100,
+        lcp: "0.5 s",
+        inp: "N/A (Lighthouse reports TBT 0 ms)",
+        cls: "0.006",
+        sourceLabel: "Latest snapshot (PSI, private environment)",
+      },
     },
     {
       title: "Hytalia Web",
@@ -225,6 +339,16 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Production website", "Container-based deployment flow"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
+      insight: {
+        url: LINKS.hytaliaSite,
+        strategy: "mobile",
+        updatedAt: "2026-02-19",
+        lcp: "1.8 s",
+        inp: "146 ms",
+        cls: "0.02",
+        sourceLabel: "Core Web Vitals (CrUX, last 4 weeks)",
+        reportUrl: psiReportUrl(LINKS.hytaliaSite),
+      },
     },
     {
       title: "Hytale Plugin Journey",
@@ -240,6 +364,8 @@ const projectsByLocale: Record<Locale, Project[]> = {
     },
   ],
 };
+
+type BentoProjectItem = Project & { color: string; label: string };
 
 const coreStack = [
   { label: "React / Next.js", icon: SiReact },
@@ -364,6 +490,15 @@ function App() {
   const [lang, setLang] = useState<Locale>("es");
   const t = copy[lang];
   const projects = projectsByLocale[lang];
+  const bentoProjects = useMemo<BentoProjectItem[]>(
+    () =>
+      projects.map((project) => ({
+        ...project,
+        color: project.title === "StackWatch" ? "#05181a" : "#060010",
+        label: project.tag,
+      })),
+    [projects],
+  );
   const marqueeLogos = useMemo(() => [...techLogos, ...techLogos], []);
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalLines, setTerminalLines] = useState<string[]>(() => readTerminalHistory());
@@ -383,12 +518,12 @@ function App() {
     () =>
       lang === "es"
         ? [
-            "4 proyectos en producción (desde Mar 2024).",
+            "5 proyectos en producción (desde Mar 2024).",
             `Despliegue continuo con Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
             "Métricas públicas en construcción: p95 latencia, uptime, checks/min, coste/mes y usuarios/día.",
           ]
         : [
-            "4 projects in production (since Mar 2024).",
+            "5 projects in production (since Mar 2024).",
             `Continuous delivery with Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
             "Public metrics in progress: p95 latency, uptime, checks/min, monthly cost, and daily users.",
           ],
@@ -777,113 +912,119 @@ function App() {
               <p className="max-w-xl text-sm text-white/70">{t.featuredSubtitle}</p>
             </div>
 
-            <div className="space-y-8">
-              {projects.map((project, index) => (
-                <article
-                  key={project.title}
-                  className={`grid gap-4 border-l-2 pl-4 md:grid-cols-[160px_1fr] md:gap-6 md:pl-6 ${
-                    project.title === "StackWatch"
-                      ? "border-emerald-300/60"
-                      : "border-white/25"
-                  }`}
-                >
-                  <div className="flex items-start justify-between md:block">
-                    <span
-                      className={`inline-flex border px-2 py-1 text-xs uppercase tracking-wide ${
-                        project.title === "StackWatch"
-                          ? "border-emerald-300/45 bg-emerald-500/15 text-emerald-100"
-                          : "border-white/20 bg-black/35 text-white/80"
-                      }`}
-                    >
-                      {project.tag}
-                    </span>
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/50">{String(index + 1).padStart(2, "0")}</p>
+            <MagicBento
+              items={bentoProjects}
+              glowColor="16, 185, 129"
+              particleCount={8}
+              spotlightRadius={260}
+              enableMagnetism={false}
+              enableTilt={false}
+              renderCard={(project, index): ReactNode => {
+                const p = project as BentoProjectItem;
+                return (
+                <div className="flex h-full flex-col">
+                  <div className="magic-bento-card__header">
+                    <div className="magic-bento-card__label">{p.tag}</div>
+                    <div className="text-xs text-white/55">{String(index + 1).padStart(2, "0")}</div>
                   </div>
 
-                  <div
-                    className={`space-y-3 p-4 ${
-                      project.title === "StackWatch"
-                        ? "border border-emerald-300/25 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.20)]"
-                        : "bg-black/25"
-                    }`}
-                  >
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="text-xl font-semibold text-card-foreground">{project.title}</h3>
-                      <span
-                        className={`border px-2 py-0.5 text-xs uppercase tracking-wide ${
-                          project.title === "StackWatch"
-                            ? "border-emerald-300/45 bg-emerald-500/15 text-emerald-100"
-                            : "border-cyan-300/35 bg-cyan-400/10 text-cyan-200"
-                        }`}
-                      >
-                        {project.type}
-                      </span>
-                    </div>
-
-                    <div className="grid gap-3 md:grid-cols-3">
-                      <p className="border-t border-white/15 pt-2 text-sm text-white/75">
-                        <span className="font-semibold text-white/90">{t.challenge}:</span> {project.context}
+                  <div className="magic-bento-card__content mt-2 space-y-2">
+                    <h3 className="magic-bento-card__title text-base font-semibold">{p.title}</h3>
+                    <p className="text-xs uppercase tracking-wide text-cyan-200/85">{p.type}</p>
+                    <p className="magic-bento-card__description text-white/80">
+                      <span className="font-semibold text-white/90">{t.challenge}:</span> {p.context}
+                    </p>
+                    <p className="magic-bento-card__description text-white/80">
+                      <span className="font-semibold text-white/90">{t.architecture}:</span> {p.decision}
+                    </p>
+                    <p className="magic-bento-card__description text-white/80">
+                      <span className="font-semibold text-white/90">{t.impact}:</span> {p.result}
+                    </p>
+                    {p.nda ? (
+                      <p className="rounded border border-amber-300/40 bg-amber-500/10 px-2 py-1 text-xs text-amber-100">
+                        Bajo NDA: arquitectura y decisiones compartibles; datos sensibles no públicos.
                       </p>
-                      <p className="border-t border-white/15 pt-2 text-sm text-white/75">
-                        <span className="font-semibold text-white/90">{t.architecture}:</span> {project.decision}
-                      </p>
-                      <p className="border-t border-white/15 pt-2 text-sm text-white/75">
-                        <span className="font-semibold text-white/90">{t.impact}:</span> {project.result}
-                      </p>
-                    </div>
-
-                    {project.nda ? (
-                      <div className="border border-amber-300/40 bg-amber-500/10 p-3 text-sm text-amber-100">
-                        <p className="font-semibold">Bajo NDA</p>
-                        <p className="mt-1 text-amber-100/85">
-                          Comparto arquitectura, decisiones y métricas no sensibles. Capturas y datos operativos detallados no son públicos.
-                        </p>
-                      </div>
                     ) : null}
-
-                    {project.evidence?.length ? (
-                      <div className="border-t border-white/15 pt-2 text-sm text-white/75">
-                        <span className="font-semibold text-white/90">Evidencia:</span>
-                        <ul className="mt-2 space-y-1">
-                          {project.evidence.map((item) => (
-                            <li key={item}>- {item}</li>
-                          ))}
-                        </ul>
-                      </div>
+                    {p.evidence?.length ? (
+                      <p className="magic-bento-card__description text-white/75">
+                        <span className="font-semibold text-white/90">Evidencia:</span> {p.evidence.slice(0, 2).join(" · ")}
+                      </p>
                     ) : null}
-
-                    <p className="text-sm text-white/70">
-                      <span className="font-semibold text-white/90">{t.stack}:</span> {project.stack}
+                    <p className="magic-bento-card__description text-white/70">
+                      <span className="font-semibold text-white/90">{t.stack}:</span> {p.stack}
                     </p>
 
-                    <div className="flex flex-wrap gap-3">
-                      {project.repo ? (
-                        <a
-                          href={project.repo}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-2 border border-emerald-300/55 bg-emerald-500/18 px-4 py-2 text-sm font-medium text-emerald-50 transition hover:bg-emerald-500/30"
-                        >
-                          <Github className="h-4 w-4" />
-                          {t.viewRepo}
-                        </a>
-                      ) : null}
-                      {project.live ? (
-                        <a
-                          href={project.live}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-2 border border-cyan-300/55 bg-cyan-500/18 px-4 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-500/30"
-                        >
-                          <ArrowUpRight className="h-4 w-4" />
-                          {t.viewLive}
-                        </a>
-                      ) : null}
-                    </div>
+                    {p.insight ? (
+                      <div className="rounded border border-cyan-300/35 bg-cyan-500/10 p-2 text-xs text-white/85">
+                        <div className="mb-2 flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-[10px] uppercase tracking-wide text-cyan-200/85">{p.insight.sourceLabel}</p>
+                            <p className="text-[10px] text-white/60">{p.insight.strategy === "mobile" ? "Medido en móvil" : "Medido en desktop"}</p>
+                          </div>
+                          {typeof p.insight.score === "number" ? (
+                            <span className="rounded border border-cyan-300/45 bg-black/25 px-2 py-0.5 font-semibold text-cyan-100">
+                              {p.insight.score}/100
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-1">
+                          <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
+                            <p className="text-[10px] text-white/60">LCP</p>
+                            <p className="font-semibold">{p.insight.lcp}</p>
+                          </div>
+                          <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
+                            <p className="text-[10px] text-white/60">INP</p>
+                            <p className="font-semibold">{p.insight.inp}</p>
+                          </div>
+                          <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
+                            <p className="text-[10px] text-white/60">CLS</p>
+                            <p className="font-semibold">{p.insight.cls}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-2 flex items-center justify-between text-[10px] text-white/65">
+                          <span>Actualizado: {p.insight.updatedAt}</span>
+                          {p.insight.reportUrl ? (
+                            <a href={p.insight.reportUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                              Ver informe oficial
+                            </a>
+                          ) : (
+                            <span>Informe no público</span>
+                          )}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
-                </article>
-              ))}
-            </div>
+
+                  <div className="mt-auto flex flex-wrap gap-2 pt-3">
+                    {p.repo ? (
+                      <a
+                        href={p.repo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 border border-emerald-300/45 bg-emerald-500/15 px-3 py-1.5 text-xs font-medium text-emerald-50 transition hover:bg-emerald-500/30"
+                      >
+                        <Github className="h-3.5 w-3.5" />
+                        {t.viewRepo}
+                      </a>
+                    ) : null}
+                    {p.live ? (
+                      <a
+                        href={p.live}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 border border-cyan-300/45 bg-cyan-500/15 px-3 py-1.5 text-xs font-medium text-cyan-50 transition hover:bg-cyan-500/30"
+                      >
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                        {t.viewLive}
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              );
+              }}
+            />
           </section>
 
           <section className="mt-16">
@@ -1116,6 +1257,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
