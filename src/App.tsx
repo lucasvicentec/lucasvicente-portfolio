@@ -306,8 +306,8 @@ const copy = {
     portfolioSourceText: "¿Quieres revisar la implementación, estructura y despliegue de esta web?",
     portfolioSourceCta: "Ver codigo fuente",
     terminalLabel: "Terminal interactivo",
-    terminalTitle: "Pregúntame por stack, proyectos o contacto",
-    terminalHint: "Prueba: ayuda, proyectos, stack, contacto, github, linkedin, limpiar",
+    terminalTitle: "Consola de navegación rápida",
+    terminalHint: "Prueba: ayuda, proyectos, stack, contacto, cv, servicios, secreto, limpiar",
     terminalPlaceholder: "Escribe un comando...",
     terminalRun: "Ejecutar",
   },
@@ -354,8 +354,8 @@ const copy = {
     portfolioSourceText: "Want to review implementation, structure, and deployment of this site?",
     portfolioSourceCta: "View source code",
     terminalLabel: "Interactive terminal",
-    terminalTitle: "Ask me about stack, projects, or contact",
-    terminalHint: "Try: help, projects, stack, contact, github, linkedin, clear",
+    terminalTitle: "Fast navigation console",
+    terminalHint: "Try: help, projects, stack, contact, cv, services, secret, clear",
     terminalPlaceholder: "Type a command...",
     terminalRun: "Run",
   },
@@ -369,8 +369,8 @@ function App() {
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalLines, setTerminalLines] = useState<string[]>(() => readTerminalHistory());
   const [typingLine, setTypingLine] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
   const terminalViewportRef = useRef<HTMLDivElement | null>(null);
+  const terminalInputRef = useRef<HTMLInputElement | null>(null);
   const typingQueueRef = useRef<string[]>([]);
   const typingTimeoutRef = useRef<number | undefined>(undefined);
   const isTypingRef = useRef(false);
@@ -380,6 +380,10 @@ function App() {
 
   const skillsCount = useMemo(() => stackByCategory.reduce((acc, group) => acc + group.items.length, 0), []);
   const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
+  const quickCommands = useMemo(
+    () => (lang === "es" ? ["ayuda", "proyectos", "stack", "contacto", "servicios", "secreto"] : ["help", "projects", "stack", "contact", "services", "secret"]),
+    [lang],
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -405,16 +409,13 @@ function App() {
     if (typeof window === "undefined") return;
 
     const finePointer = window.matchMedia("(pointer: fine)");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateCursorVisibility = () => setShowCustomCursor(finePointer.matches && !reducedMotion.matches);
+    const updateCursorVisibility = () => setShowCustomCursor(finePointer.matches);
 
     updateCursorVisibility();
     finePointer.addEventListener("change", updateCursorVisibility);
-    reducedMotion.addEventListener("change", updateCursorVisibility);
 
     return () => {
       finePointer.removeEventListener("change", updateCursorVisibility);
-      reducedMotion.removeEventListener("change", updateCursorVisibility);
     };
   }, []);
 
@@ -429,6 +430,12 @@ function App() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [showCustomCursor]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    document.body.classList.toggle("custom-cursor-enabled", showCustomCursor);
+    return () => document.body.classList.remove("custom-cursor-enabled");
+  }, [showCustomCursor]);
+
   const sleep = (ms: number) =>
     new Promise<void>((resolve) => {
       typingTimeoutRef.current = window.setTimeout(resolve, ms);
@@ -437,7 +444,6 @@ function App() {
   const processTypingQueue = async () => {
     if (isTypingRef.current || isUnmountedRef.current) return;
     isTypingRef.current = true;
-    setIsTyping(true);
 
     while (typingQueueRef.current.length > 0 && !isUnmountedRef.current) {
       const nextLine = typingQueueRef.current.shift() ?? "";
@@ -459,7 +465,6 @@ function App() {
     }
 
     setTypingLine("");
-    setIsTyping(false);
     isTypingRef.current = false;
   };
 
@@ -470,7 +475,7 @@ function App() {
 
   const runCommand = (rawCommand: string) => {
     const command = rawCommand.trim().toLowerCase();
-    if (!command || isTypingRef.current) return;
+    if (!command) return;
 
     const aliases: Record<string, string> =
       lang === "es"
@@ -479,6 +484,12 @@ function App() {
             proyectos: "projects",
             stack: "stack",
             contacto: "contact",
+            servicios: "services",
+            sobre: "about",
+            cv: "cv",
+            tema: "theme",
+            secreto: "secret",
+            sudo: "sudo",
             github: "github",
             linkedin: "linkedin",
             limpiar: "clear",
@@ -488,6 +499,12 @@ function App() {
             projects: "projects",
             stack: "stack",
             contact: "contact",
+            services: "services",
+            about: "about",
+            cv: "cv",
+            theme: "theme",
+            secret: "secret",
+            sudo: "sudo",
             github: "github",
             linkedin: "linkedin",
             clear: "clear",
@@ -506,7 +523,6 @@ function App() {
       setTerminalLines(terminalIntro);
       typingQueueRef.current = [];
       setTypingLine("");
-      setIsTyping(false);
       isTypingRef.current = false;
       if (typingTimeoutRef.current !== undefined) {
         window.clearTimeout(typingTimeoutRef.current);
@@ -518,8 +534,8 @@ function App() {
     const responsesByCommand: Record<string, string[]> = {
       help:
         lang === "es"
-          ? ["Comandos disponibles:", "ayuda, proyectos, stack, contacto, github, linkedin, limpiar"]
-          : ["Available commands:", "help, projects, stack, contact, github, linkedin, clear"],
+          ? ["Comandos disponibles:", "ayuda, proyectos, stack, contacto, servicios, sobre, cv, github, linkedin, secreto, sudo, tema, limpiar"]
+          : ["Available commands:", "help, projects, stack, contact, services, about, cv, github, linkedin, secret, sudo, theme, clear"],
       projects:
         lang === "es"
           ? [
@@ -544,6 +560,30 @@ function App() {
         lang === "es"
           ? ["Contacto:", "- Email: contacto@lucasvicente.es", `- LinkedIn: ${LINKS.linkedinProfile}`]
           : ["Contact:", "- Email: contacto@lucasvicente.es", `- LinkedIn: ${LINKS.linkedinProfile}`],
+      services:
+        lang === "es"
+          ? ["Servicios:", "- Desarrollo web full-stack", "- Integraciones/automatización", "- Infraestructura y despliegue"]
+          : ["Services:", "- Full-stack web development", "- Integrations/automation", "- Infrastructure and deployment"],
+      about:
+        lang === "es"
+          ? ["Sobre mí:", "Ingeniero full-stack orientado a producto, operación e impacto real."]
+          : ["About:", "Full-stack engineer focused on product, operations, and measurable impact."],
+      cv:
+        lang === "es"
+          ? ["CV:", "Solicítalo por email en contacto@lucasvicente.es"]
+          : ["CV:", "Request it via email at contacto@lucasvicente.es"],
+      theme:
+        lang === "es"
+          ? ["Tema:", "Modo neón activo por defecto."]
+          : ["Theme:", "Neon mode is active by default."],
+      secret:
+        lang === "es"
+          ? ["🛰️ Modo explorador: activo.", "Tip: prueba 'stack' y 'proyectos'."]
+          : ["🛰️ Explorer mode: enabled.", "Tip: try 'stack' and 'projects'."],
+      sudo:
+        lang === "es"
+          ? ["[sudo] contraseña para lucas:", "Permiso denegado. Buen intento 😄"]
+          : ["[sudo] password for lucas:", "Permission denied. Nice try 😄"],
       github: [LINKS.githubProfile],
       linkedin: [LINKS.linkedinProfile],
     };
@@ -557,6 +597,7 @@ function App() {
     event.preventDefault();
     runCommand(terminalInput);
     setTerminalInput("");
+    terminalInputRef.current?.focus();
   };
 
   return (
@@ -564,7 +605,7 @@ function App() {
       {showCustomCursor ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed left-0 top-0 z-[70] hidden -translate-x-1/2 -translate-y-1/2 select-none text-xl drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] md:block"
+          className="pointer-events-none fixed left-0 top-0 z-[70] -translate-x-1/2 -translate-y-1/2 select-none text-[22px] drop-shadow-[0_0_14px_rgba(56,189,248,0.8)]"
           style={{ transform: `translate(${cursorPos.x + 12}px, ${cursorPos.y + 12}px)` }}
         >
           🚀
@@ -778,7 +819,7 @@ function App() {
           <section className="mt-16">
             <div className="mb-4 flex items-center gap-3">
               <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.75)]" />
-              <p className="text-xs uppercase tracking-[0.22em] text-white/65">Stack tecnológico de élite</p>
+              <p className="text-xs uppercase tracking-[0.22em] text-white/65">Stack tecnológico</p>
             </div>
             <div
               className="overflow-hidden rounded-xl border border-white/15 bg-black/25 p-4"
@@ -809,11 +850,11 @@ function App() {
               </div>
               <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1 text-xs text-white/70">
                 <Command className="h-3.5 w-3.5" />
-                <span>hola@lucasvicente.es</span>
+                <span>contacto@lucasvicente.es</span>
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-white/20 bg-slate-950/95">
+            <div className="overflow-hidden rounded-xl border border-cyan-300/25 bg-[linear-gradient(180deg,rgba(2,6,23,0.98),rgba(2,10,28,0.96))] shadow-[0_0_28px_rgba(34,211,238,0.14)]">
               <div className="flex items-center gap-2 border-b border-white/10 bg-slate-800/70 px-3 py-2">
                 <span className="h-3 w-3 rounded-full bg-red-400" />
                 <span className="h-3 w-3 rounded-full bg-amber-400" />
@@ -833,25 +874,38 @@ function App() {
                   </p>
                 ) : null}
               </div>
-              <form onSubmit={handleTerminalSubmit} className="flex flex-wrap items-center gap-2 border-t border-white/10 bg-slate-900/85 px-3 py-2">
+              <form onSubmit={handleTerminalSubmit} className="flex flex-wrap items-center gap-2 border-t border-cyan-300/20 bg-slate-900/85 px-3 py-2">
                 <Search className="h-4 w-4 text-cyan-300" />
                 <input
+                  ref={terminalInputRef}
                   value={terminalInput}
                   onChange={(event) => setTerminalInput(event.target.value)}
                   placeholder={t.terminalPlaceholder}
                   className="min-w-[220px] flex-1 bg-transparent font-mono text-sm text-white outline-none placeholder:text-white/45"
                   aria-label={t.terminalPlaceholder}
-                  disabled={isTyping}
+                  autoComplete="off"
+                  spellCheck={false}
                 />
                 <button
                   type="submit"
                   className="inline-flex items-center gap-2 border border-cyan-300/55 bg-cyan-500/20 px-3 py-1.5 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-500/35"
-                  disabled={isTyping}
                 >
                   <Globe className="h-3.5 w-3.5" />
                   {t.terminalRun}
                 </button>
               </form>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {quickCommands.map((command) => (
+                <button
+                  key={command}
+                  type="button"
+                  onClick={() => runCommand(command)}
+                  className="rounded-md border border-cyan-300/30 bg-cyan-500/10 px-2.5 py-1 text-xs font-medium text-cyan-100 transition hover:bg-cyan-500/20"
+                >
+                  {command}
+                </button>
+              ))}
             </div>
             <p className="mt-3 text-sm text-white/60">{t.terminalHint}</p>
           </section>

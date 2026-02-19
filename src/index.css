@@ -68,7 +68,7 @@
   }
 
   .animate-marquee {
-    animation: marquee 36s linear infinite;
+    animation: marquee 22s linear infinite;
     will-change: transform;
   }
 
@@ -95,8 +95,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
-  }
+body.custom-cursor-enabled,
+body.custom-cursor-enabled * {
+  cursor: none !important;
 }
