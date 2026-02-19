@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+﻿import { lazy, Suspense, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -6,10 +6,8 @@ import {
   CircleHelp,
   Command,
   Github,
-  Globe,
   Linkedin,
   Mail,
-  Search,
   ShieldCheck,
 } from "lucide-react";
 import type { IconType } from "react-icons";
@@ -43,7 +41,6 @@ import {
   SiVite,
   SiVuedotjs,
 } from "react-icons/si";
-import MagicBento from "@/components/MagicBento";
 
 const InteractiveNebulaShader = lazy(() =>
   import("@/components/ui/liquid-shader").then((module) => ({ default: module.InteractiveNebulaShader })),
@@ -365,8 +362,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
   ],
 };
 
-type BentoProjectItem = Project & { color: string; label: string };
-
 const coreStack = [
   { label: "React / Next.js", icon: SiReact },
   { label: "TypeScript", icon: SiTypescript },
@@ -489,17 +484,7 @@ const copy = {
 function App() {
   const [lang, setLang] = useState<Locale>("es");
   const t = copy[lang];
-  const projects = projectsByLocale[lang];
-  const bentoProjects = useMemo<BentoProjectItem[]>(
-    () =>
-      projects.map((project) => ({
-        ...project,
-        color: project.title === "StackWatch" ? "#05181a" : "#060010",
-        label: project.tag,
-      })),
-    [projects],
-  );
-  const marqueeLogos = useMemo(() => [...techLogos, ...techLogos], []);
+  const projects = projectsByLocale[lang];  const marqueeLogos = useMemo(() => [...techLogos, ...techLogos], []);
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalLines, setTerminalLines] = useState<string[]>(() => readTerminalHistory());
   const [typingLine, setTypingLine] = useState("");
@@ -767,11 +752,17 @@ function App() {
     }
   };
 
-  const handleTerminalSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const executeTerminalInput = () => {
     runCommand(terminalInput);
     setTerminalInput("");
     terminalInputRef.current?.focus();
+  };
+
+  const handleTerminalKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      executeTerminalInput();
+    }
   };
 
   return (
@@ -912,100 +903,101 @@ function App() {
               <p className="max-w-xl text-sm text-white/70">{t.featuredSubtitle}</p>
             </div>
 
-            <MagicBento
-              items={bentoProjects}
-              glowColor="16, 185, 129"
-              particleCount={8}
-              spotlightRadius={260}
-              enableMagnetism={false}
-              enableTilt={false}
-              renderCard={(project, index): ReactNode => {
-                const p = project as BentoProjectItem;
-                return (
-                <div className="flex h-full flex-col">
-                  <div className="magic-bento-card__header">
-                    <div className="magic-bento-card__label">{p.tag}</div>
-                    <div className="text-xs text-white/55">{String(index + 1).padStart(2, "0")}</div>
+            <div className="space-y-6">
+              {projects.map((p, index) => (
+                <article key={p.title} className="border border-white/20 bg-black/30 p-5">
+                  <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex border border-white/25 bg-black/35 px-2 py-1 text-xs uppercase tracking-wide text-white/85">
+                        {p.tag}
+                      </span>
+                      <h3 className="text-xl font-semibold text-card-foreground">{p.title}</h3>
+                      <span className="border border-cyan-300/35 bg-cyan-400/10 px-2 py-0.5 text-xs uppercase tracking-wide text-cyan-200">
+                        {p.type}
+                      </span>
+                    </div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/50">{String(index + 1).padStart(2, "0")}</p>
                   </div>
 
-                  <div className="magic-bento-card__content mt-2 space-y-2">
-                    <h3 className="magic-bento-card__title text-base font-semibold">{p.title}</h3>
-                    <p className="text-xs uppercase tracking-wide text-cyan-200/85">{p.type}</p>
-                    <p className="magic-bento-card__description text-white/80">
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <p className="border-t border-white/15 pt-2 text-sm text-white/80">
                       <span className="font-semibold text-white/90">{t.challenge}:</span> {p.context}
                     </p>
-                    <p className="magic-bento-card__description text-white/80">
+                    <p className="border-t border-white/15 pt-2 text-sm text-white/80">
                       <span className="font-semibold text-white/90">{t.architecture}:</span> {p.decision}
                     </p>
-                    <p className="magic-bento-card__description text-white/80">
+                    <p className="border-t border-white/15 pt-2 text-sm text-white/80">
                       <span className="font-semibold text-white/90">{t.impact}:</span> {p.result}
                     </p>
-                    {p.nda ? (
-                      <p className="rounded border border-amber-300/40 bg-amber-500/10 px-2 py-1 text-xs text-amber-100">
-                        Bajo NDA: arquitectura y decisiones compartibles; datos sensibles no públicos.
-                      </p>
-                    ) : null}
-                    {p.evidence?.length ? (
-                      <p className="magic-bento-card__description text-white/75">
-                        <span className="font-semibold text-white/90">Evidencia:</span> {p.evidence.slice(0, 2).join(" · ")}
-                      </p>
-                    ) : null}
-                    <p className="magic-bento-card__description text-white/70">
-                      <span className="font-semibold text-white/90">{t.stack}:</span> {p.stack}
-                    </p>
-
-                    {p.insight ? (
-                      <div className="rounded border border-cyan-300/35 bg-cyan-500/10 p-2 text-xs text-white/85">
-                        <div className="mb-2 flex items-start justify-between gap-2">
-                          <div>
-                            <p className="text-[10px] uppercase tracking-wide text-cyan-200/85">{p.insight.sourceLabel}</p>
-                            <p className="text-[10px] text-white/60">{p.insight.strategy === "mobile" ? "Medido en móvil" : "Medido en desktop"}</p>
-                          </div>
-                          {typeof p.insight.score === "number" ? (
-                            <span className="rounded border border-cyan-300/45 bg-black/25 px-2 py-0.5 font-semibold text-cyan-100">
-                              {p.insight.score}/100
-                            </span>
-                          ) : null}
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-1">
-                          <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
-                            <p className="text-[10px] text-white/60">LCP</p>
-                            <p className="font-semibold">{p.insight.lcp}</p>
-                          </div>
-                          <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
-                            <p className="text-[10px] text-white/60">INP</p>
-                            <p className="font-semibold">{p.insight.inp}</p>
-                          </div>
-                          <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
-                            <p className="text-[10px] text-white/60">CLS</p>
-                            <p className="font-semibold">{p.insight.cls}</p>
-                          </div>
-                        </div>
-
-                        <div className="mt-2 flex items-center justify-between text-[10px] text-white/65">
-                          <span>Actualizado: {p.insight.updatedAt}</span>
-                          {p.insight.reportUrl ? (
-                            <a href={p.insight.reportUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2">
-                              Ver informe oficial
-                            </a>
-                          ) : (
-                            <span>Informe no público</span>
-                          )}
-                        </div>
-                      </div>
-                    ) : null}
                   </div>
 
-                  <div className="mt-auto flex flex-wrap gap-2 pt-3">
+                  {p.nda ? (
+                    <p className="mt-3 rounded border border-amber-300/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
+                      Bajo NDA: arquitectura y decisiones compartibles; datos sensibles no públicos.
+                    </p>
+                  ) : null}
+
+                  {p.evidence?.length ? (
+                    <p className="mt-3 text-sm text-white/75">
+                      <span className="font-semibold text-white/90">Evidencia:</span> {p.evidence.join(" · ")}
+                    </p>
+                  ) : null}
+
+                  <p className="mt-3 text-sm text-white/70">
+                    <span className="font-semibold text-white/90">{t.stack}:</span> {p.stack}
+                  </p>
+
+                  {p.insight ? (
+                    <div className="mt-3 rounded border border-cyan-300/35 bg-cyan-500/10 p-3 text-xs text-white/85">
+                      <div className="mb-2 flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-cyan-200/85">{p.insight.sourceLabel}</p>
+                          <p className="text-[10px] text-white/60">{p.insight.strategy === "mobile" ? "Medido en móvil" : "Medido en desktop"}</p>
+                        </div>
+                        {typeof p.insight.score === "number" ? (
+                          <span className="rounded border border-cyan-300/45 bg-black/25 px-2 py-0.5 font-semibold text-cyan-100">
+                            {p.insight.score}/100
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
+                          <p className="text-[10px] text-white/60">LCP</p>
+                          <p className="font-semibold">{p.insight.lcp}</p>
+                        </div>
+                        <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
+                          <p className="text-[10px] text-white/60">INP</p>
+                          <p className="font-semibold">{p.insight.inp}</p>
+                        </div>
+                        <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
+                          <p className="text-[10px] text-white/60">CLS</p>
+                          <p className="font-semibold">{p.insight.cls}</p>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 flex items-center justify-between text-[10px] text-white/65">
+                        <span>Actualizado: {p.insight.updatedAt}</span>
+                        {p.insight.reportUrl ? (
+                          <a href={p.insight.reportUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                            Ver informe oficial
+                          </a>
+                        ) : (
+                          <span>Informe no público</span>
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div className="mt-4 flex flex-wrap gap-3">
                     {p.repo ? (
                       <a
                         href={p.repo}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 border border-emerald-300/45 bg-emerald-500/15 px-3 py-1.5 text-xs font-medium text-emerald-50 transition hover:bg-emerald-500/30"
+                        className="inline-flex items-center gap-2 border border-emerald-300/55 bg-emerald-500/18 px-4 py-2 text-sm font-medium text-emerald-50 transition hover:bg-emerald-500/30"
                       >
-                        <Github className="h-3.5 w-3.5" />
+                        <Github className="h-4 w-4" />
                         {t.viewRepo}
                       </a>
                     ) : null}
@@ -1014,17 +1006,16 @@ function App() {
                         href={p.live}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 border border-cyan-300/45 bg-cyan-500/15 px-3 py-1.5 text-xs font-medium text-cyan-50 transition hover:bg-cyan-500/30"
+                        className="inline-flex items-center gap-2 border border-cyan-300/55 bg-cyan-500/18 px-4 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-500/30"
                       >
-                        <ArrowUpRight className="h-3.5 w-3.5" />
+                        <ArrowUpRight className="h-4 w-4" />
                         {t.viewLive}
                       </a>
                     ) : null}
                   </div>
-                </div>
-              );
-              }}
-            />
+                </article>
+              ))}
+            </div>
           </section>
 
           <section className="mt-16">
@@ -1072,7 +1063,11 @@ function App() {
                 <span className="h-3 w-3 rounded-full bg-green-400" />
                 <span className="ml-3 text-xs text-white/60">terminal.local</span>
               </div>
-              <div ref={terminalViewportRef} className="h-72 overflow-y-auto px-4 py-3 font-mono text-sm text-white/90">
+              <div
+                ref={terminalViewportRef}
+                className="h-80 overflow-y-auto px-4 py-3 font-mono text-sm text-white/90"
+                onClick={() => terminalInputRef.current?.focus()}
+              >
                 {terminalLines.map((line, index) => (
                   <p key={`${line}-${index}`} className={`${line.startsWith("$ ") ? "text-cyan-300" : "text-white/85"}`}>
                     {line || "\u00A0"}
@@ -1084,48 +1079,23 @@ function App() {
                     <span className="terminal-caret">█</span>
                   </p>
                 ) : null}
+
+                <p className="mt-1 flex items-center gap-2 text-cyan-300">
+                  <span>$</span>
+                  <input
+                    ref={terminalInputRef}
+                    value={terminalInput}
+                    onChange={(event) => setTerminalInput(event.target.value)}
+                    onKeyDown={handleTerminalKeyDown}
+                    placeholder={t.terminalPlaceholder}
+                    className="w-full bg-transparent font-mono text-sm text-white outline-none placeholder:text-white/45"
+                    aria-label={t.terminalPlaceholder}
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                </p>
               </div>
-              <form onSubmit={handleTerminalSubmit} className="flex flex-wrap items-center gap-2 border-t border-cyan-300/20 bg-slate-900/85 px-3 py-2">
-                <Search className="h-4 w-4 text-cyan-300" />
-                <input
-                  ref={terminalInputRef}
-                  value={terminalInput}
-                  onChange={(event) => setTerminalInput(event.target.value)}
-                  placeholder={t.terminalPlaceholder}
-                  className="min-w-[220px] flex-1 bg-transparent font-mono text-sm text-white outline-none placeholder:text-white/45"
-                  aria-label={t.terminalPlaceholder}
-                  autoComplete="off"
-                  spellCheck={false}
-                />
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 border border-cyan-300/55 bg-cyan-500/20 px-3 py-1.5 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-500/35"
-                >
-                  <Globe className="h-3.5 w-3.5" />
-                  {t.terminalRun}
-                </button>
-              </form>
             </div>
-          </section>
-
-          <section id="metrics" className="mt-12 border border-white/20 bg-black/25 p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Metrics Summary</p>
-            <h2 className="mt-2 text-2xl font-semibold">Métricas públicas (en actualización)</h2>
-            <ul className="mt-4 space-y-2 text-sm text-white/80">
-              <li>- p95 latencia: pendiente de medición y publicación.</li>
-              <li>- Uptime servicio: pendiente de medición y publicación.</li>
-              <li>- Checks por minuto y coste/mes: pendiente de medición y publicación.</li>
-            </ul>
-          </section>
-
-          <section id="postmortem" className="mt-10 border border-white/20 bg-black/25 p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Postmortem Notes</p>
-            <h2 className="mt-2 text-2xl font-semibold">Qué mejoraría hoy</h2>
-            <ul className="mt-4 space-y-2 text-sm text-white/80">
-              <li>- Exponer métricas operativas de forma continua desde el primer release.</li>
-              <li>- Añadir trazas de evidencias por proyecto (PRs/commits/capturas) en una sola vista.</li>
-              <li>- Publicar changelog técnico con decisiones y tradeoffs por versión.</li>
-            </ul>
           </section>
 
           <section id="process" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
@@ -1242,7 +1212,7 @@ function App() {
                 href={LINKS.githubPortfolio}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 border border-rose-300/60 bg-rose-500/22 px-4 py-2 font-medium text-rose-50 shadow-[0_0_14px_rgba(244,63,94,0.24)] transition hover:bg-rose-500/36"
+                className="inline-flex items-center gap-2 border border-rose-300/60 bg-rose-500/22 px-4 py-2 font-medium text-rose-50 shadow-[0_0_14px_rgba(244,63,94,0.24)] transition duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-rose-500/36 hover:shadow-[0_0_22px_rgba(244,63,94,0.34)] active:translate-y-0 active:scale-100"
               >
                 <Github className="h-4 w-4" />
                 {t.portfolioSourceCta}
@@ -1257,6 +1227,10 @@ function App() {
 }
 
 export default App;
+
+
+
+
 
 
 
