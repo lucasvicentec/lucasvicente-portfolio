@@ -156,7 +156,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Arquitectura high-level compartible", "Decisiones de rendimiento y ranking sin datos sensibles"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
-      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png"],
+      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png", "/images/madriddigital_3.png", "/images/madriddigital_4.png"],
       insight: {
         url: "Privado (NDA)",
         strategy: "mobile",
@@ -178,7 +178,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Sitio en producción", "Despliegue con contenedores y Swarm"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
-      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png"],
+      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
       insight: {
         url: LINKS.hytaliaSite,
         strategy: "mobile",
@@ -199,7 +199,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       result: "Iteración rápida de funcionalidades en entorno activo.",
       evidence: ["Workflows de CI para plugins", "Base commons reutilizable en Java"],
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
-      repo: LINKS.githubProfile,
       live: LINKS.hytaliaSite,
     },
   ],
@@ -266,7 +265,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Shareable high-level architecture", "Performance/relevance decisions without sensitive data"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
-      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png"],
+      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png", "/images/madriddigital_3.png", "/images/madriddigital_4.png"],
       insight: {
         url: "Private (NDA)",
         strategy: "mobile",
@@ -288,7 +287,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Production website", "Container-based deployment flow"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
-      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png"],
+      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
       insight: {
         url: LINKS.hytaliaSite,
         strategy: "mobile",
@@ -309,7 +308,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       result: "Fast iteration in active development.",
       evidence: ["CI workflows for plugin builds", "Reusable Java commons base"],
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
-      repo: LINKS.githubProfile,
       live: LINKS.hytaliaSite,
     },
   ],
