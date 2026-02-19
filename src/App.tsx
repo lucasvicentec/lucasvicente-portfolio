@@ -435,6 +435,7 @@ function App() {
   const [showCustomCursor, setShowCustomCursor] = useState(false);
 
   const skillsCount = useMemo(() => coreStack.length + alsoUsedStack.length, []);
+  const alsoUsedMarquee = useMemo(() => [...alsoUsedStack, ...alsoUsedStack], []);
   const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
   const highlights = useMemo(
     () =>
@@ -1013,11 +1014,13 @@ function App() {
               <p className="text-xs uppercase tracking-[0.2em] text-amber-200/85">{t.processLabel}</p>
               <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.processTitle}</h2>
 
-              <ol className="mt-5 space-y-3 text-sm text-white/80">
+              <ol className="mt-5 space-y-2 text-sm text-white/80">
                 {t.processItems.map((item, idx) => (
-                  <li key={item} className="grid grid-cols-[28px_1fr] gap-3 border-t border-white/10 pt-3">
-                    <span className="text-sm font-semibold text-amber-200">{idx + 1}.</span>
-                    <span>{item}</span>
+                  <li key={item} className="flex gap-3 border-l border-white/15 pl-3">
+                    <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-amber-300/45 bg-amber-500/10 text-xs font-semibold text-amber-100">
+                      {idx + 1}
+                    </span>
+                    <span className="pt-0.5 leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ol>
@@ -1033,25 +1036,38 @@ function App() {
               <div className="mt-5 space-y-4">
                 <div className="border-t border-white/15 pt-3">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">Core 5</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="overflow-x-auto pb-1">
+                    <div className="flex w-max min-w-full gap-2">
                     {coreStack.map(({ label, icon: Icon }) => (
                       <span key={label} className="inline-flex items-center gap-2 border border-cyan-300/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-medium text-cyan-100">
                         <Icon className="h-3.5 w-3.5" />
                         {label}
                       </span>
                     ))}
+                    </div>
                   </div>
                 </div>
 
                 <div className="border-t border-white/15 pt-3">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">También he usado</p>
-                  <div className="flex flex-wrap gap-2">
-                    {alsoUsedStack.map(({ label, icon: Icon }) => (
-                      <span key={label} className="inline-flex items-center gap-2 border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-white">
-                        <Icon className="h-3.5 w-3.5" />
-                        {label}
-                      </span>
-                    ))}
+                  <div
+                    className="overflow-hidden"
+                    style={{
+                      maskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
+                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
+                    }}
+                  >
+                    <div className="animate-marquee flex w-max items-center gap-2 pr-2">
+                      {alsoUsedMarquee.map(({ label, icon: Icon }, index) => (
+                        <span
+                          key={`${label}-${index}`}
+                          className="inline-flex items-center gap-2 border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-white"
+                        >
+                          <Icon className="h-3.5 w-3.5" />
+                          {label}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
