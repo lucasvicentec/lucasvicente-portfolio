@@ -94,8 +94,3 @@
     animation: terminal-caret-blink 1s steps(1, end) infinite;
   }
 }
-
-body.custom-cursor-enabled,
-body.custom-cursor-enabled * {
-  cursor: none !important;
-}

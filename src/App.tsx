@@ -13,15 +13,18 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import type { IconType } from "react-icons";
+import { FaJava } from "react-icons/fa";
 import {
   SiCloudflare,
   SiDocker,
   SiGooglecloud,
+  SiGithub,
   SiGithubactions,
   SiJavascript,
-  SiKubernetes,
   SiLinux,
+  SiMariadb,
   SiMongodb,
+  SiMysql,
   SiN8N,
   SiNginx,
   SiNodedotjs,
@@ -33,6 +36,7 @@ import {
   SiRedis,
   SiSqlite,
   SiSupabase,
+  SiSwagger,
   SiTailwindcss,
   SiTypescript,
   SiVercel,
@@ -79,25 +83,30 @@ type TechLogo = {
 const techLogos: TechLogo[] = [
   { label: "React", icon: SiReact, colorClass: "text-cyan-300" },
   { label: "Next.js", icon: SiNextdotjs, colorClass: "text-white" },
+  { label: "GitHub", icon: SiGithub, colorClass: "text-white" },
+  { label: "Node", icon: SiNodedotjs, colorClass: "text-lime-300" },
+  { label: "Java", icon: FaJava, colorClass: "text-orange-300" },
+  { label: "Docker", icon: SiDocker, colorClass: "text-blue-300" },
+  { label: "MySQL", icon: SiMysql, colorClass: "text-blue-300" },
+  { label: "MariaDB", icon: SiMariadb, colorClass: "text-orange-300" },
+  { label: "PostgreSQL", icon: SiPostgresql, colorClass: "text-indigo-300" },
+  { label: "Swagger API", icon: SiSwagger, colorClass: "text-lime-300" },
   { label: "TypeScript", icon: SiTypescript, colorClass: "text-sky-300" },
   { label: "OpenAI", icon: SiOpenai, colorClass: "text-emerald-300" },
   { label: "Vercel", icon: SiVercel, colorClass: "text-white" },
   { label: "Cloudflare", icon: SiCloudflare, colorClass: "text-orange-300" },
-  { label: "Node.js", icon: SiNodedotjs, colorClass: "text-lime-300" },
   { label: "Python", icon: SiPython, colorClass: "text-blue-300" },
   { label: "MongoDB", icon: SiMongodb, colorClass: "text-green-300" },
   { label: "Supabase", icon: SiSupabase, colorClass: "text-emerald-300" },
-  { label: "PostgreSQL", icon: SiPostgresql, colorClass: "text-indigo-300" },
   { label: "Vue", icon: SiVuedotjs, colorClass: "text-emerald-300" },
   { label: "Tailwind", icon: SiTailwindcss, colorClass: "text-cyan-300" },
   { label: "n8n", icon: SiN8N, colorClass: "text-rose-300" },
   { label: "GCP", icon: SiGooglecloud, colorClass: "text-blue-300" },
-  { label: "Kubernetes", icon: SiKubernetes, colorClass: "text-blue-300" },
 ];
 
 const getTerminalIntroByLocale = (locale: Locale): string[] =>
   locale === "es"
-    ? ["🚀 Bienvenido al terminal de Lucas", 'Escribe "ayuda" para ver comandos disponibles.', ""]
+    ? ["Bienvenido al terminal de Lucas", 'Escribe "ayuda" para ver comandos disponibles.', ""]
     : ["🚀 Welcome to Lucas terminal", 'Type "help" to list available commands.', ""];
 
 const readTerminalHistory = (): string[] => {
@@ -380,11 +389,6 @@ function App() {
 
   const skillsCount = useMemo(() => stackByCategory.reduce((acc, group) => acc + group.items.length, 0), []);
   const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
-  const quickCommands = useMemo(
-    () => (lang === "es" ? ["ayuda", "proyectos", "stack", "contacto", "servicios", "secreto"] : ["help", "projects", "stack", "contact", "services", "secret"]),
-    [lang],
-  );
-
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.localStorage.setItem(TERMINAL_STORAGE_KEY, JSON.stringify(terminalLines.slice(-140)));
@@ -429,12 +433,6 @@ function App() {
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [showCustomCursor]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    document.body.classList.toggle("custom-cursor-enabled", showCustomCursor);
-    return () => document.body.classList.remove("custom-cursor-enabled");
   }, [showCustomCursor]);
 
   const sleep = (ms: number) =>
@@ -607,7 +605,7 @@ function App() {
         <div
           aria-hidden="true"
           className="pointer-events-none fixed left-0 top-0 z-[70] -translate-x-1/2 -translate-y-1/2"
-          style={{ transform: `translate(${cursorPos.x + 12}px, ${cursorPos.y + 12}px)` }}
+          style={{ transform: `translate(${cursorPos.x}px, ${cursorPos.y}px)` }}
         >
           <span className="block h-5 w-5 rounded-full border border-cyan-300/90 shadow-[0_0_16px_rgba(34,211,238,0.55)]" />
           <span className="absolute left-1/2 top-1/2 block h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
@@ -897,19 +895,6 @@ function App() {
                 </button>
               </form>
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {quickCommands.map((command) => (
-                <button
-                  key={command}
-                  type="button"
-                  onClick={() => runCommand(command)}
-                  className="rounded-md border border-cyan-300/30 bg-cyan-500/10 px-2.5 py-1 text-xs font-medium text-cyan-100 transition hover:bg-cyan-500/20"
-                >
-                  {command}
-                </button>
-              ))}
-            </div>
-            <p className="mt-3 text-sm text-white/60">{t.terminalHint}</p>
           </section>
 
           <section id="process" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
