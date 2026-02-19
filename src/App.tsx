@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import type { IconType } from "react-icons";
 import {
-  SiAmazonwebservices,
   SiCloudflare,
   SiDocker,
   SiGooglecloud,
@@ -23,6 +22,7 @@ import {
   SiKubernetes,
   SiLinux,
   SiMongodb,
+  SiN8N,
   SiNginx,
   SiNodedotjs,
   SiNextdotjs,
@@ -90,8 +90,8 @@ const techLogos: TechLogo[] = [
   { label: "PostgreSQL", icon: SiPostgresql, colorClass: "text-indigo-300" },
   { label: "Vue", icon: SiVuedotjs, colorClass: "text-emerald-300" },
   { label: "Tailwind", icon: SiTailwindcss, colorClass: "text-cyan-300" },
+  { label: "n8n", icon: SiN8N, colorClass: "text-rose-300" },
   { label: "GCP", icon: SiGooglecloud, colorClass: "text-blue-300" },
-  { label: "AWS", icon: SiAmazonwebservices, colorClass: "text-amber-300" },
   { label: "Kubernetes", icon: SiKubernetes, colorClass: "text-blue-300" },
 ];
 
