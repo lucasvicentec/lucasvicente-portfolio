@@ -453,19 +453,6 @@ function App() {
   const coreMarquee = useMemo(() => [...coreStack, ...coreStack], []);
   const alsoUsedMarquee = useMemo(() => [...alsoUsedStack, ...alsoUsedStack], []);
   const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
-  const highlights = useMemo(
-    () =>
-      lang === "es"
-        ? [
-            "5 proyectos en producción (desde Mar 2024).",
-            `Despliegue continuo con Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
-          ]
-        : [
-            "5 projects in production (since Mar 2024).",
-            `Continuous delivery with Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
-          ],
-    [lang],
-  );
   useEffect(() => {
     isUnmountedRef.current = false;
     return () => {
@@ -813,18 +800,6 @@ function App() {
         </header>
 
         <main id="home" className="pt-16">
-          <section className="mb-10 border border-cyan-300/30 bg-cyan-500/5 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/90">Highlights</p>
-            <ul className="mt-3 space-y-2 text-sm text-white/85">
-              {highlights.map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-cyan-300" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
           <section>
             <div>
               <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -980,14 +955,22 @@ function App() {
                                 index: shotIndex + 1,
                               })
                             }
-                            className="group overflow-hidden rounded border border-white/15 bg-black/25"
+                            className={`group relative overflow-hidden rounded border border-white/15 bg-black/25 shadow-[0_10px_24px_rgba(0,0,0,0.25)] transition duration-300 [transform-style:preserve-3d] ${
+                              shotIndex % 2 === 0
+                                ? "hover:[transform:perspective(900px)_rotateX(6deg)_rotateY(-7deg)_translateY(-2px)]"
+                                : "hover:[transform:perspective(900px)_rotateX(6deg)_rotateY(7deg)_translateY(-2px)]"
+                            }`}
                             aria-label={`${lang === "es" ? "Abrir captura" : "Open screenshot"} ${shotIndex + 1} ${p.title}`}
                           >
                             <img
                               src={src}
                               alt={`${p.title} screenshot ${shotIndex + 1}`}
                               loading="lazy"
-                              className="h-36 w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                              className="h-36 w-full object-cover transition duration-300 group-hover:scale-[1.05]"
+                            />
+                            <span
+                              aria-hidden="true"
+                              className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.0)_30%,rgba(0,0,0,0.12)_100%)] opacity-35 transition duration-300 group-hover:opacity-55"
                             />
                           </button>
                         ))}
@@ -1112,7 +1095,7 @@ function App() {
                       WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
                     }}
                   >
-                    <div className="animate-marquee flex w-max items-center gap-2 pr-2">
+                    <div className="animate-marquee-reverse flex w-max items-center gap-2 pr-2">
                       {coreMarquee.map(({ label, icon: Icon }, index) => (
                         <span
                           key={`${label}-${index}`}
