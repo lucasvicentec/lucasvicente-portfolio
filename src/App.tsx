@@ -10,36 +10,21 @@ import {
   Mail,
   ShieldCheck,
 } from "lucide-react";
-import type { IconType } from "react-icons";
-import { FaJava } from "react-icons/fa";
 import {
   SiCloudflare,
   SiDocker,
-  SiGooglecloud,
-  SiGithub,
   SiGithubactions,
   SiJavascript,
   SiLinux,
-  SiMariadb,
-  SiMongodb,
-  SiMysql,
-  SiN8N,
   SiNginx,
-  SiNodedotjs,
-  SiNextdotjs,
-  SiOpenai,
   SiPostgresql,
   SiPython,
   SiReact,
   SiRedis,
   SiSqlite,
-  SiSupabase,
-  SiSwagger,
   SiTailwindcss,
   SiTypescript,
-  SiVercel,
   SiVite,
-  SiVuedotjs,
 } from "react-icons/si";
 
 const InteractiveNebulaShader = lazy(() =>
@@ -70,6 +55,7 @@ type PsiSnapshot = {
   updatedAt: string;
   score?: number;
   lcp: string;
+  inpLabel?: string;
   inp: string;
   cls: string;
   sourceLabel: string;
@@ -92,37 +78,6 @@ const LINKS = {
 
 const psiReportUrl = (url: string) => `https://pagespeed.web.dev/report?url=${encodeURIComponent(url)}`;
 
-
-type TechLogo = {
-  label: string;
-  icon: IconType;
-  colorClass: string;
-};
-
-const techLogos: TechLogo[] = [
-  { label: "React", icon: SiReact, colorClass: "text-cyan-300" },
-  { label: "Next.js", icon: SiNextdotjs, colorClass: "text-white" },
-  { label: "GitHub", icon: SiGithub, colorClass: "text-white" },
-  { label: "Node", icon: SiNodedotjs, colorClass: "text-lime-300" },
-  { label: "Java", icon: FaJava, colorClass: "text-orange-300" },
-  { label: "Docker", icon: SiDocker, colorClass: "text-blue-300" },
-  { label: "MySQL", icon: SiMysql, colorClass: "text-blue-300" },
-  { label: "MariaDB", icon: SiMariadb, colorClass: "text-orange-300" },
-  { label: "PostgreSQL", icon: SiPostgresql, colorClass: "text-indigo-300" },
-  { label: "Swagger API", icon: SiSwagger, colorClass: "text-lime-300" },
-  { label: "TypeScript", icon: SiTypescript, colorClass: "text-sky-300" },
-  { label: "OpenAI", icon: SiOpenai, colorClass: "text-emerald-300" },
-  { label: "Vercel", icon: SiVercel, colorClass: "text-white" },
-  { label: "Cloudflare", icon: SiCloudflare, colorClass: "text-orange-300" },
-  { label: "Python", icon: SiPython, colorClass: "text-blue-300" },
-  { label: "MongoDB", icon: SiMongodb, colorClass: "text-green-300" },
-  { label: "Supabase", icon: SiSupabase, colorClass: "text-emerald-300" },
-  { label: "Vue", icon: SiVuedotjs, colorClass: "text-emerald-300" },
-  { label: "Tailwind", icon: SiTailwindcss, colorClass: "text-cyan-300" },
-  { label: "n8n", icon: SiN8N, colorClass: "text-rose-300" },
-  { label: "GCP", icon: SiGooglecloud, colorClass: "text-blue-300" },
-];
-
 const getTerminalIntroByLocale = (locale: Locale): string[] =>
   locale === "es"
     ? ["Bienvenido al terminal de Lucas", 'Escribe "ayuda" para ver comandos disponibles.', ""]
@@ -139,7 +94,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       decision:
         "Elegí PostgreSQL + worker interno (vs cron externo) para mantener histórico consistente y controlar reintentos en un solo punto.",
       result:
-        "Checks cada 60s, histórico e incident lifecycle en producción. Pendiente de añadir métricas públicas (p95, uptime y coste mensual).",
+        "Checks cada 60s, histórico e incident lifecycle en producción.",
       evidence: ["Demo pública activa", "Pipeline de despliegue automatizado", "Repositorio con commits de incident lifecycle"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
       repo: LINKS.githubStackWatch,
@@ -149,11 +104,11 @@ const projectsByLocale: Record<Locale, Project[]> = {
         url: LINKS.statusPage,
         strategy: "desktop",
         updatedAt: "2026-02-19",
-        score: 97,
         lcp: "0.6 s",
-        inp: "N/D (Lighthouse muestra TBT 140 ms)",
+        inpLabel: "TBT (proxy INP)",
+        inp: "140 ms",
         cls: "0.005",
-        sourceLabel: "PageSpeed snapshot (manual)",
+        sourceLabel: "Última medición (Lighthouse, desktop)",
         reportUrl: psiReportUrl(LINKS.statusPage),
       },
     },
@@ -164,7 +119,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       context: "Servicio de hosting con paneles custom, automatizaciones y operación diaria para clientes reales.",
       decision: "Se combinó Pterodactyl + WHMCS + APIs para balancear velocidad de entrega y operación mantenible.",
       result:
-        "Más de 60 clientes y más de 60 servidores activos, con soporte técnico y comunidad orientada al lanzamiento oficial de Hytale.",
+        "Más de 60 clientes y más de 60 servidores activos. Infra gestionada sobre VPS/servidores dedicados (EU), con provisión automatizada y soporte continuo.",
       evidence: ["Sitio público activo", "Operación con clientes reales", "Automatizaciones y paneles custom en producción"],
       stack: "Pterodactyl, WHMCS, APIs, automatización operativa",
       live: "https://varynhost.com/",
@@ -172,11 +127,11 @@ const projectsByLocale: Record<Locale, Project[]> = {
         url: "https://varynhost.com/",
         strategy: "mobile",
         updatedAt: "2026-02-19",
-        score: 97,
         lcp: "0.5 s",
-        inp: "N/D (Lighthouse muestra TBT 10 ms)",
+        inpLabel: "TBT (proxy INP)",
+        inp: "10 ms",
         cls: "0.000",
-        sourceLabel: "PageSpeed snapshot (manual)",
+        sourceLabel: "Última medición (Lighthouse, móvil)",
         reportUrl: psiReportUrl("https://varynhost.com/"),
       },
     },
@@ -195,11 +150,11 @@ const projectsByLocale: Record<Locale, Project[]> = {
         url: "Privado (NDA)",
         strategy: "mobile",
         updatedAt: "2026-02-19",
-        score: 100,
         lcp: "0.5 s",
-        inp: "N/D (Lighthouse muestra TBT 0 ms)",
+        inpLabel: "TBT (proxy INP)",
+        inp: "0 ms",
         cls: "0.006",
-        sourceLabel: "Última medición (PSI, entorno privado)",
+        sourceLabel: "Última medición (Lighthouse, entorno privado)",
       },
     },
     {
@@ -208,7 +163,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       type: "Plataforma de comunidad / Infra",
       context: "Frontend principal para usuarios de comunidad con login, panel y módulos de producto.",
       decision: "Se mantuvo arquitectura transicional para migrar legacy sin frenar entregas semanales.",
-      result: "Producto en producción con despliegue continuo y módulos reutilizables; pendiente de publicar métricas de tráfico/rendimiento.",
+      result: "Producto en producción con despliegue continuo y módulos reutilizables.",
       evidence: ["Sitio en producción", "Despliegue con contenedores y Swarm"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
@@ -229,7 +184,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       type: "Servidor de juego / Ecosistema Java",
       context: "Conjunto de plugins para operación y jugabilidad en servidores multijugador.",
       decision: "Se consolidó una base compartida para evitar duplicación entre módulos y acelerar releases.",
-      result: "Iteración rápida de funcionalidades en entorno activo; próximas métricas: tiempo medio de build y frecuencia de despliegue.",
+      result: "Iteración rápida de funcionalidades en entorno activo.",
       evidence: ["Workflows de CI para plugins", "Base commons reutilizable en Java"],
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
       repo: LINKS.githubProfile,
@@ -245,7 +200,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       decision:
         "I chose PostgreSQL + an internal worker (vs external cron) to keep history consistent and retry logic controlled in one place.",
       result:
-        "60s checks, production incident lifecycle, and active public status page. Public p95/uptime/cost metrics are being added next.",
+        "60s checks, production incident lifecycle, and active public status page.",
       evidence: ["Live demo", "Automated deployment pipeline", "Repository with incident lifecycle code"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
       repo: LINKS.githubStackWatch,
@@ -255,11 +210,11 @@ const projectsByLocale: Record<Locale, Project[]> = {
         url: LINKS.statusPage,
         strategy: "desktop",
         updatedAt: "2026-02-19",
-        score: 97,
         lcp: "0.6 s",
-        inp: "N/A (Lighthouse reports TBT 140 ms)",
+        inpLabel: "TBT (INP proxy)",
+        inp: "140 ms",
         cls: "0.005",
-        sourceLabel: "PageSpeed snapshot (manual)",
+        sourceLabel: "Latest measurement (Lighthouse, desktop)",
         reportUrl: psiReportUrl(LINKS.statusPage),
       },
     },
@@ -270,7 +225,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       context: "Hosting service with custom panels, automations, and day-to-day operations for real clients.",
       decision: "Pterodactyl + WHMCS + APIs were combined to balance delivery speed with maintainable operations.",
       result:
-        "More than 60 clients and more than 60 active servers, including technical support and community workflows for Hytale launch timing.",
+        "More than 60 clients and more than 60 active servers. Infrastructure runs on EU VPS/dedicated nodes with automated provisioning and continuous support.",
       evidence: ["Public live website", "Real client operations", "Production automations and custom panels"],
       stack: "Pterodactyl, WHMCS, APIs, operational automation",
       live: "https://varynhost.com/",
@@ -278,11 +233,11 @@ const projectsByLocale: Record<Locale, Project[]> = {
         url: "https://varynhost.com/",
         strategy: "mobile",
         updatedAt: "2026-02-19",
-        score: 97,
         lcp: "0.5 s",
-        inp: "N/A (Lighthouse reports TBT 10 ms)",
+        inpLabel: "TBT (INP proxy)",
+        inp: "10 ms",
         cls: "0.000",
-        sourceLabel: "PageSpeed snapshot (manual)",
+        sourceLabel: "Latest measurement (Lighthouse, mobile)",
         reportUrl: psiReportUrl("https://varynhost.com/"),
       },
     },
@@ -301,11 +256,11 @@ const projectsByLocale: Record<Locale, Project[]> = {
         url: "Private (NDA)",
         strategy: "mobile",
         updatedAt: "2026-02-19",
-        score: 100,
         lcp: "0.5 s",
-        inp: "N/A (Lighthouse reports TBT 0 ms)",
+        inpLabel: "TBT (INP proxy)",
+        inp: "0 ms",
         cls: "0.006",
-        sourceLabel: "Latest snapshot (PSI, private environment)",
+        sourceLabel: "Latest measurement (Lighthouse, private environment)",
       },
     },
     {
@@ -314,7 +269,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       type: "Community platform / Infra",
       context: "Main frontend for community users with login, admin, and product modules.",
       decision: "A transitional architecture was kept to migrate legacy paths without blocking weekly delivery.",
-      result: "Production-ready app with continuous deploys and reusable modules; public traffic/perf metrics coming next.",
+      result: "Production-ready app with continuous deploys and reusable modules.",
       evidence: ["Production website", "Container-based deployment flow"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
@@ -335,7 +290,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       type: "Game server / Java ecosystem",
       context: "Plugin suite used for server operation and gameplay in a multiplayer environment.",
       decision: "Shared commons were consolidated to reduce duplication and speed up releases across modules.",
-      result: "Fast iteration in active development. Next metrics to expose: build time and release frequency.",
+      result: "Fast iteration in active development.",
       evidence: ["CI workflows for plugin builds", "Reusable Java commons base"],
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
       repo: LINKS.githubProfile,
@@ -370,8 +325,8 @@ const copy = {
     navProcess: "Método",
     navHiring: "Contratación",
     openToWork: "Disponible para remoto o híbrido",
-    eyebrow: "Full-Stack con mentalidad de operaciones",
-    title: "Full-Stack con mentalidad de operaciones: monitorización, automatización y despliegue.",
+    eyebrow: "Full-Stack orientado a producto",
+    title: "Construyo software que mejora operaciones y escala sin romperse.",
     intro:
       "Me obsesionan métricas, fiabilidad y sistemas mantenibles.",
     ctaProjects: "Ver casos",
@@ -379,7 +334,7 @@ const copy = {
     ctaGitHub: "GitHub",
     featuredLabel: "Casos",
     featuredTitle: "Casos destacados",
-    featuredSubtitle: "Cada caso incluye contexto real, tradeoff técnico y resultado medible (o pendiente de medición).",
+    featuredSubtitle: "Cada caso incluye contexto real, tradeoff técnico y resultados verificables.",
     challenge: "Contexto",
     architecture: "Decisión difícil",
     impact: "Resultado",
@@ -391,7 +346,7 @@ const copy = {
     processItems: [
       "Empiezo por el problema de negocio y un criterio de éxito medible.",
       "Diseño una arquitectura simple para hoy y extensible para mañana.",
-      "Automatizo despliegues y operaciones repetitivas desde el inicio.",
+      "Automatizo despliegues y tareas repetitivas desde el inicio.",
       "Priorizo observabilidad y fiabilidad en producción.",
     ],
     toolingLabel: "Herramientas",
@@ -400,7 +355,7 @@ const copy = {
     hiringBadge: "Contratación",
     hiringTitle: "Si buscas a alguien que asuma responsabilidad técnica real",
     hiringText:
-      "Estoy abierto a freelance, contrato o full-time. Puedo entrar en proyectos existentes o construir desde cero con enfoque de producto y operaciones.",
+      "Estoy abierto a freelance, contrato o full-time. Puedo entrar en proyectos existentes o construir desde cero con enfoque de producto y entrega.",
     hiringPoints: ["Rápido en ejecución", "Sólido en producción", "Comunicación clara con negocio y equipo"],
     sendEmail: "Enviar email",
     emailSubject: "Conversación de contratación",
@@ -418,8 +373,8 @@ const copy = {
     navProcess: "Process",
     navHiring: "Hiring",
     openToWork: "Open to remote or hybrid",
-    eyebrow: "Full-stack with an operations mindset",
-    title: "Full-stack with an operations mindset: monitoring, automation, and deployment.",
+    eyebrow: "Product-oriented full-stack",
+    title: "I build software that improves operations and scales without breaking.",
     intro:
       "I care deeply about metrics, reliability, and maintainable systems.",
     ctaProjects: "View cases",
@@ -427,7 +382,7 @@ const copy = {
     ctaGitHub: "GitHub",
     featuredLabel: "Case studies",
     featuredTitle: "Featured cases",
-    featuredSubtitle: "Each case includes real context, a technical tradeoff, and measurable results (or pending metrics).",
+    featuredSubtitle: "Each case includes real context, a technical tradeoff, and verifiable outcomes.",
     challenge: "Challenge",
     architecture: "Architecture",
     impact: "Impact",
@@ -439,7 +394,7 @@ const copy = {
     processItems: [
       "Start from the business problem and measurable success criteria.",
       "Design architecture simple for today and extensible for tomorrow.",
-      "Automate deploys and repetitive operations from day one.",
+      "Automate deploys and repetitive tasks from day one.",
       "Prioritize observability and production reliability.",
     ],
     toolingLabel: "Tooling",
@@ -448,7 +403,7 @@ const copy = {
     hiringBadge: "Hiring",
     hiringTitle: "If you need someone with real technical ownership",
     hiringText:
-      "I am open to freelance, contract, or full-time roles. I can join existing systems or build from scratch with a product and operations mindset.",
+      "I am open to freelance, contract, or full-time roles. I can join existing systems or build from scratch with a product and delivery mindset.",
     hiringPoints: ["Fast execution", "Production reliability", "Clear communication with business and team"],
     sendEmail: "Send email",
     emailSubject: "Hiring conversation",
@@ -466,7 +421,7 @@ const copy = {
 function App() {
   const [lang, setLang] = useState<Locale>("es");
   const t = copy[lang];
-  const projects = projectsByLocale[lang];  const marqueeLogos = useMemo(() => [...techLogos, ...techLogos], []);
+  const projects = projectsByLocale[lang];
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalLines, setTerminalLines] = useState<string[]>(() => getTerminalIntroByLocale("es"));
   const [typingLine, setTypingLine] = useState("");
@@ -595,7 +550,6 @@ function App() {
             cv: "cv",
             stackwatch: "stackwatch",
             tema: "theme",
-            sudo: "sudo",
             github: "github",
             linkedin: "linkedin",
             limpiar: "clear",
@@ -610,7 +564,6 @@ function App() {
             cv: "cv",
             stackwatch: "stackwatch",
             theme: "theme",
-            sudo: "sudo",
             github: "github",
             linkedin: "linkedin",
             clear: "clear",
@@ -655,12 +608,12 @@ function App() {
     const responsesByCommand: Record<string, string[]> = {
       help:
         lang === "es"
-          ? ["Comandos disponibles:", "ayuda, proyectos, stack, stackwatch, contacto, servicios, sobre, cv, github, linkedin, sudo, tema, limpiar"]
-          : ["Available commands:", "help, projects, stack, stackwatch, contact, services, about, cv, github, linkedin, sudo, theme, clear"],
+          ? ["Comandos disponibles:", "ayuda, proyectos, stack, stackwatch, contacto, servicios, sobre, cv, github, linkedin, tema, limpiar"]
+          : ["Available commands:", "help, projects, stack, stackwatch, contact, services, about, cv, github, linkedin, theme, clear"],
       greet:
         lang === "es"
-          ? ["Hola, soy Lucas 👋", "Puedo contarte sobre proyectos, stack, métricas o contratación."]
-          : ["Hey, I'm Lucas 👋", "I can tell you about projects, stack, metrics, or hiring."],
+          ? ["Hola, soy Lucas 👋", "Puedo contarte sobre proyectos, stack o contratación."]
+          : ["Hey, I'm Lucas 👋", "I can tell you about projects, stack, or hiring."],
       projects:
         lang === "es"
           ? [
@@ -713,10 +666,6 @@ function App() {
         lang === "es"
           ? ["Tema:", "Modo neón activo por defecto."]
           : ["Theme:", "Neon mode is active by default."],
-      sudo:
-        lang === "es"
-          ? ["[sudo] contraseña para lucas:", "Permiso denegado. Buen intento 😄"]
-          : ["[sudo] password for lucas:", "Permission denied. Nice try 😄"],
       thanks:
         lang === "es"
           ? ["¡Gracias a ti!", "Si quieres, puedo abrirte ahora los enlaces clave de evidencia."]
@@ -954,7 +903,7 @@ function App() {
                           <p className="font-semibold">{p.insight.lcp}</p>
                         </div>
                         <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
-                          <p className="text-[10px] text-white/60">INP</p>
+                          <p className="text-[10px] text-white/60">{p.insight.inpLabel ?? "INP"}</p>
                           <p className="font-semibold">{p.insight.inp}</p>
                         </div>
                         <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
@@ -1002,32 +951,6 @@ function App() {
                   </div>
                 </article>
               ))}
-            </div>
-          </section>
-
-          <section className="mt-16">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.75)]" />
-              <p className="text-xs uppercase tracking-[0.22em] text-white/65">Stack tecnológico</p>
-            </div>
-            <div
-              className="overflow-hidden rounded-xl border border-white/15 bg-black/25 p-4"
-              style={{
-                maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-              }}
-            >
-              <div className="animate-marquee flex w-max items-center gap-4">
-                {marqueeLogos.map(({ label, icon: Icon, colorClass }, index) => (
-                  <div
-                    key={`${label}-${index}`}
-                    className="flex min-w-[170px] items-center gap-3 rounded-xl border border-white/10 bg-slate-950/85 px-4 py-3 text-white/85 shadow-[inset_0_0_18px_rgba(148,163,184,0.08)]"
-                  >
-                    <Icon className={`h-6 w-6 ${colorClass}`} />
-                    <span className="text-lg font-semibold">{label}</span>
-                  </div>
-                ))}
-              </div>
             </div>
           </section>
 
