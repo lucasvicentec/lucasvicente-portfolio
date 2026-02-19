@@ -427,7 +427,7 @@ const copy = {
     portfolioSourceCta: "Ver codigo fuente",
     terminalLabel: "Terminal interactivo",
     terminalTitle: "Consola de navegación rápida",
-    terminalHint: "Prueba: ayuda, proyectos, stack, contacto, cv, servicios, secreto, limpiar",
+    terminalHint: "Prueba frases naturales: hola, quién eres, te quiero contratar, qué stack usas, contacto.",
     terminalPlaceholder: "Escribe un comando...",
     terminalRun: "Ejecutar",
   },
@@ -475,7 +475,7 @@ const copy = {
     portfolioSourceCta: "View source code",
     terminalLabel: "Interactive terminal",
     terminalTitle: "Fast navigation console",
-    terminalHint: "Try: help, projects, stack, contact, cv, services, secret, clear",
+    terminalHint: "Try natural phrases: hi, who are you, I want to hire you, what's your stack, contact.",
     terminalPlaceholder: "Type a command...",
     terminalRun: "Run",
   },
@@ -505,12 +505,10 @@ function App() {
         ? [
             "5 proyectos en producción (desde Mar 2024).",
             `Despliegue continuo con Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
-            "Métricas públicas en construcción: p95 latencia, uptime, checks/min, coste/mes y usuarios/día.",
           ]
         : [
             "5 projects in production (since Mar 2024).",
             `Continuous delivery with Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
-            "Public metrics in progress: p95 latency, uptime, checks/min, monthly cost, and daily users.",
           ],
     [lang],
   );
@@ -605,6 +603,7 @@ function App() {
 
   const runCommand = (rawCommand: string) => {
     const command = rawCommand.trim().toLowerCase();
+    const normalized = command.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     if (!command) return;
 
     const aliases: Record<string, string> =
@@ -646,7 +645,22 @@ function App() {
             clear: "clear",
           };
 
-    const resolved = aliases[command];
+    const detectNaturalIntent = () => {
+      const hasAny = (keywords: string[]) => keywords.some((k) => normalized.includes(k));
+
+      if (hasAny(["hola", "buenas", "hello", "hi", "hey"])) return "greet";
+      if (hasAny(["quien eres", "quien sos", "who are you", "about you"])) return "about";
+      if (hasAny(["te quiero contratar", "quiero contratarte", "contratar", "hire you", "hire", "trabajar contigo"])) return "hire";
+      if (hasAny(["precio", "coste", "costo", "tarifa", "budget", "presupuesto", "rate"])) return "pricing";
+      if (hasAny(["contacto", "correo", "email", "mail", "linkedin", "github"])) return "contact";
+      if (hasAny(["proyectos", "proyecto", "project", "portfolio", "trabajos"])) return "projects";
+      if (hasAny(["stack", "tecnologias", "tecnologia", "tech", "skills"])) return "stack";
+      if (hasAny(["cv", "curriculum", "resume"])) return "cv";
+      if (hasAny(["gracias", "thanks", "thank you"])) return "thanks";
+      return null;
+    };
+
+    const resolved = aliases[command] ?? aliases[normalized] ?? detectNaturalIntent();
 
     if (!resolved) {
       const unknown = lang === "es" ? `Comando no reconocido: ${command}. Usa "ayuda".` : `Unknown command: ${command}. Use "help".`;
@@ -672,6 +686,10 @@ function App() {
         lang === "es"
           ? ["Comandos disponibles:", "ayuda, proyectos, stack, stackwatch, contacto, servicios, sobre, cv, metricas, postmortem, github, linkedin, secreto, sudo, tema, limpiar"]
           : ["Available commands:", "help, projects, stack, stackwatch, contact, services, about, cv, metrics, postmortem, github, linkedin, secret, sudo, theme, clear"],
+      greet:
+        lang === "es"
+          ? ["Hola, soy Lucas 👋", "Puedo contarte sobre proyectos, stack, métricas o contratación."]
+          : ["Hey, I'm Lucas 👋", "I can tell you about projects, stack, metrics, or hiring."],
       projects:
         lang === "es"
           ? [
@@ -704,6 +722,14 @@ function App() {
         lang === "es"
           ? ["Sobre mí:", "Ingeniero full-stack orientado a producto, operación e impacto real."]
           : ["About:", "Full-stack engineer focused on product, operations, and measurable impact."],
+      hire:
+        lang === "es"
+          ? ["Perfecto, hablemos.", "Puedes escribirme a contacto@lucasvicente.es o por LinkedIn y te respondo rápido."]
+          : ["Great, let's talk.", "You can reach me at contacto@lucasvicente.es or on LinkedIn for a quick reply."],
+      pricing:
+        lang === "es"
+          ? ["Depende del alcance y urgencia.", "Si me pasas contexto por email, te doy propuesta cerrada o por fases."]
+          : ["It depends on scope and urgency.", "If you share context by email, I can send a fixed or phased proposal."],
       cv:
         lang === "es"
           ? ["CV: abriendo acceso al PDF/contacto..."]
@@ -732,6 +758,10 @@ function App() {
         lang === "es"
           ? ["[sudo] contraseña para lucas:", "Permiso denegado. Buen intento 😄"]
           : ["[sudo] password for lucas:", "Permission denied. Nice try 😄"],
+      thanks:
+        lang === "es"
+          ? ["¡Gracias a ti!", "Si quieres, puedo abrirte ahora los enlaces clave de evidencia."]
+          : ["Thanks!", "If you want, I can open the key evidence links now."],
       github: [LINKS.githubProfile],
       linkedin: [LINKS.linkedinProfile],
     };
@@ -1061,7 +1091,7 @@ function App() {
                 <span className="h-3 w-3 rounded-full bg-red-400" />
                 <span className="h-3 w-3 rounded-full bg-amber-400" />
                 <span className="h-3 w-3 rounded-full bg-green-400" />
-                <span className="ml-3 text-xs text-white/60">terminal.local</span>
+                <span className="ml-3 text-xs text-white/60">lucas-console://ops</span>
               </div>
               <div
                 ref={terminalViewportRef}
