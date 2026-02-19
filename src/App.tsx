@@ -92,7 +92,6 @@ const LINKS = {
 
 const psiReportUrl = (url: string) => `https://pagespeed.web.dev/report?url=${encodeURIComponent(url)}`;
 
-const TERMINAL_STORAGE_KEY = "lucas_portfolio_terminal_history_v1";
 
 type TechLogo = {
   label: string;
@@ -129,23 +128,6 @@ const getTerminalIntroByLocale = (locale: Locale): string[] =>
     ? ["Bienvenido al terminal de Lucas", 'Escribe "ayuda" para ver comandos disponibles.', ""]
     : ["🚀 Welcome to Lucas terminal", 'Type "help" to list available commands.', ""];
 
-const readTerminalHistory = (): string[] => {
-  if (typeof window === "undefined") return getTerminalIntroByLocale("es");
-
-  try {
-    const raw = window.localStorage.getItem(TERMINAL_STORAGE_KEY);
-    if (!raw) return getTerminalIntroByLocale("es");
-
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.every((line) => typeof line === "string")) {
-      return parsed.slice(-140);
-    }
-  } catch {
-    // Ignore invalid local storage and use intro.
-  }
-
-  return getTerminalIntroByLocale("es");
-};
 
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
@@ -486,7 +468,7 @@ function App() {
   const t = copy[lang];
   const projects = projectsByLocale[lang];  const marqueeLogos = useMemo(() => [...techLogos, ...techLogos], []);
   const [terminalInput, setTerminalInput] = useState("");
-  const [terminalLines, setTerminalLines] = useState<string[]>(() => readTerminalHistory());
+  const [terminalLines, setTerminalLines] = useState<string[]>(() => getTerminalIntroByLocale("es"));
   const [typingLine, setTypingLine] = useState("");
   const terminalViewportRef = useRef<HTMLDivElement | null>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
@@ -512,11 +494,6 @@ function App() {
           ],
     [lang],
   );
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(TERMINAL_STORAGE_KEY, JSON.stringify(terminalLines.slice(-140)));
-  }, [terminalLines]);
-
   useEffect(() => {
     isUnmountedRef.current = false;
     return () => {
@@ -617,10 +594,7 @@ function App() {
             sobre: "about",
             cv: "cv",
             stackwatch: "stackwatch",
-            metricas: "metrics",
-            postmortem: "postmortem",
             tema: "theme",
-            secreto: "secret",
             sudo: "sudo",
             github: "github",
             linkedin: "linkedin",
@@ -635,10 +609,7 @@ function App() {
             about: "about",
             cv: "cv",
             stackwatch: "stackwatch",
-            metrics: "metrics",
-            postmortem: "postmortem",
             theme: "theme",
-            secret: "secret",
             sudo: "sudo",
             github: "github",
             linkedin: "linkedin",
@@ -684,8 +655,8 @@ function App() {
     const responsesByCommand: Record<string, string[]> = {
       help:
         lang === "es"
-          ? ["Comandos disponibles:", "ayuda, proyectos, stack, stackwatch, contacto, servicios, sobre, cv, metricas, postmortem, github, linkedin, secreto, sudo, tema, limpiar"]
-          : ["Available commands:", "help, projects, stack, stackwatch, contact, services, about, cv, metrics, postmortem, github, linkedin, secret, sudo, theme, clear"],
+          ? ["Comandos disponibles:", "ayuda, proyectos, stack, stackwatch, contacto, servicios, sobre, cv, github, linkedin, sudo, tema, limpiar"]
+          : ["Available commands:", "help, projects, stack, stackwatch, contact, services, about, cv, github, linkedin, sudo, theme, clear"],
       greet:
         lang === "es"
           ? ["Hola, soy Lucas 👋", "Puedo contarte sobre proyectos, stack, métricas o contratación."]
@@ -738,22 +709,10 @@ function App() {
         lang === "es"
           ? ["StackWatch: abriendo demo + repo + referencia de implementación."]
           : ["StackWatch: opening live demo + repo + implementation reference."],
-      metrics:
-        lang === "es"
-          ? ["Métricas: abriendo resumen público para completar con p95/uptime/checks/coste."]
-          : ["Metrics: opening public summary placeholder for p95/uptime/checks/cost."],
-      postmortem:
-        lang === "es"
-          ? ["Postmortem: abriendo notas de aprendizajes y próximos ajustes."]
-          : ["Postmortem: opening lessons learned and next adjustments."],
       theme:
         lang === "es"
           ? ["Tema:", "Modo neón activo por defecto."]
           : ["Theme:", "Neon mode is active by default."],
-      secret:
-        lang === "es"
-          ? ["🛰️ Modo explorador: activo.", "Tip: prueba 'stack' y 'proyectos'."]
-          : ["🛰️ Explorer mode: enabled.", "Tip: try 'stack' and 'projects'."],
       sudo:
         lang === "es"
           ? ["[sudo] contraseña para lucas:", "Permiso denegado. Buen intento 😄"]
@@ -777,8 +736,6 @@ function App() {
         open(LINKS.statusPage);
         open(LINKS.githubStackWatch);
       }
-      if (resolved === "metrics") window.location.hash = "metrics";
-      if (resolved === "postmortem") window.location.hash = "postmortem";
     }
   };
 
