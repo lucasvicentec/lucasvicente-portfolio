@@ -1,28 +1,43 @@
-﻿import { lazy, Suspense, useMemo, useState } from "react";
+﻿import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
   BriefcaseBusiness,
   CircleHelp,
+  Command,
   Github,
+  Globe,
   Linkedin,
   Mail,
+  Search,
   ShieldCheck,
 } from "lucide-react";
+import type { IconType } from "react-icons";
 import {
+  SiAmazonwebservices,
+  SiCloudflare,
   SiDocker,
+  SiGooglecloud,
   SiGithubactions,
   SiJavascript,
+  SiKubernetes,
   SiLinux,
+  SiMongodb,
   SiNginx,
+  SiNodedotjs,
+  SiNextdotjs,
+  SiOpenai,
   SiPostgresql,
   SiPython,
   SiReact,
   SiRedis,
   SiSqlite,
+  SiSupabase,
   SiTailwindcss,
   SiTypescript,
+  SiVercel,
   SiVite,
+  SiVuedotjs,
 } from "react-icons/si";
 
 const InteractiveNebulaShader = lazy(() =>
@@ -52,6 +67,56 @@ const LINKS = {
   statusPage: "https://status.lucasvicente.es/",
   hytaliaSite: "https://www.hytalia.net",
 } as const;
+
+const TERMINAL_STORAGE_KEY = "lucas_portfolio_terminal_history_v1";
+
+type TechLogo = {
+  label: string;
+  icon: IconType;
+  colorClass: string;
+};
+
+const techLogos: TechLogo[] = [
+  { label: "React", icon: SiReact, colorClass: "text-cyan-300" },
+  { label: "Next.js", icon: SiNextdotjs, colorClass: "text-white" },
+  { label: "TypeScript", icon: SiTypescript, colorClass: "text-sky-300" },
+  { label: "OpenAI", icon: SiOpenai, colorClass: "text-emerald-300" },
+  { label: "Vercel", icon: SiVercel, colorClass: "text-white" },
+  { label: "Cloudflare", icon: SiCloudflare, colorClass: "text-orange-300" },
+  { label: "Node.js", icon: SiNodedotjs, colorClass: "text-lime-300" },
+  { label: "Python", icon: SiPython, colorClass: "text-blue-300" },
+  { label: "MongoDB", icon: SiMongodb, colorClass: "text-green-300" },
+  { label: "Supabase", icon: SiSupabase, colorClass: "text-emerald-300" },
+  { label: "PostgreSQL", icon: SiPostgresql, colorClass: "text-indigo-300" },
+  { label: "Vue", icon: SiVuedotjs, colorClass: "text-emerald-300" },
+  { label: "Tailwind", icon: SiTailwindcss, colorClass: "text-cyan-300" },
+  { label: "GCP", icon: SiGooglecloud, colorClass: "text-blue-300" },
+  { label: "AWS", icon: SiAmazonwebservices, colorClass: "text-amber-300" },
+  { label: "Kubernetes", icon: SiKubernetes, colorClass: "text-blue-300" },
+];
+
+const getTerminalIntroByLocale = (locale: Locale): string[] =>
+  locale === "es"
+    ? ["🚀 Bienvenido al terminal de Lucas", 'Escribe "ayuda" para ver comandos disponibles.', ""]
+    : ["🚀 Welcome to Lucas terminal", 'Type "help" to list available commands.', ""];
+
+const readTerminalHistory = (): string[] => {
+  if (typeof window === "undefined") return getTerminalIntroByLocale("es");
+
+  try {
+    const raw = window.localStorage.getItem(TERMINAL_STORAGE_KEY);
+    if (!raw) return getTerminalIntroByLocale("es");
+
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.every((line) => typeof line === "string")) {
+      return parsed.slice(-140);
+    }
+  } catch {
+    // Ignore invalid local storage and use intro.
+  }
+
+  return getTerminalIntroByLocale("es");
+};
 
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
@@ -240,6 +305,11 @@ const copy = {
     portfolioSourceLabel: "Código de este portfolio",
     portfolioSourceText: "¿Quieres revisar la implementación, estructura y despliegue de esta web?",
     portfolioSourceCta: "Ver codigo fuente",
+    terminalLabel: "Terminal interactivo",
+    terminalTitle: "Pregúntame por stack, proyectos o contacto",
+    terminalHint: "Prueba: ayuda, proyectos, stack, contacto, github, linkedin, limpiar",
+    terminalPlaceholder: "Escribe un comando...",
+    terminalRun: "Ejecutar",
   },
   en: {
     navProjects: "Cases",
@@ -283,6 +353,11 @@ const copy = {
     portfolioSourceLabel: "Portfolio source",
     portfolioSourceText: "Want to review implementation, structure, and deployment of this site?",
     portfolioSourceCta: "View source code",
+    terminalLabel: "Interactive terminal",
+    terminalTitle: "Ask me about stack, projects, or contact",
+    terminalHint: "Try: help, projects, stack, contact, github, linkedin, clear",
+    terminalPlaceholder: "Type a command...",
+    terminalRun: "Run",
   },
 } as const;
 
@@ -290,11 +365,212 @@ function App() {
   const [lang, setLang] = useState<Locale>("es");
   const t = copy[lang];
   const projects = projectsByLocale[lang];
+  const marqueeLogos = useMemo(() => [...techLogos, ...techLogos], []);
+  const [terminalInput, setTerminalInput] = useState("");
+  const [terminalLines, setTerminalLines] = useState<string[]>(() => readTerminalHistory());
+  const [typingLine, setTypingLine] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const terminalViewportRef = useRef<HTMLDivElement | null>(null);
+  const typingQueueRef = useRef<string[]>([]);
+  const typingTimeoutRef = useRef<number | undefined>(undefined);
+  const isTypingRef = useRef(false);
+  const isUnmountedRef = useRef(false);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [showCustomCursor, setShowCustomCursor] = useState(false);
 
   const skillsCount = useMemo(() => stackByCategory.reduce((acc, group) => acc + group.items.length, 0), []);
+  const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(TERMINAL_STORAGE_KEY, JSON.stringify(terminalLines.slice(-140)));
+  }, [terminalLines]);
+
+  useEffect(() => {
+    return () => {
+      isUnmountedRef.current = true;
+      if (typingTimeoutRef.current !== undefined) {
+        window.clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = undefined;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!terminalViewportRef.current) return;
+    terminalViewportRef.current.scrollTop = terminalViewportRef.current.scrollHeight;
+  }, [terminalLines, typingLine]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const finePointer = window.matchMedia("(pointer: fine)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateCursorVisibility = () => setShowCustomCursor(finePointer.matches && !reducedMotion.matches);
+
+    updateCursorVisibility();
+    finePointer.addEventListener("change", updateCursorVisibility);
+    reducedMotion.addEventListener("change", updateCursorVisibility);
+
+    return () => {
+      finePointer.removeEventListener("change", updateCursorVisibility);
+      reducedMotion.removeEventListener("change", updateCursorVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!showCustomCursor || typeof window === "undefined") return;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      setCursorPos({ x: event.clientX, y: event.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [showCustomCursor]);
+
+  const sleep = (ms: number) =>
+    new Promise<void>((resolve) => {
+      typingTimeoutRef.current = window.setTimeout(resolve, ms);
+    });
+
+  const processTypingQueue = async () => {
+    if (isTypingRef.current || isUnmountedRef.current) return;
+    isTypingRef.current = true;
+    setIsTyping(true);
+
+    while (typingQueueRef.current.length > 0 && !isUnmountedRef.current) {
+      const nextLine = typingQueueRef.current.shift() ?? "";
+
+      if (!nextLine) {
+        setTerminalLines((prev) => [...prev, ""]);
+        continue;
+      }
+
+      for (let index = 1; index <= nextLine.length; index += 1) {
+        if (isUnmountedRef.current) return;
+        setTypingLine(nextLine.slice(0, index));
+        await sleep(14);
+      }
+
+      setTerminalLines((prev) => [...prev, nextLine]);
+      setTypingLine("");
+      await sleep(48);
+    }
+
+    setTypingLine("");
+    setIsTyping(false);
+    isTypingRef.current = false;
+  };
+
+  const enqueueTypedLines = (lines: string[]) => {
+    typingQueueRef.current.push(...lines);
+    void processTypingQueue();
+  };
+
+  const runCommand = (rawCommand: string) => {
+    const command = rawCommand.trim().toLowerCase();
+    if (!command || isTypingRef.current) return;
+
+    const aliases: Record<string, string> =
+      lang === "es"
+        ? {
+            ayuda: "help",
+            proyectos: "projects",
+            stack: "stack",
+            contacto: "contact",
+            github: "github",
+            linkedin: "linkedin",
+            limpiar: "clear",
+          }
+        : {
+            help: "help",
+            projects: "projects",
+            stack: "stack",
+            contact: "contact",
+            github: "github",
+            linkedin: "linkedin",
+            clear: "clear",
+          };
+
+    const resolved = aliases[command];
+
+    if (!resolved) {
+      const unknown = lang === "es" ? `Comando no reconocido: ${command}. Usa "ayuda".` : `Unknown command: ${command}. Use "help".`;
+      setTerminalLines((prev) => [...prev, `$ ${command}`]);
+      enqueueTypedLines([unknown, ""]);
+      return;
+    }
+
+    if (resolved === "clear") {
+      setTerminalLines(terminalIntro);
+      typingQueueRef.current = [];
+      setTypingLine("");
+      setIsTyping(false);
+      isTypingRef.current = false;
+      if (typingTimeoutRef.current !== undefined) {
+        window.clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = undefined;
+      }
+      return;
+    }
+
+    const responsesByCommand: Record<string, string[]> = {
+      help:
+        lang === "es"
+          ? ["Comandos disponibles:", "ayuda, proyectos, stack, contacto, github, linkedin, limpiar"]
+          : ["Available commands:", "help, projects, stack, contact, github, linkedin, clear"],
+      projects:
+        lang === "es"
+          ? [
+              "Proyectos destacados:",
+              "- StackWatch (monitorización de VPS)",
+              "- MD-Ingelligence (herramienta interna)",
+              "- Hytalia Web (plataforma de comunidad)",
+              "- Hytale Plugin Journey (ecosistema Java)",
+            ]
+          : [
+              "Featured projects:",
+              "- StackWatch (VPS monitoring)",
+              "- MD-Ingelligence (internal tooling)",
+              "- Hytalia Web (community platform)",
+              "- Hytale Plugin Journey (Java ecosystem)",
+            ],
+      stack:
+        lang === "es"
+          ? ["Stack principal: React, TypeScript, Next.js, Python, PostgreSQL, Docker, Cloudflare, GitHub Actions."]
+          : ["Core stack: React, TypeScript, Next.js, Python, PostgreSQL, Docker, Cloudflare, GitHub Actions."],
+      contact:
+        lang === "es"
+          ? ["Contacto:", "- Email: contacto@lucasvicente.es", `- LinkedIn: ${LINKS.linkedinProfile}`]
+          : ["Contact:", "- Email: contacto@lucasvicente.es", `- LinkedIn: ${LINKS.linkedinProfile}`],
+      github: [LINKS.githubProfile],
+      linkedin: [LINKS.linkedinProfile],
+    };
+
+    const output = responsesByCommand[resolved];
+    setTerminalLines((prev) => [...prev, `$ ${command}`]);
+    enqueueTypedLines([...output, ""]);
+  };
+
+  const handleTerminalSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    runCommand(terminalInput);
+    setTerminalInput("");
+  };
 
   return (
     <div className="relative isolate min-h-screen overflow-hidden bg-background text-white">
+      {showCustomCursor ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed left-0 top-0 z-[70] hidden -translate-x-1/2 -translate-y-1/2 select-none text-xl drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] md:block"
+          style={{ transform: `translate(${cursorPos.x + 12}px, ${cursorPos.y + 12}px)` }}
+        >
+          🚀
+        </div>
+      ) : null}
+
       <Suspense fallback={null}>
         <InteractiveNebulaShader className="opacity-95" />
       </Suspense>
@@ -499,6 +775,87 @@ function App() {
             </div>
           </section>
 
+          <section className="mt-16">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.75)]" />
+              <p className="text-xs uppercase tracking-[0.22em] text-white/65">Stack tecnológico de élite</p>
+            </div>
+            <div
+              className="overflow-hidden rounded-xl border border-white/15 bg-black/25 p-4"
+              style={{
+                maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+              }}
+            >
+              <div className="animate-marquee flex w-max items-center gap-4">
+                {marqueeLogos.map(({ label, icon: Icon, colorClass }, index) => (
+                  <div
+                    key={`${label}-${index}`}
+                    className="flex min-w-[170px] items-center gap-3 rounded-xl border border-white/10 bg-slate-950/85 px-4 py-3 text-white/85 shadow-[inset_0_0_18px_rgba(148,163,184,0.08)]"
+                  >
+                    <Icon className={`h-6 w-6 ${colorClass}`} />
+                    <span className="text-lg font-semibold">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-16 border border-cyan-300/30 bg-black/40 p-4 shadow-[0_0_24px_rgba(34,211,238,0.15)] sm:p-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/85">{t.terminalLabel}</p>
+                <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">{t.terminalTitle}</h2>
+              </div>
+              <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1 text-xs text-white/70">
+                <Command className="h-3.5 w-3.5" />
+                <span>hola@lucasvicente.es</span>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-xl border border-white/20 bg-slate-950/95">
+              <div className="flex items-center gap-2 border-b border-white/10 bg-slate-800/70 px-3 py-2">
+                <span className="h-3 w-3 rounded-full bg-red-400" />
+                <span className="h-3 w-3 rounded-full bg-amber-400" />
+                <span className="h-3 w-3 rounded-full bg-green-400" />
+                <span className="ml-3 text-xs text-white/60">terminal.local</span>
+              </div>
+              <div ref={terminalViewportRef} className="h-72 overflow-y-auto px-4 py-3 font-mono text-sm text-white/90">
+                {terminalLines.map((line, index) => (
+                  <p key={`${line}-${index}`} className={`${line.startsWith("$ ") ? "text-cyan-300" : "text-white/85"}`}>
+                    {line || "\u00A0"}
+                  </p>
+                ))}
+                {typingLine ? (
+                  <p className="text-white/85">
+                    {typingLine}
+                    <span className="terminal-caret">█</span>
+                  </p>
+                ) : null}
+              </div>
+              <form onSubmit={handleTerminalSubmit} className="flex flex-wrap items-center gap-2 border-t border-white/10 bg-slate-900/85 px-3 py-2">
+                <Search className="h-4 w-4 text-cyan-300" />
+                <input
+                  value={terminalInput}
+                  onChange={(event) => setTerminalInput(event.target.value)}
+                  placeholder={t.terminalPlaceholder}
+                  className="min-w-[220px] flex-1 bg-transparent font-mono text-sm text-white outline-none placeholder:text-white/45"
+                  aria-label={t.terminalPlaceholder}
+                  disabled={isTyping}
+                />
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 border border-cyan-300/55 bg-cyan-500/20 px-3 py-1.5 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-500/35"
+                  disabled={isTyping}
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  {t.terminalRun}
+                </button>
+              </form>
+            </div>
+            <p className="mt-3 text-sm text-white/60">{t.terminalHint}</p>
+          </section>
+
           <section id="process" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
             <article className="border border-white/20 bg-black/30 p-6">
               <p className="text-xs uppercase tracking-[0.2em] text-amber-200/85">{t.processLabel}</p>
@@ -621,4 +978,8 @@ function App() {
 }
 
 export default App;
+
+
+
+
 

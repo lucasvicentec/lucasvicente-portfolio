@@ -56,3 +56,47 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 36s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes terminal-caret-blink {
+    0%,
+    45% {
+      opacity: 1;
+    }
+    46%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .terminal-caret {
+    display: inline-block;
+    margin-left: 2px;
+    color: rgb(34 211 238 / 0.95);
+    animation: terminal-caret-blink 1s steps(1, end) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
