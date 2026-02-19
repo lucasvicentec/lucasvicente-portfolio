@@ -54,13 +54,15 @@ type Project = {
   title: string;
   tag: string;
   type: string;
-  headline: string;
-  challenge: string;
-  architecture: string;
-  impact: string;
+  context: string;
+  decision: string;
+  result: string;
+  evidence?: string[];
   stack: string;
   repo?: string;
   live?: string;
+  keyCommit?: string;
+  nda?: boolean;
 };
 
 const LINKS = {
@@ -70,6 +72,11 @@ const LINKS = {
   linkedinProfile: "https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/",
   statusPage: "https://status.lucasvicente.es/",
   hytaliaSite: "https://www.hytalia.net",
+  pipeline:
+    "https://github.com/lucasvicentec/lucasvicente-portfolio/blob/main/.github/workflows/deploy-cloudflare-worker.yml",
+  metricsSummary: "#metrics",
+  postmortem: "#postmortem",
+  cv: "mailto:contacto@lucasvicente.es?subject=CV%20Lucas%20Vicente",
 } as const;
 
 const TERMINAL_STORAGE_KEY = "lucas_portfolio_terminal_history_v1";
@@ -133,38 +140,37 @@ const projectsByLocale: Record<Locale, Project[]> = {
       title: "StackWatch",
       tag: "Nuevo",
       type: "Plataforma de monitorización",
-      headline: "Página pública de estado + panel admin privado + ciclo de incidentes para monitorización de VPS.",
-      challenge:
-        "Construir un monitor autohospedado fácil de operar, pero listo para producción: auth, rate-limit, métricas históricas y checks fiables.",
-      architecture:
-        "Aplicación en Next.js con superficies pública/admin, persistencia en PostgreSQL, check runner interno y worker para checks periódicos con lógica de apertura/cierre de incidentes.",
-      impact: "Convierte la salud de la infraestructura en una superficie clara de producto, con estado en tiempo real e histórico.",
+      context: "Monitoriza mis VPS/servicios y expone una status page pública para incidencias y mantenimiento.",
+      decision:
+        "Elegí PostgreSQL + worker interno (vs cron externo) para mantener histórico consistente y controlar reintentos en un solo punto.",
+      result:
+        "Checks cada 60s, histórico e incident lifecycle en producción. Pendiente de añadir métricas públicas (p95, uptime y coste mensual).",
+      evidence: ["Demo pública activa", "Pipeline de despliegue automatizado", "Repositorio con commits de incident lifecycle"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
       repo: LINKS.githubStackWatch,
       live: LINKS.statusPage,
+      keyCommit: LINKS.githubStackWatch,
     },
     {
       title: "MD-Ingelligence",
       tag: "Privado",
       type: "MadridDigital / Herramienta interna",
-      headline: "Plataforma interna UTS-MD para búsqueda de ubicaciones técnicas (UT) y aceleración de consultas operativas.",
-      challenge:
-        "Gestionar datasets UT grandes y heterogéneos con ranking por relevancia, filtros y respuesta rápida para uso operativo diario.",
-      architecture:
-        "Next.js 15 + React 19 + TypeScript, API routes sobre runtime Node, PostgreSQL con fallback local JSON, panel admin con analítica/feedback y routing LLM opcional para ATUSUDOC.",
-      impact:
-        "Centraliza criterios operativos, reduce fricción en búsquedas manuales y crea una base escalable para analítica, feedback y flujos internos de automatización.",
+      context: "Herramienta interna para consultas operativas diarias sobre ubicaciones técnicas (UT).",
+      decision:
+        "Se priorizó una arquitectura híbrida (PostgreSQL + fallback JSON) para asegurar continuidad operativa durante iteraciones de datos.",
+      result: "Uso interno continuo. Métricas y capturas públicas limitadas por NDA; solo comparto arquitectura y decisiones técnicas.",
+      evidence: ["Arquitectura high-level compartible", "Decisiones de rendimiento y ranking sin datos sensibles"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
+      nda: true,
     },
     {
       title: "Hytalia Web",
       tag: "Produccion",
       type: "Plataforma de comunidad / Infra",
-      headline: "Frontend principal de Hytalia Network con auth, panel admin, leaderboards, tienda y módulos de comunidad.",
-      challenge: "Sostener la entrega continua de funcionalidades mientras se migra código legado hacia un modelo unificado de API interna.",
-      architecture:
-        "Next.js App Router + NextAuth (Discord), arquitectura transicional mixta (api-internal + rutas legacy a DB), despliegue con Docker/GHCR/Swarm.",
-      impact: "Permite evolución continua de producto en producción con módulos reutilizables e infraestructura lista para despliegue.",
+      context: "Frontend principal para usuarios de comunidad con login, panel y módulos de producto.",
+      decision: "Se mantuvo arquitectura transicional para migrar legacy sin frenar entregas semanales.",
+      result: "Producto en producción con despliegue continuo y módulos reutilizables; pendiente de publicar métricas de tráfico/rendimiento.",
+      evidence: ["Sitio en producción", "Despliegue con contenedores y Swarm"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
     },
@@ -172,11 +178,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       title: "Hytale Plugin Journey",
       tag: "Activo",
       type: "Servidor de juego / Ecosistema Java",
-      headline: "Suite amplia de plugins para operación de servidores Hytale, sistemas de jugabilidad y herramientas.",
-      challenge: "Coordinar muchos módulos y ciclos rápidos de iteración entre gameplay, conectores de infra y plugins operativos.",
-      architecture:
-        "Ecosistema de plugins Java estilo monorepo con pipelines de build en Gradle, workflows de CI y commons compartidos para funcionalidades reutilizables.",
-      impact: "Permite una entrega rápida de features y mantenimiento continuo en un entorno multijugador en crecimiento.",
+      context: "Conjunto de plugins para operación y jugabilidad en servidores multijugador.",
+      decision: "Se consolidó una base compartida para evitar duplicación entre módulos y acelerar releases.",
+      result: "Iteración rápida de funcionalidades en entorno activo; próximas métricas: tiempo medio de build y frecuencia de despliegue.",
+      evidence: ["Workflows de CI para plugins", "Base commons reutilizable en Java"],
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
       repo: LINKS.githubProfile,
       live: LINKS.hytaliaSite,
@@ -187,39 +192,37 @@ const projectsByLocale: Record<Locale, Project[]> = {
       title: "StackWatch",
       tag: "New",
       type: "Monitoring platform",
-      headline: "Public status page + private admin panel + incident lifecycle for VPS monitoring.",
-      challenge:
-        "Build a self-hosted monitor that is easy to operate but still production ready: auth, rate limiting, historical metrics, and reliable checks.",
-      architecture:
-        "Next.js application with public/admin surfaces, PostgreSQL persistence, internal check runner, and worker loop for periodic checks and incident open/close logic.",
-      impact: "Turns infrastructure health into a clear product surface with real-time and historical status.",
+      context: "Monitors my VPS/services and exposes a public status page for incidents and maintenance.",
+      decision:
+        "I chose PostgreSQL + an internal worker (vs external cron) to keep history consistent and retry logic controlled in one place.",
+      result:
+        "60s checks, production incident lifecycle, and active public status page. Public p95/uptime/cost metrics are being added next.",
+      evidence: ["Live demo", "Automated deployment pipeline", "Repository with incident lifecycle code"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
       repo: LINKS.githubStackWatch,
       live: LINKS.statusPage,
+      keyCommit: LINKS.githubStackWatch,
     },
     {
       title: "MD-Ingelligence",
       tag: "Private",
       type: "MadridDigital / Internal tooling",
-      headline: "Internal UTS-MD platform for technical location (UT) search and faster operational queries.",
-      challenge:
-        "Handle large heterogeneous UT datasets with relevance ranking, filters, and low-latency responses for daily operational usage.",
-      architecture:
-        "Next.js 15 + React 19 + TypeScript, Node runtime API routes, PostgreSQL with local JSON fallback, admin analytics/feedback panel, and optional LLM routing for ATUSUDOC.",
-      impact:
-        "Centralizes operational criteria, reduces manual lookup friction, and provides a scalable base for analytics, feedback, and internal automation flows.",
+      context: "Internal platform for daily operational queries on technical location datasets.",
+      decision:
+        "A hybrid architecture (PostgreSQL + JSON fallback) was prioritized to guarantee continuity while iterating on data quality.",
+      result: "Stable internal usage. Public metrics and screenshots are limited due to NDA.",
+      evidence: ["Shareable high-level architecture", "Performance/relevance decisions without sensitive data"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
+      nda: true,
     },
     {
       title: "Hytalia Web",
       tag: "Production",
       type: "Community platform / Infra",
-      headline: "Main frontend for Hytalia Network with auth, admin panel, leaderboards, store, and community modules.",
-      challenge:
-        "Sustain continuous feature delivery while migrating legacy paths toward a unified internal API model.",
-      architecture:
-        "Next.js App Router + NextAuth (Discord), mixed transitional architecture (api-internal + legacy DB paths), deployed with Docker/GHCR/Swarm.",
-      impact: "Enables continuous product evolution in production with reusable modules and deployment-ready infrastructure.",
+      context: "Main frontend for community users with login, admin, and product modules.",
+      decision: "A transitional architecture was kept to migrate legacy paths without blocking weekly delivery.",
+      result: "Production-ready app with continuous deploys and reusable modules; public traffic/perf metrics coming next.",
+      evidence: ["Production website", "Container-based deployment flow"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
     },
@@ -227,12 +230,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       title: "Hytale Plugin Journey",
       tag: "Active",
       type: "Game server / Java ecosystem",
-      headline: "Large plugin suite for Hytale server operations, gameplay systems, and tooling.",
-      challenge:
-        "Coordinate many modules and fast iteration cycles across gameplay, infra connectors, and operational plugins.",
-      architecture:
-        "Java plugin ecosystem in a monorepo-style structure with Gradle build pipelines, CI workflows, and shared commons for reusable server features.",
-      impact: "Enables fast feature delivery and continuous maintenance for a growing multiplayer environment.",
+      context: "Plugin suite used for server operation and gameplay in a multiplayer environment.",
+      decision: "Shared commons were consolidated to reduce duplication and speed up releases across modules.",
+      result: "Fast iteration in active development. Next metrics to expose: build time and release frequency.",
+      evidence: ["CI workflows for plugin builds", "Reusable Java commons base"],
       stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
       repo: LINKS.githubProfile,
       live: LINKS.hytaliaSite,
@@ -240,35 +241,24 @@ const projectsByLocale: Record<Locale, Project[]> = {
   ],
 };
 
-const stackByCategory = [
-  {
-    category: "Frontend",
-    items: [
-      { label: "React", icon: SiReact },
-      { label: "TypeScript", icon: SiTypescript },
-      { label: "Vite", icon: SiVite },
-      { label: "Tailwind", icon: SiTailwindcss },
-      { label: "JavaScript", icon: SiJavascript },
-    ],
-  },
-  {
-    category: "Backend",
-    items: [
-      { label: "Python", icon: SiPython },
-      { label: "PostgreSQL", icon: SiPostgresql },
-      { label: "SQLite", icon: SiSqlite },
-      { label: "Redis", icon: SiRedis },
-    ],
-  },
-  {
-    category: "Infra / DevOps",
-    items: [
-      { label: "Docker", icon: SiDocker },
-      { label: "Nginx", icon: SiNginx },
-      { label: "GitHub Actions", icon: SiGithubactions },
-      { label: "Linux", icon: SiLinux },
-    ],
-  },
+const coreStack = [
+  { label: "React / Next.js", icon: SiReact },
+  { label: "TypeScript", icon: SiTypescript },
+  { label: "PostgreSQL", icon: SiPostgresql },
+  { label: "Docker", icon: SiDocker },
+  { label: "Cloudflare", icon: SiCloudflare },
+];
+
+const alsoUsedStack = [
+  { label: "Python", icon: SiPython },
+  { label: "Redis", icon: SiRedis },
+  { label: "Nginx", icon: SiNginx },
+  { label: "GitHub Actions", icon: SiGithubactions },
+  { label: "Linux", icon: SiLinux },
+  { label: "SQLite", icon: SiSqlite },
+  { label: "JavaScript", icon: SiJavascript },
+  { label: "Vite", icon: SiVite },
+  { label: "Tailwind", icon: SiTailwindcss },
 ];
 
 const copy = {
@@ -277,19 +267,19 @@ const copy = {
     navProcess: "Método",
     navHiring: "Contratación",
     openToWork: "Disponible para remoto o híbrido",
-    eyebrow: "Ingeniero full-stack con foco en sistemas reales",
-    title: "Construyo software que mejora operaciones y escala sin romperse.",
+    eyebrow: "Full-Stack con mentalidad de operaciones",
+    title: "Full-Stack con mentalidad de operaciones: monitorización, automatización y despliegue.",
     intro:
-      "Diseño y entrego productos técnicos de extremo a extremo: frontend, backend, automatización, infraestructura y despliegue. Mi foco es el impacto real y la mantenibilidad.",
+      "Me obsesionan métricas, fiabilidad y sistemas mantenibles.",
     ctaProjects: "Ver casos",
     ctaContact: "Contactar",
     ctaGitHub: "GitHub",
     featuredLabel: "Casos",
     featuredTitle: "Casos destacados",
-    featuredSubtitle: "Cada proyecto está presentado con reto, arquitectura e impacto.",
-    challenge: "Reto",
-    architecture: "Arquitectura",
-    impact: "Impacto",
+    featuredSubtitle: "Cada caso incluye contexto real, tradeoff técnico y resultado medible (o pendiente de medición).",
+    challenge: "Contexto",
+    architecture: "Decisión difícil",
+    impact: "Resultado",
     stack: "Stack",
     viewRepo: "Ver repo",
     viewLive: "Ver online",
@@ -303,7 +293,7 @@ const copy = {
     ],
     toolingLabel: "Herramientas",
     stackTitle: "Stack técnico",
-    stackSubtitle: "herramientas usadas en producto, backend e infraestructura.",
+    stackSubtitle: "enfoque principal y tecnologías secundarias que he usado en producción.",
     hiringBadge: "Contratación",
     hiringTitle: "Si buscas a alguien que asuma responsabilidad técnica real",
     hiringText:
@@ -325,16 +315,16 @@ const copy = {
     navProcess: "Process",
     navHiring: "Hiring",
     openToWork: "Open to remote or hybrid",
-    eyebrow: "Full-stack engineer focused on real-world systems",
-    title: "I build software that improves operations and scales without breaking.",
+    eyebrow: "Full-stack with an operations mindset",
+    title: "Full-stack with an operations mindset: monitoring, automation, and deployment.",
     intro:
-      "I design and ship end-to-end technical products: frontend, backend, automation, infrastructure, and deployment. My focus is real impact and maintainability.",
+      "I care deeply about metrics, reliability, and maintainable systems.",
     ctaProjects: "View cases",
     ctaContact: "Contact",
     ctaGitHub: "GitHub",
     featuredLabel: "Case studies",
     featuredTitle: "Featured cases",
-    featuredSubtitle: "Each project is presented by challenge, architecture, and impact.",
+    featuredSubtitle: "Each case includes real context, a technical tradeoff, and measurable results (or pending metrics).",
     challenge: "Challenge",
     architecture: "Architecture",
     impact: "Impact",
@@ -351,7 +341,7 @@ const copy = {
     ],
     toolingLabel: "Tooling",
     stackTitle: "Tech stack",
-    stackSubtitle: "tools used across product, backend, and infrastructure.",
+    stackSubtitle: "core focus plus additional tools used in production.",
     hiringBadge: "Hiring",
     hiringTitle: "If you need someone with real technical ownership",
     hiringText:
@@ -387,8 +377,23 @@ function App() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [showCustomCursor, setShowCustomCursor] = useState(false);
 
-  const skillsCount = useMemo(() => stackByCategory.reduce((acc, group) => acc + group.items.length, 0), []);
+  const skillsCount = useMemo(() => coreStack.length + alsoUsedStack.length, []);
   const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
+  const highlights = useMemo(
+    () =>
+      lang === "es"
+        ? [
+            "4 proyectos en producción (desde Mar 2024).",
+            `Despliegue continuo con Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
+            "Métricas públicas en construcción: p95 latencia, uptime, checks/min, coste/mes y usuarios/día.",
+          ]
+        : [
+            "4 projects in production (since Mar 2024).",
+            `Continuous delivery with Cloudflare/Docker/Swarm (${LINKS.pipeline}).`,
+            "Public metrics in progress: p95 latency, uptime, checks/min, monthly cost, and daily users.",
+          ],
+    [lang],
+  );
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.localStorage.setItem(TERMINAL_STORAGE_KEY, JSON.stringify(terminalLines.slice(-140)));
@@ -433,6 +438,12 @@ function App() {
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [showCustomCursor]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    document.body.classList.toggle("custom-cursor-enabled", showCustomCursor);
+    return () => document.body.classList.remove("custom-cursor-enabled");
   }, [showCustomCursor]);
 
   const sleep = (ms: number) =>
@@ -486,6 +497,9 @@ function App() {
             servicios: "services",
             sobre: "about",
             cv: "cv",
+            stackwatch: "stackwatch",
+            metricas: "metrics",
+            postmortem: "postmortem",
             tema: "theme",
             secreto: "secret",
             sudo: "sudo",
@@ -501,6 +515,9 @@ function App() {
             services: "services",
             about: "about",
             cv: "cv",
+            stackwatch: "stackwatch",
+            metrics: "metrics",
+            postmortem: "postmortem",
             theme: "theme",
             secret: "secret",
             sudo: "sudo",
@@ -533,8 +550,8 @@ function App() {
     const responsesByCommand: Record<string, string[]> = {
       help:
         lang === "es"
-          ? ["Comandos disponibles:", "ayuda, proyectos, stack, contacto, servicios, sobre, cv, github, linkedin, secreto, sudo, tema, limpiar"]
-          : ["Available commands:", "help, projects, stack, contact, services, about, cv, github, linkedin, secret, sudo, theme, clear"],
+          ? ["Comandos disponibles:", "ayuda, proyectos, stack, stackwatch, contacto, servicios, sobre, cv, metricas, postmortem, github, linkedin, secreto, sudo, tema, limpiar"]
+          : ["Available commands:", "help, projects, stack, stackwatch, contact, services, about, cv, metrics, postmortem, github, linkedin, secret, sudo, theme, clear"],
       projects:
         lang === "es"
           ? [
@@ -569,8 +586,20 @@ function App() {
           : ["About:", "Full-stack engineer focused on product, operations, and measurable impact."],
       cv:
         lang === "es"
-          ? ["CV:", "Solicítalo por email en contacto@lucasvicente.es"]
-          : ["CV:", "Request it via email at contacto@lucasvicente.es"],
+          ? ["CV: abriendo acceso al PDF/contacto..."]
+          : ["CV: opening PDF/contact access..."],
+      stackwatch:
+        lang === "es"
+          ? ["StackWatch: abriendo demo + repo + referencia de implementación."]
+          : ["StackWatch: opening live demo + repo + implementation reference."],
+      metrics:
+        lang === "es"
+          ? ["Métricas: abriendo resumen público para completar con p95/uptime/checks/coste."]
+          : ["Metrics: opening public summary placeholder for p95/uptime/checks/cost."],
+      postmortem:
+        lang === "es"
+          ? ["Postmortem: abriendo notas de aprendizajes y próximos ajustes."]
+          : ["Postmortem: opening lessons learned and next adjustments."],
       theme:
         lang === "es"
           ? ["Tema:", "Modo neón activo por defecto."]
@@ -590,6 +619,17 @@ function App() {
     const output = responsesByCommand[resolved];
     setTerminalLines((prev) => [...prev, `$ ${command}`]);
     enqueueTypedLines([...output, ""]);
+
+    if (typeof window !== "undefined") {
+      const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
+      if (resolved === "cv") open(LINKS.cv);
+      if (resolved === "stackwatch") {
+        open(LINKS.statusPage);
+        open(LINKS.githubStackWatch);
+      }
+      if (resolved === "metrics") window.location.hash = "metrics";
+      if (resolved === "postmortem") window.location.hash = "postmortem";
+    }
   };
 
   const handleTerminalSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -673,6 +713,18 @@ function App() {
         </header>
 
         <main id="home" className="pt-16">
+          <section className="mb-10 border border-cyan-300/30 bg-cyan-500/5 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/90">Highlights</p>
+            <ul className="mt-3 space-y-2 text-sm text-white/85">
+              {highlights.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-cyan-300" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
           <section>
             <div>
               <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -768,19 +820,37 @@ function App() {
                       </span>
                     </div>
 
-                    <p className="text-sm text-white/80">{project.headline}</p>
-
                     <div className="grid gap-3 md:grid-cols-3">
                       <p className="border-t border-white/15 pt-2 text-sm text-white/75">
-                        <span className="font-semibold text-white/90">{t.challenge}:</span> {project.challenge}
+                        <span className="font-semibold text-white/90">{t.challenge}:</span> {project.context}
                       </p>
                       <p className="border-t border-white/15 pt-2 text-sm text-white/75">
-                        <span className="font-semibold text-white/90">{t.architecture}:</span> {project.architecture}
+                        <span className="font-semibold text-white/90">{t.architecture}:</span> {project.decision}
                       </p>
                       <p className="border-t border-white/15 pt-2 text-sm text-white/75">
-                        <span className="font-semibold text-white/90">{t.impact}:</span> {project.impact}
+                        <span className="font-semibold text-white/90">{t.impact}:</span> {project.result}
                       </p>
                     </div>
+
+                    {project.nda ? (
+                      <div className="border border-amber-300/40 bg-amber-500/10 p-3 text-sm text-amber-100">
+                        <p className="font-semibold">Bajo NDA</p>
+                        <p className="mt-1 text-amber-100/85">
+                          Comparto arquitectura, decisiones y métricas no sensibles. Capturas y datos operativos detallados no son públicos.
+                        </p>
+                      </div>
+                    ) : null}
+
+                    {project.evidence?.length ? (
+                      <div className="border-t border-white/15 pt-2 text-sm text-white/75">
+                        <span className="font-semibold text-white/90">Evidencia:</span>
+                        <ul className="mt-2 space-y-1">
+                          {project.evidence.map((item) => (
+                            <li key={item}>- {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
 
                     <p className="text-sm text-white/70">
                       <span className="font-semibold text-white/90">{t.stack}:</span> {project.stack}
@@ -897,6 +967,26 @@ function App() {
             </div>
           </section>
 
+          <section id="metrics" className="mt-12 border border-white/20 bg-black/25 p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Metrics Summary</p>
+            <h2 className="mt-2 text-2xl font-semibold">Métricas públicas (en actualización)</h2>
+            <ul className="mt-4 space-y-2 text-sm text-white/80">
+              <li>- p95 latencia: pendiente de medición y publicación.</li>
+              <li>- Uptime servicio: pendiente de medición y publicación.</li>
+              <li>- Checks por minuto y coste/mes: pendiente de medición y publicación.</li>
+            </ul>
+          </section>
+
+          <section id="postmortem" className="mt-10 border border-white/20 bg-black/25 p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Postmortem Notes</p>
+            <h2 className="mt-2 text-2xl font-semibold">Qué mejoraría hoy</h2>
+            <ul className="mt-4 space-y-2 text-sm text-white/80">
+              <li>- Exponer métricas operativas de forma continua desde el primer release.</li>
+              <li>- Añadir trazas de evidencias por proyecto (PRs/commits/capturas) en una sola vista.</li>
+              <li>- Publicar changelog técnico con decisiones y tradeoffs por versión.</li>
+            </ul>
+          </section>
+
           <section id="process" className="mt-20 grid gap-8 lg:grid-cols-[1fr_1fr]">
             <article className="border border-white/20 bg-black/30 p-6">
               <p className="text-xs uppercase tracking-[0.2em] text-amber-200/85">{t.processLabel}</p>
@@ -920,22 +1010,29 @@ function App() {
               </p>
 
               <div className="mt-5 space-y-4">
-                {stackByCategory.map((group) => (
-                  <div key={group.category} className="border-t border-white/15 pt-3">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">{group.category}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {group.items.map(({ label, icon: Icon }) => (
-                        <span
-                          key={label}
-                          className="inline-flex items-center gap-2 border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-white"
-                        >
-                          <Icon className="h-3.5 w-3.5" />
-                          {label}
-                        </span>
-                      ))}
-                    </div>
+                <div className="border-t border-white/15 pt-3">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">Core 5</p>
+                  <div className="flex flex-wrap gap-2">
+                    {coreStack.map(({ label, icon: Icon }) => (
+                      <span key={label} className="inline-flex items-center gap-2 border border-cyan-300/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-medium text-cyan-100">
+                        <Icon className="h-3.5 w-3.5" />
+                        {label}
+                      </span>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                <div className="border-t border-white/15 pt-3">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">También he usado</p>
+                  <div className="flex flex-wrap gap-2">
+                    {alsoUsedStack.map(({ label, icon: Icon }) => (
+                      <span key={label} className="inline-flex items-center gap-2 border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-white">
+                        <Icon className="h-3.5 w-3.5" />
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </article>
           </section>
