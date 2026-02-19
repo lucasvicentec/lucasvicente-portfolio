@@ -9,6 +9,7 @@ import {
   Linkedin,
   Mail,
   ShieldCheck,
+  X,
 } from "lucide-react";
 import {
   SiCloudflare,
@@ -61,6 +62,12 @@ type PsiSnapshot = {
   cls: string;
   sourceLabel: string;
   reportUrl?: string;
+};
+
+type ScreenshotModal = {
+  src: string;
+  title: string;
+  index: number;
 };
 
 const LINKS = {
@@ -125,7 +132,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Sitio público activo", "Operación con clientes reales", "Automatizaciones y paneles custom en producción"],
       stack: "Pterodactyl, WHMCS, APIs, automatización operativa",
       live: "https://varynhost.com/",
-      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png"],
+      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png", "/images/varynhost_4.png"],
       insight: {
         url: "https://varynhost.com/",
         strategy: "mobile",
@@ -171,7 +178,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Sitio en producción", "Despliegue con contenedores y Swarm"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
-      screenshots: ["/images/hytalia_1.png"],
+      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png"],
       insight: {
         url: LINKS.hytaliaSite,
         strategy: "mobile",
@@ -235,7 +242,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Public live website", "Real client operations", "Production automations and custom panels"],
       stack: "Pterodactyl, WHMCS, APIs, operational automation",
       live: "https://varynhost.com/",
-      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png"],
+      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png", "/images/varynhost_4.png"],
       insight: {
         url: "https://varynhost.com/",
         strategy: "mobile",
@@ -281,7 +288,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Production website", "Container-based deployment flow"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
-      screenshots: ["/images/hytalia_1.png"],
+      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png"],
       insight: {
         url: LINKS.hytaliaSite,
         strategy: "mobile",
@@ -434,6 +441,7 @@ function App() {
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalLines, setTerminalLines] = useState<string[]>(() => getTerminalIntroByLocale("es"));
   const [typingLine, setTypingLine] = useState("");
+  const [activeScreenshot, setActiveScreenshot] = useState<ScreenshotModal | null>(null);
   const terminalViewportRef = useRef<HTMLDivElement | null>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
   const typingQueueRef = useRef<string[]>([]);
@@ -444,6 +452,7 @@ function App() {
   const [showCustomCursor, setShowCustomCursor] = useState(false);
 
   const skillsCount = useMemo(() => coreStack.length + alsoUsedStack.length, []);
+  const coreMarquee = useMemo(() => [...coreStack, ...coreStack], []);
   const alsoUsedMarquee = useMemo(() => [...alsoUsedStack, ...alsoUsedStack], []);
   const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
   const highlights = useMemo(
@@ -505,6 +514,27 @@ function App() {
     document.body.classList.toggle("custom-cursor-enabled", showCustomCursor);
     return () => document.body.classList.remove("custom-cursor-enabled");
   }, [showCustomCursor]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveScreenshot(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.body.style.overflow = activeScreenshot ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeScreenshot]);
 
   const sleep = (ms: number) =>
     new Promise<void>((resolve) => {
@@ -942,12 +972,18 @@ function App() {
                       </p>
                       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                         {p.screenshots.map((src, shotIndex) => (
-                          <a
+                          <button
+                            type="button"
                             key={`${p.title}-${src}`}
-                            href={src}
-                            target="_blank"
-                            rel="noreferrer"
+                            onClick={() =>
+                              setActiveScreenshot({
+                                src,
+                                title: p.title,
+                                index: shotIndex + 1,
+                              })
+                            }
                             className="group overflow-hidden rounded border border-white/15 bg-black/25"
+                            aria-label={`${lang === "es" ? "Abrir captura" : "Open screenshot"} ${shotIndex + 1} ${p.title}`}
                           >
                             <img
                               src={src}
@@ -955,7 +991,7 @@ function App() {
                               loading="lazy"
                               className="h-36 w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                             />
-                          </a>
+                          </button>
                         ))}
                       </div>
                     </div>
@@ -1071,14 +1107,23 @@ function App() {
               <div className="mt-5 space-y-4">
                 <div className="border-t border-white/15 pt-3">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">Core 5</p>
-                  <div className="overflow-x-auto pb-1">
-                    <div className="flex w-max min-w-full gap-2">
-                    {coreStack.map(({ label, icon: Icon }) => (
-                      <span key={label} className="inline-flex items-center gap-2 border border-cyan-300/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-medium text-cyan-100">
-                        <Icon className="h-3.5 w-3.5" />
-                        {label}
-                      </span>
-                    ))}
+                  <div
+                    className="overflow-hidden"
+                    style={{
+                      maskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
+                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
+                    }}
+                  >
+                    <div className="animate-marquee flex w-max items-center gap-2 pr-2">
+                      {coreMarquee.map(({ label, icon: Icon }, index) => (
+                        <span
+                          key={`${label}-${index}`}
+                          className="inline-flex items-center gap-2 border border-cyan-300/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-medium text-cyan-100"
+                        >
+                          <Icon className="h-3.5 w-3.5" />
+                          {label}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -1159,6 +1204,36 @@ function App() {
               </div>
             </div>
           </section>
+
+          {activeScreenshot ? (
+            <div
+              className="fixed inset-0 z-[90] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+              onClick={() => setActiveScreenshot(null)}
+              role="presentation"
+            >
+              <div
+                className="relative w-full max-w-6xl"
+                onClick={(event) => event.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${activeScreenshot.title} screenshot ${activeScreenshot.index}`}
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveScreenshot(null)}
+                  className="absolute right-2 top-2 z-10 inline-flex items-center gap-2 rounded border border-white/30 bg-black/60 px-3 py-1.5 text-xs font-medium text-white hover:bg-black/80"
+                >
+                  <X className="h-4 w-4" />
+                  {lang === "es" ? "Cerrar" : "Close"}
+                </button>
+                <img
+                  src={activeScreenshot.src}
+                  alt={`${activeScreenshot.title} screenshot ${activeScreenshot.index}`}
+                  className="max-h-[88vh] w-full rounded border border-white/20 object-contain"
+                />
+              </div>
+            </div>
+          ) : null}
 
           <footer className="mt-14 border-t border-white/20 py-8 text-sm text-white/70">
             <div className="flex flex-wrap items-center justify-between gap-4">
