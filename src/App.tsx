@@ -47,6 +47,7 @@ type Project = {
   keyCommit?: string;
   nda?: boolean;
   insight?: PsiSnapshot;
+  screenshots?: string[];
 };
 
 type PsiSnapshot = {
@@ -100,6 +101,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       repo: LINKS.githubStackWatch,
       live: LINKS.statusPage,
       keyCommit: LINKS.githubStackWatch,
+      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
       insight: {
         url: LINKS.statusPage,
         strategy: "desktop",
@@ -123,6 +125,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Sitio público activo", "Operación con clientes reales", "Automatizaciones y paneles custom en producción"],
       stack: "Pterodactyl, WHMCS, APIs, automatización operativa",
       live: "https://varynhost.com/",
+      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png"],
       insight: {
         url: "https://varynhost.com/",
         strategy: "mobile",
@@ -146,6 +149,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Arquitectura high-level compartible", "Decisiones de rendimiento y ranking sin datos sensibles"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
+      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png"],
       insight: {
         url: "Privado (NDA)",
         strategy: "mobile",
@@ -167,6 +171,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Sitio en producción", "Despliegue con contenedores y Swarm"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
+      screenshots: ["/images/hytalia_1.png"],
       insight: {
         url: LINKS.hytaliaSite,
         strategy: "mobile",
@@ -206,6 +211,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       repo: LINKS.githubStackWatch,
       live: LINKS.statusPage,
       keyCommit: LINKS.githubStackWatch,
+      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
       insight: {
         url: LINKS.statusPage,
         strategy: "desktop",
@@ -229,6 +235,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Public live website", "Real client operations", "Production automations and custom panels"],
       stack: "Pterodactyl, WHMCS, APIs, operational automation",
       live: "https://varynhost.com/",
+      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png"],
       insight: {
         url: "https://varynhost.com/",
         strategy: "mobile",
@@ -252,6 +259,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Shareable high-level architecture", "Performance/relevance decisions without sensitive data"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
+      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png"],
       insight: {
         url: "Private (NDA)",
         strategy: "mobile",
@@ -273,6 +281,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       evidence: ["Production website", "Container-based deployment flow"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
+      screenshots: ["/images/hytalia_1.png"],
       insight: {
         url: LINKS.hytaliaSite,
         strategy: "mobile",
@@ -922,6 +931,32 @@ function App() {
                         ) : (
                           <span>Informe no público</span>
                         )}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {p.screenshots?.length ? (
+                    <div className="mt-3">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/65">
+                        {lang === "es" ? "Capturas" : "Screenshots"}
+                      </p>
+                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        {p.screenshots.map((src, shotIndex) => (
+                          <a
+                            key={`${p.title}-${src}`}
+                            href={src}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="group overflow-hidden rounded border border-white/15 bg-black/25"
+                          >
+                            <img
+                              src={src}
+                              alt={`${p.title} screenshot ${shotIndex + 1}`}
+                              loading="lazy"
+                              className="h-36 w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                            />
+                          </a>
+                        ))}
                       </div>
                     </div>
                   ) : null}
