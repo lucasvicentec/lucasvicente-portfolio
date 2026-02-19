@@ -391,6 +391,7 @@ function App() {
   }, [terminalLines]);
 
   useEffect(() => {
+    isUnmountedRef.current = false;
     return () => {
       isUnmountedRef.current = true;
       if (typingTimeoutRef.current !== undefined) {
@@ -605,10 +606,11 @@ function App() {
       {showCustomCursor ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed left-0 top-0 z-[70] -translate-x-1/2 -translate-y-1/2 select-none text-[22px] drop-shadow-[0_0_14px_rgba(56,189,248,0.8)]"
+          className="pointer-events-none fixed left-0 top-0 z-[70] -translate-x-1/2 -translate-y-1/2"
           style={{ transform: `translate(${cursorPos.x + 12}px, ${cursorPos.y + 12}px)` }}
         >
-          🚀
+          <span className="block h-5 w-5 rounded-full border border-cyan-300/90 shadow-[0_0_16px_rgba(34,211,238,0.55)]" />
+          <span className="absolute left-1/2 top-1/2 block h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
         </div>
       ) : null}
 
