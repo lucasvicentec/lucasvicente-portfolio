@@ -79,6 +79,18 @@ const getTerminalIntroByLocale = (locale: Locale): string[] =>
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
     {
+      title: "Finesse",
+      tag: "Produccion",
+      type: "PWA de finanzas compartidas",
+      context: "Alternativa a Splitwise para gestionar gastos personales y grupales con proyecciones, presupuestos y reparto inteligente.",
+      decision: "Se eligió Supabase (Auth + RLS + Realtime) sobre backend propio para acelerar el MVP sin sacrificar seguridad ni escalabilidad.",
+      result: "App en produccion con OAuth, modo offline, importacion CSV/Splitwise, categorias personalizadas y asistente financiero (Fina).",
+      evidence: ["PWA instalable con Service Worker", "OAuth con Google", "Modo offline con sync automatico"],
+      stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
+      live: "https://finesseapp.es",
+      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
+    },
+    {
       title: "StackWatch",
       tag: "Nuevo",
       type: "Plataforma de monitorización",
@@ -133,18 +145,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
     },
     {
-      title: "Finesse",
-      tag: "Produccion",
-      type: "PWA de finanzas compartidas",
-      context: "Alternativa a Splitwise para gestionar gastos personales y grupales con proyecciones, presupuestos y reparto inteligente.",
-      decision: "Se eligió Supabase (Auth + RLS + Realtime) sobre backend propio para acelerar el MVP sin sacrificar seguridad ni escalabilidad.",
-      result: "App en produccion con OAuth, modo offline, importacion CSV/Splitwise, categorias personalizadas y asistente financiero (Fina).",
-      evidence: ["PWA instalable con Service Worker", "OAuth con Google", "Modo offline con sync automatico"],
-      stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
-      live: "https://finesseapp.es",
-      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
-    },
-    {
       title: "Hytale Plugin Journey",
       tag: "Activo",
       type: "Servidor de juego / Ecosistema Java",
@@ -157,6 +157,18 @@ const projectsByLocale: Record<Locale, Project[]> = {
     },
   ],
   en: [
+    {
+      title: "Finesse",
+      tag: "Production",
+      type: "Shared finance PWA",
+      context: "Splitwise alternative for managing personal and group expenses with projections, budgets, and smart splitting.",
+      decision: "Supabase (Auth + RLS + Realtime) was chosen over a custom backend to ship the MVP faster without compromising security or scalability.",
+      result: "Production app with OAuth, offline mode, CSV/Splitwise import, custom categories, and a financial assistant (Fina).",
+      evidence: ["Installable PWA with Service Worker", "Google OAuth", "Offline mode with auto-sync"],
+      stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
+      live: "https://finesseapp.es",
+      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
+    },
     {
       title: "StackWatch",
       tag: "New",
@@ -210,18 +222,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
-    },
-    {
-      title: "Finesse",
-      tag: "Production",
-      type: "Shared finance PWA",
-      context: "Splitwise alternative for managing personal and group expenses with projections, budgets, and smart splitting.",
-      decision: "Supabase (Auth + RLS + Realtime) was chosen over a custom backend to ship the MVP faster without compromising security or scalability.",
-      result: "Production app with OAuth, offline mode, CSV/Splitwise import, custom categories, and a financial assistant (Fina).",
-      evidence: ["Installable PWA with Service Worker", "Google OAuth", "Offline mode with auto-sync"],
-      stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
-      live: "https://finesseapp.es",
-      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
     },
     {
       title: "Hytale Plugin Journey",
