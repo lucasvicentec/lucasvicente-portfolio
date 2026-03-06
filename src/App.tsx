@@ -47,21 +47,7 @@ type Project = {
   live?: string;
   keyCommit?: string;
   nda?: boolean;
-  insight?: PsiSnapshot;
   screenshots?: string[];
-};
-
-type PsiSnapshot = {
-  url: string;
-  strategy: "mobile" | "desktop";
-  updatedAt: string;
-  score?: number;
-  lcp: string;
-  inpLabel?: string;
-  inp: string;
-  cls: string;
-  sourceLabel: string;
-  reportUrl?: string;
 };
 
 type ScreenshotModal = {
@@ -83,8 +69,6 @@ const LINKS = {
   postmortem: "#postmortem",
   cv: "mailto:contacto@lucasvicente.es?subject=CV%20Lucas%20Vicente",
 } as const;
-
-const psiReportUrl = (url: string) => `https://pagespeed.web.dev/report?url=${encodeURIComponent(url)}`;
 
 const getTerminalIntroByLocale = (locale: Locale): string[] =>
   locale === "es"
@@ -109,17 +93,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       live: LINKS.statusPage,
       keyCommit: LINKS.githubStackWatch,
       screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
-      insight: {
-        url: LINKS.statusPage,
-        strategy: "desktop",
-        updatedAt: "2026-02-19",
-        lcp: "0.6 s",
-        inpLabel: "TBT (proxy INP)",
-        inp: "140 ms",
-        cls: "0.005",
-        sourceLabel: "Última medición (Lighthouse, desktop)",
-        reportUrl: psiReportUrl(LINKS.statusPage),
-      },
     },
     {
       title: "VarynHost",
@@ -133,17 +106,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Pterodactyl, WHMCS, APIs, automatización operativa",
       live: "https://varynhost.com/",
       screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png", "/images/varynhost_4.png"],
-      insight: {
-        url: "https://varynhost.com/",
-        strategy: "mobile",
-        updatedAt: "2026-02-19",
-        lcp: "0.5 s",
-        inpLabel: "TBT (proxy INP)",
-        inp: "10 ms",
-        cls: "0.000",
-        sourceLabel: "Última medición (Lighthouse, móvil)",
-        reportUrl: psiReportUrl("https://varynhost.com/"),
-      },
     },
     {
       title: "MD-Ingelligence",
@@ -157,16 +119,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
       screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png", "/images/madriddigital_3.png", "/images/madriddigital_4.png"],
-      insight: {
-        url: "Privado (NDA)",
-        strategy: "mobile",
-        updatedAt: "2026-02-19",
-        lcp: "0.5 s",
-        inpLabel: "TBT (proxy INP)",
-        inp: "0 ms",
-        cls: "0.006",
-        sourceLabel: "Última medición (Lighthouse, entorno privado)",
-      },
     },
     {
       title: "Hytalia Web",
@@ -179,16 +131,18 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
-      insight: {
-        url: LINKS.hytaliaSite,
-        strategy: "mobile",
-        updatedAt: "2026-02-19",
-        lcp: "1.8 s",
-        inp: "146 ms",
-        cls: "0.02",
-        sourceLabel: "Core Web Vitals (CrUX, últimas 4 semanas)",
-        reportUrl: psiReportUrl(LINKS.hytaliaSite),
-      },
+    },
+    {
+      title: "Finesse",
+      tag: "Produccion",
+      type: "PWA de finanzas compartidas",
+      context: "Alternativa a Splitwise para gestionar gastos personales y grupales con proyecciones, presupuestos y reparto inteligente.",
+      decision: "Se eligió Supabase (Auth + RLS + Realtime) sobre backend propio para acelerar el MVP sin sacrificar seguridad ni escalabilidad.",
+      result: "App en produccion con OAuth, modo offline, importacion CSV/Splitwise, categorias personalizadas y asistente financiero (Fina).",
+      evidence: ["PWA instalable con Service Worker", "OAuth con Google", "Modo offline con sync automatico"],
+      stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
+      live: "https://finesseapp.es",
+      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
     },
     {
       title: "Hytale Plugin Journey",
@@ -218,17 +172,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       live: LINKS.statusPage,
       keyCommit: LINKS.githubStackWatch,
       screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
-      insight: {
-        url: LINKS.statusPage,
-        strategy: "desktop",
-        updatedAt: "2026-02-19",
-        lcp: "0.6 s",
-        inpLabel: "TBT (INP proxy)",
-        inp: "140 ms",
-        cls: "0.005",
-        sourceLabel: "Latest measurement (Lighthouse, desktop)",
-        reportUrl: psiReportUrl(LINKS.statusPage),
-      },
     },
     {
       title: "VarynHost",
@@ -242,17 +185,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Pterodactyl, WHMCS, APIs, operational automation",
       live: "https://varynhost.com/",
       screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png", "/images/varynhost_4.png"],
-      insight: {
-        url: "https://varynhost.com/",
-        strategy: "mobile",
-        updatedAt: "2026-02-19",
-        lcp: "0.5 s",
-        inpLabel: "TBT (INP proxy)",
-        inp: "10 ms",
-        cls: "0.000",
-        sourceLabel: "Latest measurement (Lighthouse, mobile)",
-        reportUrl: psiReportUrl("https://varynhost.com/"),
-      },
     },
     {
       title: "MD-Ingelligence",
@@ -266,16 +198,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
       nda: true,
       screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png", "/images/madriddigital_3.png", "/images/madriddigital_4.png"],
-      insight: {
-        url: "Private (NDA)",
-        strategy: "mobile",
-        updatedAt: "2026-02-19",
-        lcp: "0.5 s",
-        inpLabel: "TBT (INP proxy)",
-        inp: "0 ms",
-        cls: "0.006",
-        sourceLabel: "Latest measurement (Lighthouse, private environment)",
-      },
     },
     {
       title: "Hytalia Web",
@@ -288,16 +210,18 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
-      insight: {
-        url: LINKS.hytaliaSite,
-        strategy: "mobile",
-        updatedAt: "2026-02-19",
-        lcp: "1.8 s",
-        inp: "146 ms",
-        cls: "0.02",
-        sourceLabel: "Core Web Vitals (CrUX, last 4 weeks)",
-        reportUrl: psiReportUrl(LINKS.hytaliaSite),
-      },
+    },
+    {
+      title: "Finesse",
+      tag: "Production",
+      type: "Shared finance PWA",
+      context: "Splitwise alternative for managing personal and group expenses with projections, budgets, and smart splitting.",
+      decision: "Supabase (Auth + RLS + Realtime) was chosen over a custom backend to ship the MVP faster without compromising security or scalability.",
+      result: "Production app with OAuth, offline mode, CSV/Splitwise import, custom categories, and a financial assistant (Fina).",
+      evidence: ["Installable PWA with Service Worker", "Google OAuth", "Offline mode with auto-sync"],
+      stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
+      live: "https://finesseapp.es",
+      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
     },
     {
       title: "Hytale Plugin Journey",
@@ -895,48 +819,6 @@ function App() {
                   <p className="mt-3 text-sm text-white/70">
                     <span className="font-semibold text-white/90">{t.stack}:</span> {p.stack}
                   </p>
-
-                  {p.insight ? (
-                    <div className="mt-3 rounded border border-cyan-300/35 bg-cyan-500/10 p-3 text-xs text-white/85">
-                      <div className="mb-2 flex items-start justify-between gap-2">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-wide text-cyan-200/85">{p.insight.sourceLabel}</p>
-                          <p className="text-[10px] text-white/60">{p.insight.strategy === "mobile" ? "Medido en móvil" : "Medido en desktop"}</p>
-                        </div>
-                        {typeof p.insight.score === "number" ? (
-                          <span className="rounded border border-cyan-300/45 bg-black/25 px-2 py-0.5 font-semibold text-cyan-100">
-                            {p.insight.score}/100
-                          </span>
-                        ) : null}
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
-                          <p className="text-[10px] text-white/60">LCP</p>
-                          <p className="font-semibold">{p.insight.lcp}</p>
-                        </div>
-                        <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
-                          <p className="text-[10px] text-white/60">{p.insight.inpLabel ?? "INP"}</p>
-                          <p className="font-semibold">{p.insight.inp}</p>
-                        </div>
-                        <div className="rounded border border-white/15 bg-black/20 px-2 py-1">
-                          <p className="text-[10px] text-white/60">CLS</p>
-                          <p className="font-semibold">{p.insight.cls}</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-2 flex items-center justify-between text-[10px] text-white/65">
-                        <span>Actualizado: {p.insight.updatedAt}</span>
-                        {p.insight.reportUrl ? (
-                          <a href={p.insight.reportUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2">
-                            Ver informe oficial
-                          </a>
-                        ) : (
-                          <span>Informe no público</span>
-                        )}
-                      </div>
-                    </div>
-                  ) : null}
 
                   {p.screenshots?.length ? (
                     <div className="mt-3">
