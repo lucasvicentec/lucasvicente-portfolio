@@ -24,15 +24,19 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Inject secrets into wrangler.toml
+        run: |
+          echo '' >> wrangler.toml
+          echo '[vars]' >> wrangler.toml
+          echo "RESEND_API_KEY = \"$RESEND_API_KEY\"" >> wrangler.toml
+          echo "TURNSTILE_SECRET_KEY = \"$TURNSTILE_SECRET_KEY\"" >> wrangler.toml
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          secrets: |
-            RESEND_API_KEY
-            TURNSTILE_SECRET_KEY
-        env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
