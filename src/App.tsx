@@ -400,7 +400,7 @@ function App() {
   const typingTimeoutRef = useRef<number | undefined>(undefined);
   const isTypingRef = useRef(false);
   const isUnmountedRef = useRef(false);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const cursorRef = useRef<HTMLDivElement>(null);
   const [showCustomCursor, setShowCustomCursor] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -447,7 +447,9 @@ function App() {
     if (!showCustomCursor || typeof window === "undefined") return;
 
     const handleMouseMove = (event: MouseEvent) => {
-      setCursorPos({ x: event.clientX, y: event.clientY });
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${event.clientX}px, ${event.clientY}px) translate(-50%, -50%)`;
+      }
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
@@ -750,9 +752,10 @@ function App() {
     <div className="relative isolate min-h-screen overflow-hidden bg-background text-white">
       {showCustomCursor ? (
         <div
+          ref={cursorRef}
           aria-hidden="true"
-          className="pointer-events-none fixed left-0 top-0 z-[70] -translate-x-1/2 -translate-y-1/2"
-          style={{ transform: `translate(${cursorPos.x}px, ${cursorPos.y}px)` }}
+          className="pointer-events-none fixed left-0 top-0 z-[70] will-change-transform"
+          style={{ transform: "translate(-100vw, -100vh)" }}
         >
           <span className="block h-5 w-5 rounded-full border border-cyan-300/90 shadow-[0_0_16px_rgba(34,211,238,0.55)]" />
           <span className="absolute left-1/2 top-1/2 block h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
