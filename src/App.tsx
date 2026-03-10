@@ -1,16 +1,29 @@
-﻿import { lazy, Suspense, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+﻿import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type FormEvent } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
   BriefcaseBusiness,
+  CheckCircle,
   CircleHelp,
   Command,
   Github,
   Linkedin,
-  Mail,
+  Send,
   ShieldCheck,
   X,
 } from "lucide-react";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (element: HTMLElement, options: Record<string, unknown>) => string;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
+// Reemplazar con tu site key de Cloudflare Turnstile
+const TURNSTILE_SITE_KEY = "0x4AAAAAACosHZqdoFP4G353";
 import {
   SiCloudflare,
   SiDocker,
@@ -67,7 +80,6 @@ const LINKS = {
     "https://github.com/lucasvicentec/lucasvicente-portfolio/blob/main/.github/workflows/deploy-cloudflare-worker.yml",
   metricsSummary: "#metrics",
   postmortem: "#postmortem",
-  cv: "mailto:contacto@lucasvicente.es?subject=CV%20Lucas%20Vicente",
 } as const;
 
 const getTerminalIntroByLocale = (locale: Locale): string[] =>
@@ -295,8 +307,17 @@ const copy = {
     hiringText:
       "Estoy abierto a freelance, contrato o full-time. Puedo entrar en proyectos existentes o construir desde cero con enfoque de producto y entrega.",
     hiringPoints: ["Rápido en ejecución", "Sólido en producción", "Comunicación clara con negocio y equipo"],
-    sendEmail: "Enviar email",
-    emailSubject: "Conversación de contratación",
+    sendEmail: "Contactar",
+    contactFormTitle: "Contactar",
+    contactFormName: "Nombre",
+    contactFormEmail: "Tu email",
+    contactFormSubject: "Asunto",
+    contactFormMessage: "Mensaje",
+    contactFormSend: "Enviar mensaje",
+    contactFormSending: "Enviando...",
+    contactFormSuccess: "Mensaje enviado. Te responderé lo antes posible.",
+    contactFormError: "Error al enviar. Inténtalo de nuevo.",
+    contactFormClose: "Cerrar",
     portfolioSourceLabel: "Código de este portfolio",
     portfolioSourceText: "¿Quieres revisar la implementación, estructura y despliegue de esta web?",
     portfolioSourceCta: "Ver codigo fuente",
@@ -343,8 +364,17 @@ const copy = {
     hiringText:
       "I am open to freelance, contract, or full-time roles. I can join existing systems or build from scratch with a product and delivery mindset.",
     hiringPoints: ["Fast execution", "Production reliability", "Clear communication with business and team"],
-    sendEmail: "Send email",
-    emailSubject: "Hiring conversation",
+    sendEmail: "Contact",
+    contactFormTitle: "Contact",
+    contactFormName: "Name",
+    contactFormEmail: "Your email",
+    contactFormSubject: "Subject",
+    contactFormMessage: "Message",
+    contactFormSend: "Send message",
+    contactFormSending: "Sending...",
+    contactFormSuccess: "Message sent. I'll get back to you soon.",
+    contactFormError: "Failed to send. Please try again.",
+    contactFormClose: "Close",
     portfolioSourceLabel: "Portfolio source",
     portfolioSourceText: "Want to review implementation, structure, and deployment of this site?",
     portfolioSourceCta: "View source code",
@@ -372,6 +402,12 @@ function App() {
   const isUnmountedRef = useRef(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [showCustomCursor, setShowCustomCursor] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetIdRef = useRef<string | undefined>(undefined);
 
   const skillsCount = useMemo(() => coreStack.length + alsoUsedStack.length, []);
   const coreMarquee = useMemo(() => [...coreStack, ...coreStack], []);
@@ -430,6 +466,7 @@ function App() {
     const handleEscape = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") {
         setActiveScreenshot(null);
+        setShowContactForm(false);
       }
     };
 
@@ -439,11 +476,67 @@ function App() {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    document.body.style.overflow = activeScreenshot ? "hidden" : "";
+    document.body.style.overflow = activeScreenshot || showContactForm ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [activeScreenshot]);
+  }, [activeScreenshot, showContactForm]);
+
+  useEffect(() => {
+    if (!showContactForm) {
+      setTurnstileToken("");
+      if (turnstileWidgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = undefined;
+      }
+      return;
+    }
+
+    const renderWidget = () => {
+      if (!turnstileContainerRef.current || !window.turnstile) return false;
+      turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        theme: "dark",
+        callback: (token: string) => setTurnstileToken(token),
+        "expired-callback": () => setTurnstileToken(""),
+      });
+      return true;
+    };
+
+    if (!renderWidget()) {
+      const interval = setInterval(() => {
+        if (renderWidget()) clearInterval(interval);
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, [showContactForm]);
+
+  const handleContactSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (!turnstileToken || contactStatus === "sending") return;
+
+      setContactStatus("sending");
+
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...contactForm, turnstileToken }),
+        });
+
+        if (res.ok) {
+          setContactStatus("success");
+          setContactForm({ name: "", email: "", subject: "", message: "" });
+        } else {
+          setContactStatus("error");
+        }
+      } catch {
+        setContactStatus("error");
+      }
+    },
+    [contactForm, turnstileToken, contactStatus],
+  );
 
   const sleep = (ms: number) =>
     new Promise<void>((resolve) => {
@@ -585,8 +678,8 @@ function App() {
           : ["Core stack: React, TypeScript, Next.js, Python, PostgreSQL, Docker, Cloudflare, GitHub Actions."],
       contact:
         lang === "es"
-          ? ["Contacto:", "- Email: contacto@lucasvicente.es", `- LinkedIn: ${LINKS.linkedinProfile}`]
-          : ["Contact:", "- Email: contacto@lucasvicente.es", `- LinkedIn: ${LINKS.linkedinProfile}`],
+          ? ["Contacto:", "- Formulario: usa el botón 'Contactar' en esta página", `- LinkedIn: ${LINKS.linkedinProfile}`]
+          : ["Contact:", "- Form: use the 'Contact' button on this page", `- LinkedIn: ${LINKS.linkedinProfile}`],
       services:
         lang === "es"
           ? ["Servicios:", "- Desarrollo web full-stack", "- Integraciones/automatización", "- Infraestructura y despliegue"]
@@ -597,12 +690,12 @@ function App() {
           : ["About:", "Full-stack engineer focused on product, operations, and measurable impact."],
       hire:
         lang === "es"
-          ? ["Perfecto, hablemos.", "Puedes escribirme a contacto@lucasvicente.es o por LinkedIn y te respondo rápido."]
-          : ["Great, let's talk.", "You can reach me at contacto@lucasvicente.es or on LinkedIn for a quick reply."],
+          ? ["Perfecto, hablemos.", "Usa el formulario de contacto en esta página o escríbeme por LinkedIn."]
+          : ["Great, let's talk.", "Use the contact form on this page or reach out on LinkedIn."],
       pricing:
         lang === "es"
-          ? ["Depende del alcance y urgencia.", "Si me pasas contexto por email, te doy propuesta cerrada o por fases."]
-          : ["It depends on scope and urgency.", "If you share context by email, I can send a fixed or phased proposal."],
+          ? ["Depende del alcance y urgencia.", "Si me pasas contexto por el formulario de contacto, te doy propuesta cerrada o por fases."]
+          : ["It depends on scope and urgency.", "Share context via the contact form and I'll send a fixed or phased proposal."],
       cv:
         lang === "es"
           ? ["CV: abriendo acceso al PDF/contacto..."]
@@ -629,7 +722,10 @@ function App() {
 
     if (typeof window !== "undefined") {
       const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
-      if (resolved === "cv") open(LINKS.cv);
+      if (resolved === "cv") {
+        setContactForm((prev) => ({ ...prev, subject: lang === "es" ? "Solicitud de CV" : "CV Request" }));
+        setShowContactForm(true);
+      }
       if (resolved === "stackwatch") {
         open(LINKS.statusPage);
         open(LINKS.githubStackWatch);
@@ -748,12 +844,13 @@ function App() {
                   {t.ctaProjects}
                   <ArrowRight className="h-4 w-4" />
                 </a>
-                <a
-                  href="#hiring"
+                <button
+                  type="button"
+                  onClick={() => setShowContactForm(true)}
                   className="border border-emerald-200/35 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
                 >
                   {t.ctaContact}
-                </a>
+                </button>
                 <a
                   href={LINKS.githubProfile}
                   target="_blank"
@@ -897,7 +994,7 @@ function App() {
               </div>
               <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1 text-xs text-white/70">
                 <Command className="h-3.5 w-3.5" />
-                <span>contacto@lucasvicente.es</span>
+                <span>lucas-console</span>
               </div>
             </div>
 
@@ -1039,13 +1136,14 @@ function App() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <a
-                  href={`mailto:contacto@lucasvicente.es?subject=${encodeURIComponent(t.emailSubject)}&body=Hola%20Lucas%2C%20quiero%20hablar%20sobre%20una%20oportunidad...`}
+                <button
+                  type="button"
+                  onClick={() => setShowContactForm(true)}
                   className="inline-flex items-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_18px_rgba(16,185,129,0.35)] transition hover:bg-emerald-500/45"
                 >
-                  <Mail className="h-4 w-4" />
+                  <Send className="h-4 w-4" />
                   {t.sendEmail}
-                </a>
+                </button>
                 <a
                   href={LINKS.linkedinProfile}
                   target="_blank"
@@ -1067,6 +1165,106 @@ function App() {
               </div>
             </div>
           </section>
+
+          {showContactForm ? (
+            <div
+              className="fixed inset-0 z-[90] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+              onClick={() => {
+                setShowContactForm(false);
+                setContactStatus("idle");
+              }}
+            >
+              <div
+                className="relative w-full max-w-lg border border-emerald-300/40 bg-[linear-gradient(180deg,rgba(6,20,16,0.97),rgba(4,16,12,0.98))] p-6 shadow-[0_0_35px_rgba(16,185,129,0.20)]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowContactForm(false);
+                    setContactStatus("idle");
+                  }}
+                  className="absolute right-3 top-3 inline-flex items-center gap-1 border border-white/25 bg-black/40 px-2 py-1 text-xs text-white/70 hover:bg-black/60"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  {t.contactFormClose}
+                </button>
+
+                <div className="mb-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">{t.hiringBadge}</p>
+                  <h2 className="mt-1 text-xl font-semibold sm:text-2xl">{t.contactFormTitle}</h2>
+                </div>
+
+                {contactStatus === "success" ? (
+                  <div className="border border-emerald-300/40 bg-emerald-500/15 p-6 text-center text-sm text-emerald-100">
+                    <CheckCircle className="mx-auto mb-3 h-10 w-10 text-emerald-300" />
+                    <p>{t.contactFormSuccess}</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleContactSubmit} className="space-y-4">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormName}</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={100}
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm((prev) => ({ ...prev, name: e.target.value }))}
+                        className="w-full border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormEmail}</label>
+                      <input
+                        type="email"
+                        required
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm((prev) => ({ ...prev, email: e.target.value }))}
+                        className="w-full border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormSubject}</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={200}
+                        value={contactForm.subject}
+                        onChange={(e) => setContactForm((prev) => ({ ...prev, subject: e.target.value }))}
+                        className="w-full border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormMessage}</label>
+                      <textarea
+                        required
+                        rows={4}
+                        maxLength={5000}
+                        value={contactForm.message}
+                        onChange={(e) => setContactForm((prev) => ({ ...prev, message: e.target.value }))}
+                        className="w-full resize-none border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
+                      />
+                    </div>
+
+                    <div ref={turnstileContainerRef} />
+
+                    {contactStatus === "error" ? (
+                      <p className="text-xs text-red-400">{t.contactFormError}</p>
+                    ) : null}
+
+                    <button
+                      type="submit"
+                      disabled={contactStatus === "sending" || !turnstileToken}
+                      className="inline-flex w-full items-center justify-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_18px_rgba(16,185,129,0.35)] transition hover:bg-emerald-500/45 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <Send className="h-4 w-4" />
+                      {contactStatus === "sending" ? t.contactFormSending : t.contactFormSend}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          ) : null}
 
           {activeScreenshot ? (
             <div

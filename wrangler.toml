@@ -11,3 +11,7 @@ routes = [
 [assets]
 directory = "./dist"
 binding = "ASSETS"
+
+# Secrets (configurar con `wrangler secret put <NAME>`):
+#   RESEND_API_KEY        — API key de Resend
+#   TURNSTILE_SECRET_KEY  — Secret key de Cloudflare Turnstile
