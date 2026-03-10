@@ -13,6 +13,11 @@ dist-ssr
 *.local
 .wrangler
 
+# Secrets
+.env
+.env.*
+.dev.vars
+
 # Claude Code
 .claude/
 
