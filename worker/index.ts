@@ -62,7 +62,7 @@ async function sendEmail(
   email: string,
   subject: string,
   message: string,
-): Promise<boolean> {
+): Promise<{ ok: boolean; error?: string }> {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -77,7 +77,11 @@ async function sendEmail(
       text: `Nombre: ${name}\nEmail: ${email}\n\n${message}`,
     }),
   });
-  return res.ok;
+  if (!res.ok) {
+    const body = await res.text();
+    return { ok: false, error: body };
+  }
+  return { ok: true };
 }
 
 // Rate limiting básico por IP (en memoria del isolate)
@@ -86,7 +90,7 @@ const rateLimitMap = new Map<string, number[]>();
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
   const windowMs = 60_000;
-  const maxRequests = 3;
+  const maxRequests = 10;
 
   const timestamps = (rateLimitMap.get(ip) ?? []).filter((t) => now - t < windowMs);
   if (timestamps.length >= maxRequests) return true;
@@ -136,9 +140,9 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     return jsonResponse({ error: "CAPTCHA verification failed." }, 403);
   }
 
-  const sent = await sendEmail(env, name, email, subject, message);
-  if (!sent) {
-    return jsonResponse({ error: "Failed to send email." }, 500);
+  const result = await sendEmail(env, name, email, subject, message);
+  if (!result.ok) {
+    return jsonResponse({ error: `Failed to send email: ${result.error}` }, 500);
   }
 
   return jsonResponse({ ok: true }, 200);
@@ -151,7 +155,12 @@ export default {
     // Contact API
     if (url.pathname === "/api/contact") {
       if (request.method === "POST") {
-        return handleContact(request, env);
+        try {
+          return await handleContact(request, env);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          return jsonResponse({ error: `Unhandled: ${msg}` }, 500);
+        }
       }
       return jsonResponse({ error: "Method not allowed." }, 405);
     }
