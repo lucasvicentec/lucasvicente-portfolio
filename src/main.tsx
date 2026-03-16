@@ -11,7 +11,7 @@ function Root() {
     return <SplashPage onEnterPortfolio={() => setShowPortfolio(true)} />
   }
 
-  return <App />
+  return <App onBackToSplash={() => setShowPortfolio(false)} />
 }
 
 createRoot(document.getElementById('root')!).render(

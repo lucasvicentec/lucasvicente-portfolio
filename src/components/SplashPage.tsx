@@ -155,7 +155,7 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
       const tl = gsap.timeline({
         onComplete: () => {
           if (destination === "studio") {
-            window.location.href = "https://studio.lucasvicente.es";
+            window.open("https://studio.lucasvicente.es", "_blank", "noopener,noreferrer");
           } else {
             onEnterPortfolio();
           }
@@ -248,7 +248,7 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
           {nameText.split("").map((char, i) => (
             <span
               key={i}
-              className="splash-letter inline-block text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight select-none"
+              className="splash-letter inline-block text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight select-none"
               style={{
                 color: "transparent",
                 backgroundImage:
@@ -280,13 +280,18 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
         {/* Subtitle */}
         <div
           ref={subtitleRef}
-          className="text-sm sm:text-base tracking-[0.3em] uppercase text-white/40 font-medium mt-2"
+          className="flex flex-col items-center gap-1 mt-2"
         >
-          Software Engineer
+          <span className="text-sm sm:text-base tracking-[0.3em] uppercase text-white/40 font-medium">
+            Full Stack Developer
+          </span>
+          <span className="text-xs sm:text-sm text-white/25 tracking-wide">
+            Construyo software que escala sin romperse
+          </span>
         </div>
 
         {/* Buttons */}
-        <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4 mt-8">
+        <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-5 mt-8">
           <button
             onClick={() => handleExit("studio")}
             className="splash-btn group relative px-10 py-4 rounded-xl text-lg font-semibold tracking-widest uppercase overflow-hidden transition-all duration-300 hover:scale-105 focus:outline-none"
@@ -297,17 +302,22 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
               color: "#c084fc",
             }}
           >
-            <span className="relative z-10 flex items-center gap-3">
-              STUDIO
-              <svg
-                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 7l-10 10M17 7H7m10 0v10" />
-              </svg>
+            <span className="relative z-10 flex flex-col items-center gap-1">
+              <span className="flex items-center gap-3">
+                STUDIO
+                <svg
+                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7m10 0v10" />
+                </svg>
+              </span>
+              <span className="text-[10px] sm:text-xs font-normal tracking-wider text-purple-300/50 normal-case">
+                Servicios y soluciones para empresas
+              </span>
             </span>
             <div
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -332,17 +342,22 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
               color: "#22d3ee",
             }}
           >
-            <span className="relative z-10 flex items-center gap-3">
-              PORTFOLIO
-              <svg
-                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
+            <span className="relative z-10 flex flex-col items-center gap-1">
+              <span className="flex items-center gap-3">
+                PORTFOLIO
+                <svg
+                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+              <span className="text-[10px] sm:text-xs font-normal tracking-wider text-cyan-300/50 normal-case">
+                Proyectos, stack y experiencia
+              </span>
             </span>
             <div
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"

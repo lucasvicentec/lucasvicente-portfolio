@@ -386,7 +386,7 @@ const copy = {
   },
 } as const;
 
-function App() {
+function App({ onBackToSplash }: { onBackToSplash?: () => void }) {
   const [lang, setLang] = useState<Locale>("es");
   const t = copy[lang];
   const projects = projectsByLocale[lang];
@@ -789,6 +789,25 @@ function App() {
             </div>
 
             <div className="flex items-center gap-2">
+              {onBackToSplash && (
+                <button
+                  type="button"
+                  onClick={onBackToSplash}
+                  className="hidden sm:inline-flex items-center gap-1.5 border border-white/20 bg-black/40 px-3 py-2 text-xs font-semibold text-white/70 transition hover:text-white hover:border-white/40"
+                >
+                  <ArrowRight className="h-3 w-3 rotate-180" />
+                  {lang === "es" ? "Inicio" : "Home"}
+                </button>
+              )}
+              <a
+                href="https://studio.lucasvicente.es"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:inline-flex items-center gap-1.5 border border-purple-500/30 bg-purple-500/10 px-3 py-2 text-xs font-semibold text-purple-300 transition hover:bg-purple-500/20 hover:border-purple-500/50"
+              >
+                Studio
+                <ArrowUpRight className="h-3 w-3" />
+              </a>
               <div className="border border-white/20 bg-black/40 p-1">
                 <button
                   type="button"
