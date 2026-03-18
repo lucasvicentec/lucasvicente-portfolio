@@ -91,6 +91,22 @@ const getTerminalIntroByLocale = (locale: Locale): string[] =>
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
     {
+      title: "Informo",
+      tag: "Producción",
+      type: "SaaS de canal de denuncias",
+      context: "Las empresas con +50 empleados están obligadas por la Ley 2/2023 a tener un canal de denuncias. Informo ofrece esa infraestructura como servicio.",
+      decision: "Cifrado AES-256-GCM extremo a extremo sobre Supabase para garantizar anonimato real del denunciante sin sacrificar velocidad de desarrollo.",
+      result: "Plataforma SaaS en producción con denuncias cifradas, panel de gestión, seguimiento anónimo, exportación Libro-Registro para AIPI y verificación QR.",
+      evidence: [
+        "Cifrado AES-256-GCM end-to-end en denuncias y mensajes",
+        "Cumplimiento normativo AIPI con Libro-Registro exportable",
+        "Tres planes de suscripción con trial de 7 días sin tarjeta",
+      ],
+      stack: "Next.js 15, React 19, TypeScript, Tailwind, Supabase, AES-256, Docker, Zod",
+      live: "https://informo.es",
+      screenshots: ["/images/informo_1.png", "/images/informo_2.png", "/images/informo_3.png", "/images/informo_4.png"],
+    },
+    {
       title: "Finesse",
       tag: "Produccion",
       type: "PWA de finanzas compartidas",
@@ -169,6 +185,22 @@ const projectsByLocale: Record<Locale, Project[]> = {
     },
   ],
   en: [
+    {
+      title: "Informo",
+      tag: "Production",
+      type: "Whistleblowing channel SaaS",
+      context: "Companies with 50+ employees in Spain are legally required to have a whistleblowing channel (Law 2/2023). Informo provides that infrastructure as a service.",
+      decision: "End-to-end AES-256-GCM encryption on top of Supabase to guarantee real reporter anonymity without sacrificing development speed.",
+      result: "Production SaaS with encrypted reports, management dashboard, anonymous tracking, AIPI-compliant Libro-Registro export, and QR verification.",
+      evidence: [
+        "AES-256-GCM end-to-end encryption on reports and messages",
+        "AIPI regulatory compliance with exportable Libro-Registro",
+        "Three subscription tiers with 7-day no-card trial",
+      ],
+      stack: "Next.js 15, React 19, TypeScript, Tailwind, Supabase, AES-256, Docker, Zod",
+      live: "https://informo.es",
+      screenshots: ["/images/informo_1.png", "/images/informo_2.png", "/images/informo_3.png", "/images/informo_4.png"],
+    },
     {
       title: "Finesse",
       tag: "Production",

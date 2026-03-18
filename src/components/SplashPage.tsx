@@ -15,6 +15,7 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
   const lineRightRef = useRef<HTMLDivElement>(null);
   const [exiting, setExiting] = useState(false);
   const animFrameRef = useRef<number>(0);
+  const hasAnimated = useRef(false);
 
   // Particle canvas background
   useEffect(() => {
@@ -107,6 +108,9 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
 
   // GSAP entrance animations
   useEffect(() => {
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
+
     const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
     // Animate each letter of the name
@@ -145,6 +149,8 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
         ease: "back.out(1.4)",
       }, 1.5);
     }
+
+    return () => { tl.kill(); };
   }, []);
 
   const handleExit = useCallback(
