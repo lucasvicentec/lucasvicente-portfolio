@@ -289,7 +289,7 @@ export default function SplashPage({ onEnterPortfolio }: SplashPageProps) {
           className="flex flex-col items-center gap-1 mt-2"
         >
           <span className="text-sm sm:text-base tracking-[0.3em] uppercase text-white/40 font-medium">
-            Full Stack Developer
+            Full-Stack Developer & DevOps — AI-Augmented Product Builder
           </span>
           <span className="text-xs sm:text-sm text-white/25 tracking-wide">
             Construyo software que escala sin romperse
