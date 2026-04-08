@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia de Estudio - Entrevistas Tech - Lucas Vicente</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4; margin: 15mm 18mm; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a1a1a;
+      font-size: 10pt;
+      line-height: 1.5;
+      background: #f5f5f5;
+    }
+    .page {
+      max-width: 210mm;
+      background: #fff;
+      margin: 10px auto;
+      padding: 18mm 20mm;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    @media print {
+      body { background: #fff; }
+      .page { box-shadow: none; margin: 0 auto; padding: 0; }
+      .page-break { page-break-before: always; }
+    }
+    h1 {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #111;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 8px;
+      margin-bottom: 6px;
+    }
+    .intro { font-size: 10pt; color: #555; margin-bottom: 16px; }
+    h2 {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #2563eb;
+      margin: 20px 0 8px;
+      border-bottom: 1.5px solid #e5e7eb;
+      padding-bottom: 4px;
+    }
+    h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #111;
+      margin: 14px 0 6px;
+    }
+    h4 {
+      font-size: 10pt;
+      font-weight: 600;
+      color: #444;
+      margin: 10px 0 4px;
+    }
+    p { margin-bottom: 6px; font-size: 9.5pt; }
+    ul, ol { margin: 4px 0 8px 18px; font-size: 9.5pt; }
+    li { margin-bottom: 3px; }
+    code {
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 9pt;
+      color: #e11d48;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 8.5pt;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 6px 0 10px;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    pre code { background: none; color: #e2e8f0; padding: 0; }
+    .tip {
+      background: #eff6ff;
+      border-left: 3px solid #2563eb;
+      padding: 8px 12px;
+      margin: 8px 0;
+      font-size: 9pt;
+      border-radius: 0 4px 4px 0;
+    }
+    .tip strong { color: #1e40af; }
+    .warning {
+      background: #fef3c7;
+      border-left: 3px solid #f59e0b;
+      padding: 8px 12px;
+      margin: 8px 0;
+      font-size: 9pt;
+      border-radius: 0 4px 4px 0;
+    }
+    .warning strong { color: #92400e; }
+    .question {
+      background: #f0fdf4;
+      border-left: 3px solid #22c55e;
+      padding: 8px 12px;
+      margin: 8px 0;
+      font-size: 9pt;
+      border-radius: 0 4px 4px 0;
+    }
+    .question strong { color: #166534; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 9pt;
+    }
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 5px 8px;
+      text-align: left;
+    }
+    th { background: #f8fafc; font-weight: 600; color: #111; }
+    .toc { margin: 10px 0 20px; }
+    .toc a { color: #2563eb; text-decoration: none; font-size: 9.5pt; }
+    .toc li { margin-bottom: 2px; }
+    .week-badge {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-right: 6px;
+    }
+    .priority-high { border-left-color: #ef4444; }
+    .priority-high strong { color: #dc2626; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================== -->
+<!-- PORTADA -->
+<!-- ============================================== -->
+<div class="page">
+  <h1>Guia de Estudio para Entrevistas Tech</h1>
+  <p class="intro">
+    Preparado para Lucas Vicente &mdash; Full-Stack Developer &amp; DevOps<br>
+    Plan de estudio: 2 semanas &middot; Basado en tu CV y stack real<br>
+    Objetivo: Dominar los conceptos que te van a preguntar en entrevistas
+  </p>
+
+  <div class="warning">
+    <strong>Regla de oro:</strong> No necesitas memorizar codigo. Necesitas ENTENDER que hace cada cosa, POR QUE se usa y CUANDO elegirla. Si puedes explicarlo con tus palabras, pasas la entrevista.
+  </div>
+
+  <h2>Plan de 2 Semanas</h2>
+
+  <h3><span class="week-badge">SEMANA 1</span> Fundamentos (lo que te preguntan seguro)</h3>
+  <ul>
+    <li>Dia 1-2: JavaScript esencial (variables, funciones, arrays, promesas)</li>
+    <li>Dia 3: TypeScript basico (tipos, interfaces)</li>
+    <li>Dia 4-5: React (componentes, hooks, estado, props)</li>
+    <li>Dia 6: Next.js (routing, SSR vs CSR, API routes)</li>
+    <li>Dia 7: HTML/CSS fundamentals + repaso</li>
+  </ul>
+
+  <h3><span class="week-badge">SEMANA 2</span> Backend, DevOps y entrevista</h3>
+  <ul>
+    <li>Dia 8: Node.js y APIs REST</li>
+    <li>Dia 9: SQL y PostgreSQL</li>
+    <li>Dia 10: Docker (conceptos, comandos, Dockerfile)</li>
+    <li>Dia 11: Linux, redes y Git</li>
+    <li>Dia 12: AWS Cloud - conceptos y servicios esenciales</li>
+    <li>Dia 13: Terraform - infraestructura como codigo</li>
+    <li>Dia 14: Preguntas de comportamiento, vender proyectos + tests finales</li>
+  </ul>
+
+  <!-- ============================================== -->
+  <!-- INDICE -->
+  <!-- ============================================== -->
+  <h2>Indice de Contenidos</h2>
+  <ol class="toc">
+    <li><a href="#js">JavaScript Esencial</a></li>
+    <li><a href="#ts">TypeScript Basico</a></li>
+    <li><a href="#react">React Fundamentals</a></li>
+    <li><a href="#nextjs">Next.js</a></li>
+    <li><a href="#html-css">HTML y CSS</a></li>
+    <li><a href="#node">Node.js y APIs REST</a></li>
+    <li><a href="#sql">SQL y PostgreSQL</a></li>
+    <li><a href="#docker">Docker</a></li>
+    <li><a href="#linux">Linux y Redes</a></li>
+    <li><a href="#git">Git</a></li>
+    <li><a href="#conceptos">Conceptos Clave de Arquitectura</a></li>
+    <li><a href="#behavioral">Preguntas de Comportamiento</a></li>
+    <li><a href="#proyectos">Como Vender tus Proyectos</a></li>
+    <li><a href="#aws">AWS Cloud Esencial</a></li>
+    <li><a href="#terraform">Terraform - Infraestructura como Codigo</a></li>
+    <li><a href="#preguntas">100+ Preguntas Frecuentes de Entrevista</a></li>
+  </ol>
+</div>
+
+<!-- ============================================== -->
+<!-- 1. JAVASCRIPT -->
+<!-- ============================================== -->
+<div class="page page-break" id="js">
+  <h2>1. JavaScript Esencial</h2>
+  <p>JavaScript es la base de todo tu stack. Te van a preguntar sobre esto en el 95% de las entrevistas frontend/fullstack.</p>
+
+  <h3>1.1 Variables: var, let, const</h3>
+  <table>
+    <tr><th>Keyword</th><th>Scope</th><th>Reasignable</th><th>Cuando usarlo</th></tr>
+    <tr><td><code>var</code></td><td>Funcion</td><td>Si</td><td>NUNCA (legacy)</td></tr>
+    <tr><td><code>let</code></td><td>Bloque</td><td>Si</td><td>Cuando el valor cambia</td></tr>
+    <tr><td><code>const</code></td><td>Bloque</td><td>No</td><td>Por defecto siempre</td></tr>
+  </table>
+  <div class="tip"><strong>Pregunta tipica:</strong> "Cual es la diferencia entre let y const?" &mdash; const no se puede reasignar, pero si es un objeto/array, sus propiedades SI se pueden mutar.</div>
+
+  <pre><code>const user = { name: "Lucas" };
+user.name = "Pedro";  // OK, mutas la propiedad
+user = {};            // ERROR, no puedes reasignar</code></pre>
+
+  <h3>1.2 Tipos de datos</h3>
+  <ul>
+    <li><strong>Primitivos:</strong> string, number, boolean, null, undefined, symbol, bigint</li>
+    <li><strong>Referencia:</strong> object, array, function</li>
+  </ul>
+  <div class="question"><strong>Pregunta:</strong> "Que diferencia hay entre null y undefined?"<br>
+  <code>undefined</code> = variable declarada pero sin valor asignado.<br>
+  <code>null</code> = valor asignado intencionalmente para indicar "vacio".</div>
+
+  <h3>1.3 Funciones</h3>
+  <pre><code>// Funcion clasica
+function sumar(a, b) {
+  return a + b;
+}
+
+// Arrow function (la que mas usaras en React)
+const sumar = (a, b) => a + b;
+
+// Arrow con cuerpo
+const procesar = (data) => {
+  const resultado = data.filter(x => x > 0);
+  return resultado;
+};</code></pre>
+
+  <div class="tip"><strong>Diferencia clave:</strong> Las arrow functions NO tienen su propio <code>this</code>. Heredan el <code>this</code> del contexto donde se definen. Las funciones clasicas SI tienen su propio <code>this</code>.</div>
+
+  <h3>1.4 Arrays - Metodos que DEBES saber</h3>
+  <p>Estos los vas a usar todos los dias en React:</p>
+  <pre><code>const nums = [1, 2, 3, 4, 5];
+
+// MAP - transforma cada elemento, devuelve nuevo array
+nums.map(n => n * 2);           // [2, 4, 6, 8, 10]
+
+// FILTER - filtra elementos, devuelve nuevo array
+nums.filter(n => n > 3);        // [4, 5]
+
+// FIND - devuelve el PRIMER elemento que cumple
+nums.find(n => n > 3);          // 4
+
+// REDUCE - acumula valores
+nums.reduce((acc, n) => acc + n, 0);  // 15
+
+// SOME - al menos uno cumple? (boolean)
+nums.some(n => n > 4);          // true
+
+// EVERY - todos cumplen? (boolean)
+nums.every(n => n > 0);         // true
+
+// INCLUDES - contiene el valor?
+nums.includes(3);               // true
+
+// forEach - ejecuta funcion por cada elemento (NO devuelve nada)
+nums.forEach(n => console.log(n));</code></pre>
+
+  <div class="warning"><strong>CLAVE:</strong> <code>map</code>, <code>filter</code> y <code>reduce</code> NO mutan el array original. Devuelven uno nuevo. Esto es fundamental en React donde la inmutabilidad importa.</div>
+
+  <h3>1.5 Destructuring</h3>
+  <pre><code>// Objetos
+const user = { name: "Lucas", age: 25, city: "Madrid" };
+const { name, age } = user;     // name = "Lucas", age = 25
+
+// Arrays
+const [first, second] = [10, 20];  // first = 10, second = 20
+
+// Con valores por defecto
+const { role = "dev" } = user;  // role = "dev" (no existia)
+
+// Renombrar
+const { name: nombre } = user;  // nombre = "Lucas"</code></pre>
+
+  <h3>1.6 Spread y Rest</h3>
+  <pre><code>// SPREAD - expandir
+const arr1 = [1, 2];
+const arr2 = [...arr1, 3, 4];   // [1, 2, 3, 4]
+
+const obj1 = { a: 1 };
+const obj2 = { ...obj1, b: 2 }; // { a: 1, b: 2 }
+
+// REST - agrupar el "resto"
+const { name, ...rest } = user; // rest = { age: 25, city: "Madrid" }
+
+function sum(...nums) {          // nums = [1, 2, 3]
+  return nums.reduce((a, b) => a + b, 0);
+}</code></pre>
+
+  <h3>1.7 Promesas y Async/Await</h3>
+  <p>Esto es CRITICO. Toda comunicacion con APIs, bases de datos, etc. es asincrona.</p>
+  <pre><code>// Promesa basica
+fetch("https://api.ejemplo.com/users")
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error(error));
+
+// Async/Await (la forma moderna - usa esta)
+async function getUsers() {
+  try {
+    const response = await fetch("https://api.ejemplo.com/users");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}</code></pre>
+
+  <div class="question"><strong>Pregunta tipica:</strong> "Que es una promesa?"<br>
+  Un objeto que representa un valor que puede estar disponible ahora, en el futuro, o nunca. Tiene 3 estados: <strong>pending</strong> (esperando), <strong>fulfilled</strong> (resuelta con valor), <strong>rejected</strong> (rechazada con error).</div>
+
+  <h3>1.8 Operador Ternario y Optional Chaining</h3>
+  <pre><code>// Ternario (lo usas MUCHO en JSX)
+const msg = age >= 18 ? "Mayor" : "Menor";
+
+// Optional chaining - evita errores si algo es null/undefined
+const city = user?.address?.city;  // undefined si algo no existe (no explota)
+
+// Nullish coalescing - valor por defecto solo si null/undefined
+const name = user.name ?? "Anonimo";</code></pre>
+
+  <h3>1.9 Closures</h3>
+  <pre><code>function crearContador() {
+  let count = 0;              // esta variable "vive" dentro del closure
+  return function() {
+    count++;
+    return count;
+  };
+}
+
+const contador = crearContador();
+contador(); // 1
+contador(); // 2
+contador(); // 3</code></pre>
+  <div class="question"><strong>Pregunta:</strong> "Que es un closure?"<br>
+  Una funcion que recuerda las variables del scope donde fue creada, incluso cuando se ejecuta fuera de ese scope. Es como si la funcion "capturara" su entorno.</div>
+
+  <h3>1.10 Event Loop</h3>
+  <div class="question"><strong>Pregunta:</strong> "Como funciona el Event Loop en JavaScript?"<br>
+  JS es single-threaded. El Event Loop es el mecanismo que permite ejecutar codigo asincrono sin bloquear el hilo principal:<br><br>
+  1. <strong>Call Stack</strong> - donde se ejecuta el codigo sincrono<br>
+  2. <strong>Web APIs</strong> - donde se procesan las operaciones async (fetch, setTimeout, etc.)<br>
+  3. <strong>Callback Queue</strong> - cola de funciones listas para ejecutarse<br>
+  4. <strong>Event Loop</strong> - revisa si el Call Stack esta vacio; si lo esta, mueve callbacks de la queue al stack<br><br>
+  Por eso un <code>setTimeout(fn, 0)</code> no se ejecuta inmediatamente: primero va a la queue y espera a que el stack se vacie.</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 2. TYPESCRIPT -->
+<!-- ============================================== -->
+<div class="page page-break" id="ts">
+  <h2>2. TypeScript Basico</h2>
+  <p>TypeScript es JavaScript con tipos. Lo usas en todos tus proyectos. Te van a preguntar al menos 1-2 preguntas sobre esto.</p>
+
+  <h3>2.1 Tipos basicos</h3>
+  <pre><code>// Tipos primitivos
+let nombre: string = "Lucas";
+let edad: number = 25;
+let activo: boolean = true;
+
+// Arrays
+let nums: number[] = [1, 2, 3];
+let tags: Array&lt;string&gt; = ["react", "next"];
+
+// Objetos
+let user: { name: string; age: number } = { name: "Lucas", age: 25 };
+
+// Union types - puede ser uno u otro
+let id: string | number = "abc";
+id = 123;  // tambien valido</code></pre>
+
+  <h3>2.2 Interfaces vs Types</h3>
+  <pre><code>// Interface - para objetos (preferida para definir "formas")
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role?: string;        // ? = opcional
+  readonly createdAt: Date;  // no se puede modificar
+}
+
+// Type - mas flexible (unions, intersections, primitivos)
+type Status = "active" | "inactive" | "banned";  // union literal
+type ID = string | number;
+
+// Extender
+interface Admin extends User {
+  permissions: string[];
+}
+
+// Intersection con types
+type AdminUser = User & { permissions: string[] };</code></pre>
+
+  <div class="question"><strong>Pregunta:</strong> "Cuando usas interface y cuando type?"<br>
+  <strong>Interface</strong>: para definir la forma de objetos y clases. Se pueden extender y mergear.<br>
+  <strong>Type</strong>: para unions, intersections, tipos primitivos con alias, tipos condicionales. Mas flexible pero no se puede mergear.</div>
+
+  <h3>2.3 Generics</h3>
+  <pre><code>// Funcion generica - funciona con cualquier tipo
+function firstElement&lt;T&gt;(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+firstElement&lt;number&gt;([1, 2, 3]);     // 1 (tipo number)
+firstElement&lt;string&gt;(["a", "b"]);    // "a" (tipo string)
+
+// Interface generica
+interface ApiResponse&lt;T&gt; {
+  data: T;
+  status: number;
+  message: string;
+}
+
+// Uso
+const response: ApiResponse&lt;User[]&gt; = {
+  data: [{ id: 1, name: "Lucas", email: "...", createdAt: new Date() }],
+  status: 200,
+  message: "OK"
+};</code></pre>
+
+  <div class="tip"><strong>Explicacion simple:</strong> Los generics son como "huecos" que rellenas con un tipo cuando los usas. Es como decir "esta funcion funciona con CUALQUIER tipo, tu me dices cual cuando la llames".</div>
+
+  <h3>2.4 Utility Types (los mas comunes)</h3>
+  <pre><code>// Partial - hace todas las propiedades opcionales
+type UpdateUser = Partial&lt;User&gt;;  // todo opcional
+
+// Pick - selecciona solo algunas propiedades
+type UserPreview = Pick&lt;User, "name" | "email"&gt;;
+
+// Omit - excluye propiedades
+type UserWithoutId = Omit&lt;User, "id"&gt;;
+
+// Record - crea un tipo de objeto con claves y valores tipados
+type Roles = Record&lt;string, string[]&gt;;  // { [key: string]: string[] }</code></pre>
+</div>
+
+<!-- ============================================== -->
+<!-- 3. REACT -->
+<!-- ============================================== -->
+<div class="page page-break" id="react">
+  <h2>3. React Fundamentals</h2>
+  <p>React es el core de tu stack frontend. Esto te lo van a preguntar SI O SI.</p>
+
+  <h3>3.1 Que es React</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es React y por que se usa?"<br>
+  Es una libreria de JavaScript para construir interfaces de usuario. Usa un <strong>Virtual DOM</strong> para actualizar solo las partes de la pagina que cambian, en vez de recargar todo. Es declarativo: tu dices QUE quieres ver, React se encarga del COMO.</div>
+
+  <h3>3.2 Componentes</h3>
+  <pre><code>// Componente funcional (el que se usa hoy)
+function UserCard({ name, email }: { name: string; email: string }) {
+  return (
+    &lt;div className="card"&gt;
+      &lt;h2&gt;{name}&lt;/h2&gt;
+      &lt;p&gt;{email}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Uso
+&lt;UserCard name="Lucas" email="contacto@lucasvicente.es" /&gt;</code></pre>
+
+  <h3>3.3 Props vs State</h3>
+  <table>
+    <tr><th>Props</th><th>State</th></tr>
+    <tr><td>Datos que vienen del padre</td><td>Datos internos del componente</td></tr>
+    <tr><td>Solo lectura (inmutables)</td><td>Se pueden cambiar con setState</td></tr>
+    <tr><td>Fluyen de arriba a abajo</td><td>Solo existen dentro del componente</td></tr>
+  </table>
+
+  <h3>3.4 Hooks esenciales</h3>
+
+  <h4>useState - manejar estado</h4>
+  <pre><code>import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);  // valor inicial: 0
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() => setCount(count + 1)}&gt;+1&lt;/button&gt;
+      &lt;button onClick={() => setCount(prev => prev - 1)}&gt;-1&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  <div class="tip"><strong>Clave:</strong> Usa la forma <code>prev => prev + 1</code> cuando el nuevo estado depende del anterior. Asi evitas bugs por batching.</div>
+
+  <h4>useEffect - efectos secundarios</h4>
+  <pre><code>import { useEffect, useState } from "react";
+
+function UserList() {
+  const [users, setUsers] = useState([]);
+
+  // Se ejecuta al montar el componente (array vacio = solo una vez)
+  useEffect(() => {
+    async function fetchUsers() {
+      const res = await fetch("/api/users");
+      const data = await res.json();
+      setUsers(data);
+    }
+    fetchUsers();
+  }, []);  // [] = solo al montar
+
+  // Se ejecuta cuando cambia userId
+  useEffect(() => {
+    console.log("userId cambio");
+  }, [userId]);  // se re-ejecuta si userId cambia
+
+  // Cleanup (limpiar al desmontar)
+  useEffect(() => {
+    const interval = setInterval(() => console.log("tick"), 1000);
+    return () => clearInterval(interval);  // cleanup
+  }, []);
+}</code></pre>
+
+  <div class="question"><strong>Pregunta:</strong> "Que es el array de dependencias de useEffect?"<br>
+  Es el segundo argumento. Le dice a React CUANDO re-ejecutar el efecto:<br>
+  - <code>[]</code> = solo al montar (una vez)<br>
+  - <code>[var1, var2]</code> = cuando var1 o var2 cambien<br>
+  - Sin array = en CADA render (evitar esto)</div>
+
+  <h4>useRef - referencia que persiste entre renders</h4>
+  <pre><code>const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+
+// Acceder al DOM directamente
+inputRef.current?.focus();
+
+// Tambien para guardar valores sin causar re-render
+const renderCount = useRef(0);
+renderCount.current++;  // no causa re-render</code></pre>
+
+  <h4>useMemo y useCallback - optimizacion</h4>
+  <pre><code>// useMemo - memoriza un VALOR calculado
+const filteredUsers = useMemo(() => {
+  return users.filter(u => u.active);
+}, [users]);  // solo recalcula si users cambia
+
+// useCallback - memoriza una FUNCION
+const handleClick = useCallback(() => {
+  console.log("click");
+}, []);  // misma referencia entre renders</code></pre>
+
+  <div class="warning"><strong>No abuses:</strong> useMemo y useCallback son optimizaciones. No los uses en todo. Solo cuando tienes calculos costosos o pasas funciones como props a componentes memoizados.</div>
+
+  <h3>3.5 Renderizado condicional</h3>
+  <pre><code>// Con ternario
+{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}
+
+// Con && (short-circuit)
+{error && &lt;ErrorMessage msg={error} /&gt;}
+
+// Con early return
+function Page({ user }) {
+  if (!user) return &lt;p&gt;Cargando...&lt;/p&gt;;
+  return &lt;Profile user={user} /&gt;;
+}</code></pre>
+
+  <h3>3.6 Listas y Keys</h3>
+  <pre><code>{users.map(user => (
+  &lt;UserCard key={user.id} name={user.name} /&gt;
+))}</code></pre>
+  <div class="question"><strong>Pregunta:</strong> "Por que se necesita key en las listas?"<br>
+  React usa las keys para identificar que elementos cambiaron, se agregaron o se eliminaron. Sin keys unicas, React no puede optimizar el re-renderizado y puede causar bugs visuales. NUNCA uses el indice del array como key si la lista puede cambiar de orden.</div>
+
+  <h3>3.7 Manejo de formularios</h3>
+  <pre><code>function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();  // evita recarga de pagina
+    console.log({ email, password });
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      /&gt;
+      &lt;input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      /&gt;
+      &lt;button type="submit"&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+  <h3>3.8 Context API</h3>
+  <pre><code>// 1. Crear contexto
+const ThemeContext = createContext&lt;"light" | "dark"&gt;("light");
+
+// 2. Provider (envuelve componentes que necesitan acceso)
+function App() {
+  const [theme, setTheme] = useState&lt;"light" | "dark"&gt;("light");
+  return (
+    &lt;ThemeContext.Provider value={theme}&gt;
+      &lt;Page /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+// 3. Consumir con useContext
+function Button() {
+  const theme = useContext(ThemeContext);
+  return &lt;button className={theme}&gt;Click&lt;/button&gt;;
+}</code></pre>
+  <div class="tip"><strong>Cuando usar Context:</strong> Para datos "globales" como tema, usuario logueado, idioma. NO para estado complejo ni para datos que cambian muy frecuentemente (usa Zustand o Redux para eso).</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 4. NEXT.JS -->
+<!-- ============================================== -->
+<div class="page page-break" id="nextjs">
+  <h2>4. Next.js</h2>
+  <p>Next.js es el framework que usas sobre React. Anade routing, SSR, API routes y mas.</p>
+
+  <h3>4.1 Que es Next.js</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que ventajas tiene Next.js sobre React puro?"<br>
+  - <strong>File-based routing</strong>: las carpetas y archivos definen las rutas, no necesitas react-router<br>
+  - <strong>Server-Side Rendering (SSR)</strong>: la pagina se renderiza en el servidor, mejor SEO y carga inicial<br>
+  - <strong>API Routes</strong>: puedes crear endpoints backend dentro del mismo proyecto<br>
+  - <strong>Optimizaciones</strong>: imagenes, fonts, code splitting automatico<br>
+  - <strong>Server Components</strong> (App Router): componentes que se ejecutan en el servidor y no envian JS al cliente</div>
+
+  <h3>4.2 App Router vs Pages Router</h3>
+  <table>
+    <tr><th>Pages Router (legacy)</th><th>App Router (actual)</th></tr>
+    <tr><td>Carpeta <code>/pages</code></td><td>Carpeta <code>/app</code></td></tr>
+    <tr><td><code>getServerSideProps</code></td><td>Server Components por defecto</td></tr>
+    <tr><td><code>getStaticProps</code></td><td><code>fetch</code> con cache options</td></tr>
+    <tr><td>Todo es Client Component</td><td>Server Components + "use client"</td></tr>
+  </table>
+
+  <h3>4.3 Server Components vs Client Components</h3>
+  <pre><code>// Server Component (por defecto en App Router)
+// Se ejecuta en el servidor, NO envia JS al navegador
+async function UserList() {
+  const users = await db.query("SELECT * FROM users");  // acceso directo a DB
+  return &lt;ul&gt;{users.map(u => &lt;li key={u.id}&gt;{u.name}&lt;/li&gt;)}&lt;/ul&gt;;
+}
+
+// Client Component (necesita interactividad)
+"use client";  // esta directiva lo hace client component
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;
+}</code></pre>
+
+  <div class="warning"><strong>Regla:</strong> Usa Server Components por defecto. Solo anade <code>"use client"</code> cuando necesites: useState, useEffect, onClick, onChange, o cualquier interactividad del navegador.</div>
+
+  <h3>4.4 Routing (App Router)</h3>
+  <pre><code>app/
+  page.tsx          ->  /
+  about/
+    page.tsx        ->  /about
+  blog/
+    page.tsx        ->  /blog
+    [slug]/
+      page.tsx      ->  /blog/mi-articulo  (dinamico)
+  api/
+    users/
+      route.ts      ->  GET/POST /api/users</code></pre>
+
+  <h3>4.5 API Routes</h3>
+  <pre><code>// app/api/users/route.ts
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  const users = await db.query("SELECT * FROM users");
+  return NextResponse.json(users);
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const user = await db.query("INSERT INTO users ...", body);
+  return NextResponse.json(user, { status: 201 });
+}</code></pre>
+
+  <h3>4.6 SSR, SSG, ISR</h3>
+  <div class="question"><strong>Pregunta:</strong> "Diferencia entre SSR, SSG e ISR?"<br>
+  - <strong>SSR (Server-Side Rendering)</strong>: la pagina se genera en cada peticion. Datos siempre frescos pero mas lento.<br>
+  - <strong>SSG (Static Site Generation)</strong>: la pagina se genera en build time. Muy rapido pero datos estaticos.<br>
+  - <strong>ISR (Incremental Static Regeneration)</strong>: SSG pero se regenera cada X segundos. Lo mejor de ambos mundos.</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 5. HTML/CSS -->
+<!-- ============================================== -->
+<div class="page page-break" id="html-css">
+  <h2>5. HTML y CSS</h2>
+
+  <h3>5.1 HTML Semantico</h3>
+  <pre><code>&lt;header&gt;   - cabecera de pagina/seccion
+&lt;nav&gt;      - navegacion
+&lt;main&gt;     - contenido principal (solo 1 por pagina)
+&lt;section&gt;  - seccion tematica
+&lt;article&gt;  - contenido independiente
+&lt;aside&gt;    - contenido lateral/relacionado
+&lt;footer&gt;   - pie de pagina</code></pre>
+  <div class="tip"><strong>Por que importa:</strong> Accesibilidad (lectores de pantalla), SEO (Google entiende la estructura) y mantenibilidad del codigo.</div>
+
+  <h3>5.2 Flexbox (lo usas constantemente)</h3>
+  <pre><code>.container {
+  display: flex;
+  justify-content: center;    /* eje horizontal */
+  align-items: center;        /* eje vertical */
+  gap: 16px;                  /* espacio entre items */
+  flex-wrap: wrap;            /* items saltan de linea si no caben */
+  flex-direction: row;        /* row | column */
+}</code></pre>
+
+  <h3>5.3 CSS Grid</h3>
+  <pre><code>.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);  /* 3 columnas iguales */
+  grid-template-columns: 200px 1fr 1fr;   /* 1 fija + 2 flexibles */
+  gap: 16px;
+}</code></pre>
+
+  <div class="question"><strong>Pregunta:</strong> "Cuando usas Flexbox y cuando Grid?"<br>
+  <strong>Flexbox</strong>: layouts en UNA dimension (fila O columna). Navbars, centrar cosas, distribuir items.<br>
+  <strong>Grid</strong>: layouts en DOS dimensiones (filas Y columnas). Layouts de pagina completa, galerias, dashboards.</div>
+
+  <h3>5.4 Box Model</h3>
+  <pre><code>/* Cada elemento tiene: content + padding + border + margin */
+.box {
+  width: 200px;
+  padding: 20px;      /* espacio DENTRO del borde */
+  border: 1px solid;  /* el borde */
+  margin: 10px;       /* espacio FUERA del borde */
+  box-sizing: border-box;  /* width incluye padding+border */
+}</code></pre>
+
+  <h3>5.5 Responsive Design</h3>
+  <pre><code>/* Mobile first: disenar para movil y escalar hacia arriba */
+.card { width: 100%; }
+
+@media (min-width: 768px) {   /* tablet */
+  .card { width: 50%; }
+}
+
+@media (min-width: 1024px) {  /* desktop */
+  .card { width: 33.33%; }
+}</code></pre>
+
+  <h3>5.6 Tailwind CSS (lo que usas)</h3>
+  <pre><code>&lt;!-- Equivalente a escribir CSS manualmente --&gt;
+&lt;div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md"&gt;
+  &lt;h2 class="text-xl font-bold text-gray-900"&gt;Titulo&lt;/h2&gt;
+  &lt;button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"&gt;
+    Click
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+  <div class="tip"><strong>Si te preguntan:</strong> "Tailwind usa clases de utilidad en vez de escribir CSS custom. Cada clase hace UNA cosa. Es mas rapido de desarrollar, el CSS final es mas pequeno (purge) y evita conflictos de nombres."</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 6. NODE.JS Y REST APIs -->
+<!-- ============================================== -->
+<div class="page page-break" id="node">
+  <h2>6. Node.js y APIs REST</h2>
+
+  <h3>6.1 Que es Node.js</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es Node.js?"<br>
+  Es un entorno de ejecucion de JavaScript fuera del navegador, construido sobre el motor V8 de Chrome. Permite usar JS en el servidor. Es single-threaded pero usa un modelo de I/O no bloqueante (event loop) para manejar muchas conexiones simultaneas.</div>
+
+  <h3>6.2 REST API - Metodos HTTP</h3>
+  <table>
+    <tr><th>Metodo</th><th>Accion</th><th>Ejemplo</th><th>Body</th></tr>
+    <tr><td><code>GET</code></td><td>Leer</td><td><code>GET /api/users</code></td><td>No</td></tr>
+    <tr><td><code>POST</code></td><td>Crear</td><td><code>POST /api/users</code></td><td>Si</td></tr>
+    <tr><td><code>PUT</code></td><td>Reemplazar completo</td><td><code>PUT /api/users/1</code></td><td>Si</td></tr>
+    <tr><td><code>PATCH</code></td><td>Actualizar parcial</td><td><code>PATCH /api/users/1</code></td><td>Si</td></tr>
+    <tr><td><code>DELETE</code></td><td>Eliminar</td><td><code>DELETE /api/users/1</code></td><td>No</td></tr>
+  </table>
+
+  <h3>6.3 Codigos de estado HTTP</h3>
+  <table>
+    <tr><th>Codigo</th><th>Significado</th><th>Cuando</th></tr>
+    <tr><td><code>200</code></td><td>OK</td><td>Todo bien</td></tr>
+    <tr><td><code>201</code></td><td>Created</td><td>Recurso creado (POST exitoso)</td></tr>
+    <tr><td><code>204</code></td><td>No Content</td><td>Exito sin body (DELETE exitoso)</td></tr>
+    <tr><td><code>400</code></td><td>Bad Request</td><td>Datos del cliente invalidos</td></tr>
+    <tr><td><code>401</code></td><td>Unauthorized</td><td>No autenticado</td></tr>
+    <tr><td><code>403</code></td><td>Forbidden</td><td>Autenticado pero sin permisos</td></tr>
+    <tr><td><code>404</code></td><td>Not Found</td><td>Recurso no existe</td></tr>
+    <tr><td><code>500</code></td><td>Internal Server Error</td><td>Error del servidor</td></tr>
+  </table>
+
+  <div class="question"><strong>Pregunta:</strong> "Diferencia entre 401 y 403?"<br>
+  <strong>401</strong>: No se quien eres (no estas logueado).<br>
+  <strong>403</strong>: Se quien eres, pero no tienes permiso para esto.</div>
+
+  <h3>6.4 Autenticacion: JWT vs Sessions</h3>
+  <table>
+    <tr><th>JWT (JSON Web Token)</th><th>Sessions</th></tr>
+    <tr><td>Token almacenado en el cliente</td><td>ID almacenado en cookie, datos en servidor</td></tr>
+    <tr><td>Stateless (servidor no guarda nada)</td><td>Stateful (servidor guarda la sesion)</td></tr>
+    <tr><td>Escalable (no necesita estado compartido)</td><td>Necesita storage compartido en multiples servidores</td></tr>
+    <tr><td>No se puede invalidar facilmente</td><td>Facil de invalidar (borrar del servidor)</td></tr>
+  </table>
+
+  <h3>6.5 CORS</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es CORS?"<br>
+  Cross-Origin Resource Sharing. Es una politica de seguridad del navegador que bloquea peticiones HTTP a un dominio diferente al de la pagina. Si tu frontend esta en <code>localhost:3000</code> y tu API en <code>localhost:8000</code>, el navegador bloquea la peticion a menos que el servidor envie las cabeceras CORS correctas (<code>Access-Control-Allow-Origin</code>).</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 7. SQL Y POSTGRESQL -->
+<!-- ============================================== -->
+<div class="page page-break" id="sql">
+  <h2>7. SQL y PostgreSQL</h2>
+  <p>Lo usas en casi todos tus proyectos. Saber SQL basico es obligatorio.</p>
+
+  <h3>7.1 Queries basicas</h3>
+  <pre><code>-- Seleccionar todo
+SELECT * FROM users;
+
+-- Seleccionar columnas especificas con condicion
+SELECT name, email FROM users WHERE active = true;
+
+-- Ordenar
+SELECT * FROM users ORDER BY created_at DESC;
+
+-- Limitar resultados
+SELECT * FROM users LIMIT 10 OFFSET 20;  -- pagina 3 de 10 items
+
+-- Contar
+SELECT COUNT(*) FROM users WHERE role = 'admin';
+
+-- Insertar
+INSERT INTO users (name, email, role)
+VALUES ('Lucas', 'contacto@lucasvicente.es', 'dev');
+
+-- Actualizar
+UPDATE users SET role = 'admin' WHERE id = 1;
+
+-- Eliminar
+DELETE FROM users WHERE id = 1;</code></pre>
+
+  <h3>7.2 JOINs</h3>
+  <pre><code>-- INNER JOIN: solo filas que coinciden en AMBAS tablas
+SELECT u.name, o.total
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id;
+
+-- LEFT JOIN: todas las filas de la izquierda + coincidencias de la derecha
+SELECT u.name, o.total
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id;
+-- Usuarios SIN pedidos tambien aparecen (con o.total = NULL)</code></pre>
+
+  <div class="question"><strong>Pregunta:</strong> "Diferencia entre INNER JOIN y LEFT JOIN?"<br>
+  <strong>INNER JOIN</strong>: solo devuelve filas donde hay coincidencia en ambas tablas.<br>
+  <strong>LEFT JOIN</strong>: devuelve TODAS las filas de la tabla izquierda, aunque no tengan coincidencia en la derecha (rellena con NULL).</div>
+
+  <h3>7.3 GROUP BY y funciones de agregacion</h3>
+  <pre><code>-- Cuantos pedidos tiene cada usuario
+SELECT user_id, COUNT(*) as total_orders, SUM(total) as total_spent
+FROM orders
+GROUP BY user_id
+HAVING COUNT(*) > 5;  -- solo los que tienen mas de 5 pedidos</code></pre>
+
+  <h3>7.4 Indices</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es un indice y cuando lo usas?"<br>
+  Un indice es como el indice de un libro: permite encontrar datos rapido sin recorrer toda la tabla. Crealos en columnas que uses frecuentemente en WHERE, JOIN o ORDER BY. Desventaja: ocupan espacio y hacen los INSERT/UPDATE mas lentos.</div>
+  <pre><code>CREATE INDEX idx_users_email ON users(email);</code></pre>
+
+  <h3>7.5 Transacciones</h3>
+  <pre><code>BEGIN;
+  UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+  UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;  -- si todo OK, guarda los cambios
+-- Si algo falla: ROLLBACK; deshace todo</code></pre>
+  <div class="tip"><strong>Explicacion:</strong> Las transacciones garantizan que un grupo de operaciones se ejecuten TODAS o NINGUNA. Si transfieres dinero, no quieres que se reste de una cuenta pero no se sume a la otra.</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 8. DOCKER -->
+<!-- ============================================== -->
+<div class="page page-break" id="docker">
+  <h2>8. Docker</h2>
+  <p>Docker esta en tu CV en practicamente todos los proyectos. Te van a preguntar.</p>
+
+  <h3>8.1 Conceptos clave</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es Docker y por que se usa?"<br>
+  Docker permite empaquetar una aplicacion con TODAS sus dependencias en un contenedor aislado. Ese contenedor funciona igual en tu portatil, en el servidor, en produccion. Elimina el "en mi maquina funciona".</div>
+
+  <table>
+    <tr><th>Concepto</th><th>Que es</th><th>Analogia</th></tr>
+    <tr><td><strong>Imagen</strong></td><td>Plantilla de solo lectura</td><td>La receta de un plato</td></tr>
+    <tr><td><strong>Contenedor</strong></td><td>Instancia en ejecucion de una imagen</td><td>El plato ya cocinado</td></tr>
+    <tr><td><strong>Dockerfile</strong></td><td>Instrucciones para crear una imagen</td><td>Los pasos de la receta</td></tr>
+    <tr><td><strong>Volume</strong></td><td>Almacenamiento persistente</td><td>El frigorifico (datos que sobreviven)</td></tr>
+    <tr><td><strong>Network</strong></td><td>Red virtual entre contenedores</td><td>La mesa donde se sientan juntos</td></tr>
+  </table>
+
+  <h3>8.2 Dockerfile basico</h3>
+  <pre><code># Imagen base
+FROM node:20-alpine
+
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiar archivos de dependencias primero (cache de capas)
+COPY package*.json ./
+RUN npm install
+
+# Copiar el resto del codigo
+COPY . .
+
+# Construir la aplicacion
+RUN npm run build
+
+# Puerto que expone el contenedor
+EXPOSE 3000
+
+# Comando para arrancar
+CMD ["npm", "start"]</code></pre>
+
+  <div class="tip"><strong>Por que COPY package.json primero?</strong> Docker cachea cada linea (capa). Si copias todo junto, cualquier cambio en el codigo invalida la cache del npm install. Separandolo, el install solo se re-ejecuta si package.json cambia.</div>
+
+  <h3>8.3 Docker Compose</h3>
+  <pre><code># docker-compose.yml
+version: "3.8"
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@db:5432/mydb
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=mydb
+
+volumes:
+  pgdata:</code></pre>
+
+  <h3>8.4 Comandos esenciales</h3>
+  <pre><code>docker build -t mi-app .              # Construir imagen
+docker run -p 3000:3000 mi-app        # Ejecutar contenedor
+docker ps                             # Ver contenedores activos
+docker ps -a                          # Ver todos (incluidos parados)
+docker logs mi-contenedor             # Ver logs
+docker exec -it mi-contenedor sh      # Entrar al contenedor
+docker stop mi-contenedor             # Parar
+docker rm mi-contenedor               # Eliminar contenedor
+docker rmi mi-imagen                  # Eliminar imagen
+docker-compose up -d                  # Levantar todo en background
+docker-compose down                   # Parar y eliminar todo</code></pre>
+
+  <h3>8.5 Docker vs Maquinas Virtuales</h3>
+  <div class="question"><strong>Pregunta:</strong> "Diferencia entre un contenedor y una VM?"<br>
+  <strong>VM</strong>: incluye un SO completo. Pesada (GBs), lenta de arrancar (minutos).<br>
+  <strong>Contenedor</strong>: comparte el kernel del host. Ligero (MBs), arranca en segundos.<br>
+  Los contenedores son mas eficientes pero menos aislados que las VMs.</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 9. LINUX Y REDES -->
+<!-- ============================================== -->
+<div class="page page-break" id="linux">
+  <h2>9. Linux y Redes</h2>
+
+  <h3>9.1 Comandos Linux esenciales</h3>
+  <pre><code># Navegacion
+ls -la                    # listar archivos (incluidos ocultos)
+cd /var/log               # cambiar directorio
+pwd                       # directorio actual
+find / -name "*.log"      # buscar archivos
+
+# Archivos
+cat archivo.txt           # ver contenido
+tail -f /var/log/syslog   # ver ultimas lineas en tiempo real
+grep "error" archivo.log  # buscar texto en archivo
+chmod 755 script.sh       # cambiar permisos
+chown user:group file     # cambiar propietario
+
+# Procesos
+ps aux                    # ver procesos
+top / htop                # monitor de recursos en tiempo real
+kill -9 PID               # matar proceso
+systemctl status nginx    # ver estado de un servicio
+systemctl restart nginx   # reiniciar servicio
+
+# Red
+curl https://api.com/test      # hacer peticion HTTP
+ping google.com                # comprobar conectividad
+netstat -tlnp                  # ver puertos abiertos
+ss -tlnp                       # alternativa moderna a netstat
+
+# Disco
+df -h                     # espacio en disco
+du -sh /var/log           # tamano de carpeta</code></pre>
+
+  <h3>9.2 Permisos Linux</h3>
+  <pre><code># rwxrwxrwx = propietario | grupo | otros
+# r=read(4) w=write(2) x=execute(1)
+chmod 755 file    # propietario: rwx, grupo: r-x, otros: r-x
+chmod 644 file    # propietario: rw-, grupo: r--, otros: r--</code></pre>
+
+  <h3>9.3 Redes - Conceptos clave</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que pasa cuando escribes una URL en el navegador?"<br>
+  1. El navegador busca la IP del dominio via <strong>DNS</strong><br>
+  2. Establece conexion <strong>TCP</strong> con el servidor (3-way handshake)<br>
+  3. Si es HTTPS, negocia <strong>TLS/SSL</strong> (certificado, encriptacion)<br>
+  4. Envia peticion <strong>HTTP</strong> (GET / HTTP/1.1)<br>
+  5. El servidor procesa y devuelve la <strong>respuesta</strong> (HTML, JSON...)<br>
+  6. El navegador <strong>renderiza</strong> el contenido (parsea HTML, aplica CSS, ejecuta JS)</div>
+
+  <table>
+    <tr><th>Concepto</th><th>Que es</th></tr>
+    <tr><td><strong>DNS</strong></td><td>Traduce dominio (google.com) a IP (142.250.184.14)</td></tr>
+    <tr><td><strong>TCP</strong></td><td>Protocolo de transporte fiable (garantiza entrega)</td></tr>
+    <tr><td><strong>HTTP/HTTPS</strong></td><td>Protocolo de aplicacion para transferir datos web</td></tr>
+    <tr><td><strong>Puerto</strong></td><td>Numero que identifica un servicio (80=HTTP, 443=HTTPS, 5432=PostgreSQL)</td></tr>
+    <tr><td><strong>IP</strong></td><td>Direccion unica de un dispositivo en la red</td></tr>
+    <tr><td><strong>Firewall</strong></td><td>Filtra trafico de red segun reglas</td></tr>
+    <tr><td><strong>Proxy / Reverse Proxy</strong></td><td>Intermediario. Nginx como reverse proxy recibe peticiones y las redirige a tu app</td></tr>
+  </table>
+
+  <h3>9.4 Nginx basico</h3>
+  <pre><code># Reverse proxy basico
+server {
+    listen 80;
+    server_name miapp.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}</code></pre>
+</div>
+
+<!-- ============================================== -->
+<!-- 10. GIT -->
+<!-- ============================================== -->
+<div class="page page-break" id="git">
+  <h2>10. Git</h2>
+
+  <h3>10.1 Comandos esenciales</h3>
+  <pre><code>git init                          # iniciar repositorio
+git clone url                     # clonar repo remoto
+git status                        # ver estado actual
+git add file.js                   # agregar archivo al staging
+git add .                         # agregar todo
+git commit -m "mensaje"           # crear commit
+git push origin main              # subir al remoto
+git pull origin main              # bajar cambios del remoto
+git log --oneline                 # ver historial resumido
+git diff                          # ver cambios no staged</code></pre>
+
+  <h3>10.2 Ramas (branches)</h3>
+  <pre><code>git branch                        # ver ramas locales
+git branch feature/login          # crear rama
+git checkout feature/login        # cambiar a rama
+git checkout -b feature/login     # crear y cambiar en un paso
+git merge feature/login           # fusionar rama a la actual
+git branch -d feature/login       # eliminar rama</code></pre>
+
+  <h3>10.3 Git Flow</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que flujo de Git usas?"<br>
+  - <strong>main/master</strong>: codigo en produccion, siempre estable<br>
+  - <strong>develop</strong>: rama de desarrollo, aqui se integran features<br>
+  - <strong>feature/xxx</strong>: ramas para cada funcionalidad nueva<br>
+  - <strong>hotfix/xxx</strong>: parches urgentes directos a main<br>
+  Cada feature se desarrolla en su rama, se hace PR, code review, y se mergea.</div>
+
+  <h3>10.4 Conflictos</h3>
+  <div class="question"><strong>Pregunta:</strong> "Como resuelves un conflicto en Git?"<br>
+  1. Git te marca las zonas en conflicto con <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> y <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code><br>
+  2. Abres el archivo, eliges que codigo mantener (o combinas ambos)<br>
+  3. Eliminas los marcadores de conflicto<br>
+  4. <code>git add .</code> y <code>git commit</code></div>
+
+  <h3>10.5 Merge vs Rebase</h3>
+  <table>
+    <tr><th>Merge</th><th>Rebase</th></tr>
+    <tr><td>Crea un commit de merge</td><td>Reescribe el historial (lineal)</td></tr>
+    <tr><td>Historial no lineal pero completo</td><td>Historial limpio y lineal</td></tr>
+    <tr><td>Seguro en ramas compartidas</td><td>NUNCA en ramas compartidas/publicas</td></tr>
+  </table>
+</div>
+
+<!-- ============================================== -->
+<!-- 11. CONCEPTOS DE ARQUITECTURA -->
+<!-- ============================================== -->
+<div class="page page-break" id="conceptos">
+  <h2>11. Conceptos Clave de Arquitectura</h2>
+
+  <h3>11.1 CI/CD</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es CI/CD?"<br>
+  <strong>CI (Continuous Integration)</strong>: cada vez que alguien sube codigo, se ejecutan tests automaticos y se compila. Si algo falla, se avisa inmediatamente.<br>
+  <strong>CD (Continuous Deployment/Delivery)</strong>: si los tests pasan, el codigo se despliega automaticamente a produccion (deployment) o queda listo para desplegar manualmente (delivery).</div>
+
+  <h3>11.2 Monolito vs Microservicios</h3>
+  <table>
+    <tr><th>Monolito</th><th>Microservicios</th></tr>
+    <tr><td>Todo en una aplicacion</td><td>Servicios independientes</td></tr>
+    <tr><td>Facil de desarrollar al inicio</td><td>Complejo pero escalable</td></tr>
+    <tr><td>Un deploy, un repositorio</td><td>Cada servicio tiene su deploy</td></tr>
+    <tr><td>Si falla, falla todo</td><td>Fallos aislados</td></tr>
+  </table>
+  <div class="tip"><strong>Tu respuesta:</strong> "Para proyectos pequenos/medianos empiezo con monolito. Solo separo en microservicios cuando hay una necesidad real de escalar partes independientemente."</div>
+
+  <h3>11.3 Cache</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es cache y donde la usas?"<br>
+  Almacenar datos frecuentemente accedidos en un lugar rapido para evitar recalcular o hacer queries repetidas.<br>
+  - <strong>Browser cache</strong>: archivos estaticos (CSS, JS, imagenes)<br>
+  - <strong>CDN cache</strong>: Cloudflare cachea contenido cerca del usuario<br>
+  - <strong>Redis</strong>: cache en memoria para datos de la app (sesiones, queries frecuentes)<br>
+  - <strong>React</strong>: useMemo, useCallback para cache en componentes</div>
+
+  <h3>11.4 Variables de entorno</h3>
+  <pre><code># .env (NUNCA se sube a Git)
+DATABASE_URL=postgresql://user:pass@localhost:5432/mydb
+JWT_SECRET=mi-secreto-super-largo
+API_KEY=abc123
+
+# Acceder en codigo
+process.env.DATABASE_URL</code></pre>
+
+  <h3>11.5 HTTPS y SSL/TLS</h3>
+  <div class="question"><strong>Pregunta:</strong> "Como funciona HTTPS?"<br>
+  1. El cliente se conecta al servidor y pide el certificado SSL<br>
+  2. El servidor envia su certificado (emitido por una CA como Let's Encrypt)<br>
+  3. El cliente verifica que el certificado es valido<br>
+  4. Ambos negocian una clave simetrica para encriptar la comunicacion<br>
+  5. A partir de ahi, todo el trafico va encriptado</div>
+
+  <h3>11.6 WebSockets vs HTTP</h3>
+  <table>
+    <tr><th>HTTP</th><th>WebSocket</th></tr>
+    <tr><td>Request-Response (cliente pide, servidor responde)</td><td>Bidireccional (ambos envian cuando quieren)</td></tr>
+    <tr><td>Conexion se cierra despues de cada peticion</td><td>Conexion permanente abierta</td></tr>
+    <tr><td>APIs REST, paginas web</td><td>Chat en tiempo real, notifications, gaming</td></tr>
+  </table>
+</div>
+
+<!-- ============================================== -->
+<!-- 12. PREGUNTAS DE COMPORTAMIENTO -->
+<!-- ============================================== -->
+<div class="page page-break" id="behavioral">
+  <h2>12. Preguntas de Comportamiento</h2>
+  <p>Muchas entrevistas tienen una parte no tecnica. Prepara respuestas para estas usando el metodo <strong>STAR</strong>: Situacion, Tarea, Accion, Resultado.</p>
+
+  <h3>Preguntas que te van a hacer (y como responder con TUS proyectos)</h3>
+
+  <div class="question"><strong>"Cuentame sobre ti"</strong><br>
+  Soy desarrollador full-stack y DevOps. Llevo anos trabajando en tecnologia, desde administrar servidores hasta construir aplicaciones web completas. Actualmente trabajo como tecnico informatico en la Comunidad de Madrid a traves de Ayesa, y en paralelo soy socio en Hytalia Network, donde dirijo la operacion tecnica. He construido varios productos en produccion como Finesse, una app de finanzas, y StackWatch, un sistema de monitorizacion. Me motiva construir cosas que funcionen bien y no se rompan.</div>
+
+  <div class="question"><strong>"Cual es tu mayor fortaleza?"</strong><br>
+  Mi capacidad de hacer que las cosas funcionen end-to-end. No solo se hacer frontend o backend, sino que puedo montar la infraestructura, el CI/CD, el monitoring, y asegurarme de que todo esta en produccion y estable. Soy muy bueno resolviendo problemas porque he gestionado servidores con clientes reales que dependen del uptime.</div>
+
+  <div class="question"><strong>"Cual es tu mayor debilidad?"</strong><br>
+  A veces quiero resolver los problemas demasiado rapido y no documento lo suficiente en el proceso. Es algo que estoy mejorando activamente, especialmente ahora que trabajo en equipo y la documentacion es clave para que otros entiendan lo que hice.</div>
+
+  <div class="question"><strong>"Cuentame un proyecto del que estes orgulloso"</strong><br>
+  VarynHost. Cofunde un servicio de hosting con mas de 60 servidores activos y 60 clientes. Automatice el provisioning, monte los paneles custom y gestionaba el soporte. Lo que mas me enorgullece es que era infraestructura real con gente pagando y dependiendo de que no se cayera. Aprendi muchisimo sobre operaciones, automatizacion y responsabilidad sobre sistemas en produccion.</div>
+
+  <div class="question"><strong>"Como manejas la presion o los deadlines?"</strong><br>
+  Priorizo. Identifico que es critico y que puede esperar. En VarynHost, cuando habia incidencias con servidores de clientes, tenia que resolver rapido porque habia gente pagando. Aprendi a mantener la calma, diagnosticar el problema, y comunicar al cliente mientras lo resolvia.</div>
+
+  <div class="question"><strong>"Por que quieres trabajar aqui?"</strong><br>
+  [Investiga la empresa antes] Me interesa porque [algo especifico de la empresa: su producto, su stack, su cultura]. Creo que puedo aportar valor con mi experiencia en [X] y a la vez aprender y crecer en [Y].</div>
+
+  <div class="question"><strong>"Donde te ves en 5 anos?"</strong><br>
+  Quiero seguir construyendo producto, idealmente en un rol mas senior donde pueda tomar decisiones de arquitectura y mentorizar a otros. Me interesa especialmente la interseccion entre desarrollo y operaciones, haciendo que los equipos puedan entregar mas rapido y con mas calidad.</div>
+
+  <div class="question"><strong>"Como trabajas en equipo?"</strong><br>
+  Actualmente en Hytalia coordino con equipos en US y Espana, asi que estoy acostumbrado a comunicacion asincrona, definir responsabilidades claras y documentar decisiones. Creo que un buen equipo se basa en comunicacion clara y en que cada uno pueda trabajar de forma autonoma pero alineada.</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 13. COMO VENDER TUS PROYECTOS -->
+<!-- ============================================== -->
+<div class="page page-break" id="proyectos">
+  <h2>13. Como Vender tus Proyectos en la Entrevista</h2>
+
+  <div class="warning"><strong>Regla clave:</strong> Habla de PROBLEMAS que resolviste y RESULTADOS, no de tecnologias. Al recruiter no le importa que usaste Docker. Le importa POR QUE lo usaste y QUE consiguio.</div>
+
+  <h3>Finesse</h3>
+  <p><strong>No digas:</strong> "Hice una app con Next.js, React, TypeScript, Supabase y Tailwind"</p>
+  <p><strong>Di:</strong> "Vi que Splitwise tenia limitaciones para mis necesidades, asi que construi mi propia alternativa. Es una PWA instalable que funciona offline, importa datos de CSV, y tiene un asistente financiero con IA. La hice full-stack, desde la autenticacion con OAuth hasta el Service Worker para modo offline."</p>
+
+  <h3>StackWatch</h3>
+  <p><strong>Di:</strong> "Necesitaba monitorizar mis servidores de forma fiable. Construi un sistema que hace health checks cada 60 segundos, gestiona incidentes, envia alertas y tiene una status page publica. Todo el pipeline de CI/CD esta automatizado con Docker Swarm."</p>
+
+  <h3>VarynHost</h3>
+  <p><strong>Di:</strong> "Cofunde un negocio de hosting que llego a tener mas de 60 clientes y 60 servidores activos en la UE. Automatice todo el provisioning, los paneles de control y la facturacion. Lo importante es que era infraestructura real con clientes pagando, asi que el uptime y la fiabilidad eran criticos."</p>
+
+  <h3>Ayesa / Comunidad de Madrid</h3>
+  <p><strong>Di:</strong> "Trabajo como tecnico informatico dando soporte a empleados y directivos de las consejerias de la Comunidad de Madrid. Soy el enlace entre el proveedor tecnologico y la gerencia de Madrid Digital. Gestiono incidencias, diagnostico problemas y me aseguro de que se resuelvan dentro del SLA."</p>
+
+  <h3>Hytalia Network</h3>
+  <p><strong>Di:</strong> "Soy socio en una joint venture entre una empresa americana y una espanola. Mi responsabilidad es la operacion diaria de la plataforma, definir el roadmap de producto, y coordinar con los otros socios. Llevo la parte tecnica: infraestructura, automatizacion y continuidad del servicio."</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 14. AWS CLOUD -->
+<!-- ============================================== -->
+<div class="page page-break" id="aws">
+  <h2>14. AWS Cloud Esencial</h2>
+  <p>El 90% de ofertas DevOps piden "conocimientos de cloud". AWS tiene ~60% del mercado. Esto es lo que necesitas saber.</p>
+
+  <h3>14.1 Que es Cloud Computing</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es cloud computing?"<br>
+  En vez de comprar y mantener servidores fisicos propios, alquilas recursos (servidores, almacenamiento, redes, bases de datos) a un proveedor como AWS, que los gestiona en sus data centers. Pagas solo por lo que usas. Puedes escalar en minutos en vez de semanas.</div>
+
+  <h3>14.2 Los 3 modelos de servicio</h3>
+  <table>
+    <tr><th>Modelo</th><th>Que te dan</th><th>Tu gestionas</th><th>Ejemplo</th></tr>
+    <tr><td><strong>IaaS</strong> (Infrastructure)</td><td>Servidor virtual, red, storage</td><td>SO, apps, datos, config</td><td>AWS EC2, tu VPS actual</td></tr>
+    <tr><td><strong>PaaS</strong> (Platform)</td><td>Plataforma para ejecutar codigo</td><td>Solo tu codigo y datos</td><td>Heroku, AWS Elastic Beanstalk</td></tr>
+    <tr><td><strong>SaaS</strong> (Software)</td><td>Aplicacion completa</td><td>Nada tecnico</td><td>Gmail, Slack, Notion</td></tr>
+  </table>
+  <div class="tip"><strong>Tu experiencia:</strong> Con VarynHost y Creatiums ya trabajabas con IaaS (servidores dedicados/VPS). AWS es lo mismo pero en la nube y con mas servicios automatizados.</div>
+
+  <h3>14.3 Servicios AWS que DEBES conocer</h3>
+
+  <h4>Compute (Computacion)</h4>
+  <table>
+    <tr><th>Servicio</th><th>Que es</th><th>Analogia con lo que ya sabes</th></tr>
+    <tr><td><strong>EC2</strong></td><td>Servidores virtuales (VPS en la nube)</td><td>Como los VPS que gestionabas en VarynHost</td></tr>
+    <tr><td><strong>Lambda</strong></td><td>Funciones serverless (ejecuta codigo sin servidor)</td><td>Como una API route de Next.js pero sin servidor</td></tr>
+    <tr><td><strong>ECS / EKS</strong></td><td>Ejecutar contenedores Docker en la nube</td><td>Como tu Docker Swarm pero gestionado por AWS</td></tr>
+  </table>
+
+  <h4>Storage (Almacenamiento)</h4>
+  <table>
+    <tr><th>Servicio</th><th>Que es</th><th>Para que</th></tr>
+    <tr><td><strong>S3</strong></td><td>Almacenamiento de objetos (archivos)</td><td>Imagenes, backups, archivos estaticos, logs</td></tr>
+    <tr><td><strong>EBS</strong></td><td>Disco duro virtual para EC2</td><td>El disco de tu servidor virtual</td></tr>
+  </table>
+
+  <h4>Base de datos</h4>
+  <table>
+    <tr><th>Servicio</th><th>Que es</th><th>Analogia</th></tr>
+    <tr><td><strong>RDS</strong></td><td>Base de datos relacional gestionada</td><td>Tu PostgreSQL pero AWS gestiona backups, updates, replicas</td></tr>
+    <tr><td><strong>DynamoDB</strong></td><td>Base de datos NoSQL serverless</td><td>Como MongoDB pero de AWS</td></tr>
+  </table>
+
+  <h4>Redes y seguridad</h4>
+  <table>
+    <tr><th>Servicio</th><th>Que es</th><th>Analogia</th></tr>
+    <tr><td><strong>VPC</strong></td><td>Red virtual privada en la nube</td><td>Tu red interna pero en AWS</td></tr>
+    <tr><td><strong>Route 53</strong></td><td>Servicio DNS</td><td>Como tu config de Cloudflare DNS</td></tr>
+    <tr><td><strong>CloudFront</strong></td><td>CDN (Content Delivery Network)</td><td>Como Cloudflare CDN</td></tr>
+    <tr><td><strong>IAM</strong></td><td>Gestion de usuarios, roles y permisos</td><td>Quien puede hacer que en tu cuenta AWS</td></tr>
+    <tr><td><strong>Security Groups</strong></td><td>Firewall virtual para EC2</td><td>Como iptables pero visual</td></tr>
+  </table>
+
+  <h4>Otros importantes</h4>
+  <table>
+    <tr><th>Servicio</th><th>Que es</th></tr>
+    <tr><td><strong>CloudWatch</strong></td><td>Monitorizacion, logs y alertas (como tu StackWatch pero de AWS)</td></tr>
+    <tr><td><strong>ECR</strong></td><td>Registro de imagenes Docker (como Docker Hub pero privado en AWS)</td></tr>
+    <tr><td><strong>SNS / SQS</strong></td><td>Notificaciones y colas de mensajes</td></tr>
+  </table>
+
+  <h3>14.4 Conceptos clave para la certificacion</h3>
+
+  <div class="question"><strong>Regiones y Availability Zones</strong><br>
+  AWS tiene <strong>regiones</strong> en todo el mundo (eu-west-1 = Irlanda, eu-south-2 = Espana). Cada region tiene multiples <strong>Availability Zones</strong> (data centers independientes). Despliegas en multiples AZs para alta disponibilidad: si un data center se cae, los otros siguen funcionando.</div>
+
+  <div class="question"><strong>Modelo de responsabilidad compartida</strong><br>
+  <strong>AWS se encarga de:</strong> seguridad fisica, hardware, red global, hypervisor.<br>
+  <strong>Tu te encargas de:</strong> tu SO, tu app, tus datos, configuracion de seguridad (security groups, IAM), encriptacion.<br>
+  Regla facil: AWS protege LA nube. Tu proteges lo que hay EN la nube.</div>
+
+  <div class="question"><strong>Modelo de precios</strong><br>
+  - <strong>On-Demand</strong>: pagas por hora/segundo. Sin compromiso. Mas caro.<br>
+  - <strong>Reserved</strong>: compromiso 1-3 anos. 30-70% descuento.<br>
+  - <strong>Spot</strong>: capacidad sobrante de AWS. Hasta 90% descuento pero te pueden quitar la instancia.<br>
+  - <strong>Free Tier</strong>: 12 meses gratis con limites (750h EC2 t2.micro, 5GB S3, etc.)</div>
+
+  <h3>14.5 AWS Cloud Practitioner - Tips para el examen</h3>
+  <ul>
+    <li>Son 65 preguntas de opcion multiple, 90 minutos</li>
+    <li>Necesitas 70% para aprobar</li>
+    <li>NO te piden saber usar la consola ni escribir codigo</li>
+    <li>Te preguntan conceptos: "que servicio usarias para X?", "que modelo de precios es mejor para Y?"</li>
+    <li>Recursos gratis: AWS Skill Builder, curso de freeCodeCamp en YouTube (~4h)</li>
+    <li>El examen cuesta $100 USD y se hace online desde casa</li>
+  </ul>
+
+  <div class="tip"><strong>Con tu experiencia:</strong> Ya entiendes servidores, redes, DNS, firewalls, Docker y monitoring. El 60% del examen son cosas que ya sabes pero con nombres de servicios AWS. Solo necesitas aprender la nomenclatura.</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 15. TERRAFORM -->
+<!-- ============================================== -->
+<div class="page page-break" id="terraform">
+  <h2>15. Terraform - Infraestructura como Codigo</h2>
+  <p>Terraform permite definir infraestructura en archivos de texto y crearla automaticamente. Es como pasar de Docker manual a Docker Compose, pero para TODA tu infraestructura.</p>
+
+  <h3>15.1 Que es Infrastructure as Code (IaC)</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es Infrastructure as Code?"<br>
+  En vez de crear servidores, redes y bases de datos haciendo clic en un panel web, los defines en archivos de codigo. Ventajas:<br>
+  - <strong>Reproducible</strong>: puedes crear el mismo entorno 100 veces de forma identica<br>
+  - <strong>Versionado</strong>: los archivos van en Git, ves quien cambio que y cuando<br>
+  - <strong>Automatizable</strong>: un pipeline de CI/CD puede crear o destruir infraestructura<br>
+  - <strong>Documentacion viva</strong>: el codigo ES la documentacion de tu infraestructura</div>
+
+  <h3>15.2 Como funciona Terraform</h3>
+  <div class="question"><strong>Pregunta:</strong> "Explicame el flujo de Terraform"<br>
+  1. <strong>Write</strong>: Escribes archivos <code>.tf</code> describiendo la infraestructura que quieres<br>
+  2. <strong>Plan</strong>: <code>terraform plan</code> muestra QUE va a crear/cambiar/destruir (sin hacer nada todavia)<br>
+  3. <strong>Apply</strong>: <code>terraform apply</code> ejecuta los cambios en el proveedor cloud<br>
+  4. <strong>State</strong>: Terraform guarda el estado actual en un archivo <code>terraform.tfstate</code> para saber que existe y que no</div>
+
+  <h3>15.3 Sintaxis basica (HCL)</h3>
+  <pre><code># Decir que proveedor usamos
+provider "aws" {
+  region = "eu-west-1"    # Irlanda
+}
+
+# Crear un servidor EC2
+resource "aws_instance" "mi_servidor" {
+  ami           = "ami-0c55b159cbfafe1f0"  # Ubuntu
+  instance_type = "t3.micro"                # Tipo (2 vCPU, 1GB RAM)
+
+  tags = {
+    Name = "servidor-web"
+  }
+}
+
+# Crear un bucket S3 para archivos
+resource "aws_s3_bucket" "backups" {
+  bucket = "mi-empresa-backups"
+}
+
+# Crear una base de datos RDS
+resource "aws_db_instance" "postgres" {
+  engine         = "postgres"
+  engine_version = "16"
+  instance_class = "db.t3.micro"
+  db_name        = "miapp"
+  username       = "admin"
+  password       = var.db_password    # variable, nunca hardcodear passwords
+}</code></pre>
+
+  <div class="tip"><strong>Analogia con Docker:</strong><br>
+  - <code>Dockerfile</code> = define como construir una imagen &rarr; <code>main.tf</code> = define que infraestructura crear<br>
+  - <code>docker build</code> = construye la imagen &rarr; <code>terraform plan</code> = muestra que va a hacer<br>
+  - <code>docker run</code> = ejecuta el contenedor &rarr; <code>terraform apply</code> = crea la infraestructura<br>
+  - <code>docker-compose.yml</code> = multiples servicios &rarr; <code>main.tf</code> = multiples recursos</div>
+
+  <h3>15.4 Variables y Outputs</h3>
+  <pre><code># variables.tf - Definir variables
+variable "environment" {
+  description = "Entorno (dev, staging, prod)"
+  type        = string
+  default     = "dev"
+}
+
+variable "db_password" {
+  description = "Password de la base de datos"
+  type        = string
+  sensitive   = true    # no se muestra en logs
+}
+
+# Usar variables en recursos
+resource "aws_instance" "server" {
+  instance_type = var.environment == "prod" ? "t3.medium" : "t3.micro"
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
+# outputs.tf - Mostrar informacion despues de crear
+output "server_ip" {
+  value = aws_instance.server.public_ip
+}
+
+output "db_endpoint" {
+  value = aws_db_instance.postgres.endpoint
+}</code></pre>
+
+  <h3>15.5 Comandos esenciales</h3>
+  <pre><code>terraform init       # Inicializa el proyecto, descarga providers
+terraform plan       # Muestra que va a hacer (preview)
+terraform apply      # Ejecuta los cambios (crea/modifica/destruye)
+terraform destroy    # Destruye TODA la infraestructura
+terraform fmt        # Formatea los archivos .tf
+terraform validate   # Valida la sintaxis
+terraform state list # Lista los recursos gestionados</code></pre>
+
+  <h3>15.6 State (Estado)</h3>
+  <div class="question"><strong>Pregunta:</strong> "Que es el state en Terraform?"<br>
+  El archivo <code>terraform.tfstate</code> es donde Terraform guarda que recursos ha creado y su estado actual. Sin este archivo, Terraform no sabe que existe y intentaria crear todo de nuevo.<br><br>
+  <strong>En equipo:</strong> El state se guarda en un backend remoto (S3 + DynamoDB) para que todos los miembros del equipo trabajen con el mismo estado. NUNCA se sube a Git.</div>
+
+  <h3>15.7 Modulos</h3>
+  <pre><code># Modulos = componentes reutilizables de infraestructura
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"  # modulo publico
+  version = "5.0.0"
+
+  name = "mi-vpc"
+  cidr = "10.0.0.0/16"
+
+  azs             = ["eu-west-1a", "eu-west-1b"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
+}</code></pre>
+  <div class="tip"><strong>Analogia:</strong> Los modulos de Terraform son como las imagenes de Docker Hub: alguien ya hizo el trabajo duro y tu solo lo configuras con tus parametros.</div>
+
+  <h3>15.8 Terraform vs Alternativas</h3>
+  <table>
+    <tr><th>Herramienta</th><th>Tipo</th><th>Cuando usarla</th></tr>
+    <tr><td><strong>Terraform</strong></td><td>IaC declarativo, multi-cloud</td><td>Crear infraestructura en cualquier cloud</td></tr>
+    <tr><td><strong>Ansible</strong></td><td>Configuracion de servidores</td><td>Instalar software, configurar SO dentro de un servidor</td></tr>
+    <tr><td><strong>CloudFormation</strong></td><td>IaC solo para AWS</td><td>Si solo usas AWS y no necesitas multi-cloud</td></tr>
+    <tr><td><strong>Pulumi</strong></td><td>IaC con lenguajes reales (JS, Python)</td><td>Si prefieres escribir infra en tu lenguaje favorito</td></tr>
+  </table>
+
+  <div class="question"><strong>Pregunta:</strong> "Por que Terraform y no CloudFormation?"<br>
+  Terraform es <strong>multi-cloud</strong>: funciona con AWS, GCP, Azure, Cloudflare, y cientos de providers. CloudFormation solo funciona con AWS. Si cambias de cloud o usas multiples, con Terraform no reescribes nada. Ademas, la sintaxis HCL es mas legible que los JSON/YAML de CloudFormation.</div>
+
+  <h3>15.9 Ejemplo real: tu stack completo en Terraform</h3>
+  <pre><code># Esto es lo que harias para desplegar algo como StackWatch en AWS
+
+# VPC (red privada)
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+  name   = "stackwatch-vpc"
+  cidr   = "10.0.0.0/16"
+}
+
+# Servidor EC2
+resource "aws_instance" "app" {
+  ami           = "ami-ubuntu-latest"
+  instance_type = "t3.small"
+  subnet_id     = module.vpc.public_subnets[0]
+
+  user_data = &lt;&lt;-EOF
+    #!/bin/bash
+    apt-get update
+    apt-get install -y docker.io docker-compose
+    cd /opt/stackwatch
+    docker-compose up -d
+  EOF
+
+  tags = { Name = "stackwatch-app" }
+}
+
+# Base de datos RDS PostgreSQL
+resource "aws_db_instance" "db" {
+  engine         = "postgres"
+  instance_class = "db.t3.micro"
+  db_name        = "stackwatch"
+  username       = "admin"
+  password       = var.db_password
+}
+
+# DNS
+resource "aws_route53_record" "app" {
+  zone_id = var.zone_id
+  name    = "stackwatch.lucasvicente.es"
+  type    = "A"
+  records = [aws_instance.app.public_ip]
+  ttl     = 300
+}</code></pre>
+
+  <div class="warning"><strong>Lo que necesitas para la entrevista:</strong> No te van a pedir que escribas Terraform de memoria. Necesitas saber QUE es, POR QUE se usa, y haber tocado los comandos basicos al menos una vez. Con saber explicar el flujo (write &rarr; plan &rarr; apply) y los conceptos (state, providers, modules) es suficiente para Junior DevOps.</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 16. 100+ PREGUNTAS FRECUENTES -->
+<!-- ============================================== -->
+<div class="page page-break" id="preguntas">
+  <h2>16. 100+ Preguntas Frecuentes de Entrevista Tech</h2>
+  <p>Practica respondiendo estas en voz alta. No memorices: entiende y explica con tus palabras.</p>
+
+  <h3>JavaScript (15)</h3>
+  <ol>
+    <li>Diferencia entre <code>==</code> y <code>===</code></li>
+    <li>Que es hoisting?</li>
+    <li>Diferencia entre <code>var</code>, <code>let</code> y <code>const</code></li>
+    <li>Que es un closure? Da un ejemplo</li>
+    <li>Como funciona el Event Loop?</li>
+    <li>Que es una promesa? Cuales son sus estados?</li>
+    <li>Diferencia entre <code>async/await</code> y <code>.then()</code></li>
+    <li>Que hace <code>Array.map()</code> vs <code>Array.forEach()</code>?</li>
+    <li>Que es destructuring?</li>
+    <li>Diferencia entre spread y rest operator</li>
+    <li>Que es <code>this</code> en JavaScript?</li>
+    <li>Que son los template literals?</li>
+    <li>Que es el optional chaining (<code>?.</code>)?</li>
+    <li>Diferencia entre <code>null</code> y <code>undefined</code></li>
+    <li>Que son los modulos en JS? Diferencia entre <code>import/export</code> y <code>require/module.exports</code></li>
+  </ol>
+
+  <h3>TypeScript (10)</h3>
+  <ol start="16">
+    <li>Que ventajas tiene TypeScript sobre JavaScript?</li>
+    <li>Diferencia entre <code>interface</code> y <code>type</code></li>
+    <li>Que son los generics? Para que sirven?</li>
+    <li>Que es un union type?</li>
+    <li>Que hace <code>Partial&lt;T&gt;</code>?</li>
+    <li>Que hace <code>Omit&lt;T, K&gt;</code>?</li>
+    <li>Que significa <code>as const</code>?</li>
+    <li>Que es un enum y cuando lo usas?</li>
+    <li>Que es <code>unknown</code> vs <code>any</code>?</li>
+    <li>Como tipas una funcion que recibe un callback?</li>
+  </ol>
+
+  <h3>React (20)</h3>
+  <ol start="26">
+    <li>Que es React y como funciona el Virtual DOM?</li>
+    <li>Diferencia entre componente funcional y de clase</li>
+    <li>Que son los hooks? Nombra los mas importantes</li>
+    <li>Como funciona <code>useState</code>?</li>
+    <li>Para que sirve <code>useEffect</code>? Que es el array de dependencias?</li>
+    <li>Diferencia entre <code>useMemo</code> y <code>useCallback</code></li>
+    <li>Que es <code>useRef</code> y cuando lo usas?</li>
+    <li>Que es Context API y cuando lo usas?</li>
+    <li>Diferencia entre props y state</li>
+    <li>Por que las keys son importantes en listas?</li>
+    <li>Que es un componente controlado vs no controlado?</li>
+    <li>Como manejas formularios en React?</li>
+    <li>Que es el lifting state up?</li>
+    <li>Que es un custom hook? Para que sirve?</li>
+    <li>Como haces renderizado condicional?</li>
+    <li>Que es React.memo y cuando lo usas?</li>
+    <li>Que son los error boundaries?</li>
+    <li>Como haces fetching de datos en React?</li>
+    <li>Que es Suspense en React?</li>
+    <li>Que es el patron "composition" en React?</li>
+  </ol>
+
+  <h3>Next.js (10)</h3>
+  <ol start="46">
+    <li>Que es Next.js y que anade sobre React?</li>
+    <li>Diferencia entre App Router y Pages Router</li>
+    <li>Que es un Server Component vs Client Component?</li>
+    <li>Cuando usas <code>"use client"</code>?</li>
+    <li>Diferencia entre SSR, SSG e ISR</li>
+    <li>Como creas API routes en Next.js?</li>
+    <li>Que es el file-based routing?</li>
+    <li>Que es un middleware en Next.js?</li>
+    <li>Como manejas el SEO en Next.js?</li>
+    <li>Que es el streaming en Next.js?</li>
+  </ol>
+
+  <h3>SQL / PostgreSQL (10)</h3>
+  <ol start="56">
+    <li>Diferencia entre INNER JOIN y LEFT JOIN</li>
+    <li>Que es un indice? Cuando lo creas?</li>
+    <li>Que es una transaccion? Para que sirve?</li>
+    <li>Diferencia entre WHERE y HAVING</li>
+    <li>Que es normalizacion de base de datos?</li>
+    <li>Que son las relaciones 1:N y N:M?</li>
+    <li>Como hacias paginacion en SQL?</li>
+    <li>Que es una foreign key?</li>
+    <li>Diferencia entre DELETE y TRUNCATE</li>
+    <li>Que es un ORM y que ventajas/desventajas tiene?</li>
+  </ol>
+
+  <h3>Docker / DevOps (10)</h3>
+  <ol start="66">
+    <li>Que es Docker y por que se usa?</li>
+    <li>Diferencia entre imagen y contenedor</li>
+    <li>Que es un Dockerfile? Explicame cada instruccion</li>
+    <li>Que es Docker Compose? Para que sirve?</li>
+    <li>Que es un volume en Docker?</li>
+    <li>Diferencia entre contenedores y VMs</li>
+    <li>Que es Docker Swarm?</li>
+    <li>Que es CI/CD? Que herramientas usas?</li>
+    <li>Que son las GitHub Actions?</li>
+    <li>Como despliegas una aplicacion en produccion?</li>
+  </ol>
+
+  <h3>Linux / Redes (10)</h3>
+  <ol start="76">
+    <li>Como ves los procesos corriendo en Linux?</li>
+    <li>Como ves el uso de disco y memoria?</li>
+    <li>Que son los permisos en Linux? Que significa 755?</li>
+    <li>Que es un reverse proxy? Para que sirve?</li>
+    <li>Que pasa cuando escribes una URL en el navegador?</li>
+    <li>Que es DNS?</li>
+    <li>Diferencia entre HTTP y HTTPS</li>
+    <li>Que es un firewall?</li>
+    <li>Que es SSH y para que se usa?</li>
+    <li>Que es un certificado SSL?</li>
+  </ol>
+
+  <h3>Git (5)</h3>
+  <ol start="86">
+    <li>Que es Git y por que es importante?</li>
+    <li>Diferencia entre merge y rebase</li>
+    <li>Como resuelves un conflicto en Git?</li>
+    <li>Que es un pull request?</li>
+    <li>Que flujo de trabajo de Git usas?</li>
+  </ol>
+
+  <h3>Arquitectura / General (10)</h3>
+  <ol start="91">
+    <li>Que es una API REST? Principios basicos</li>
+    <li>Diferencia entre autenticacion y autorizacion</li>
+    <li>Que es JWT? Como funciona?</li>
+    <li>Que es CORS y como lo solucionas?</li>
+    <li>Diferencia entre monolito y microservicios</li>
+    <li>Que es cache? Donde la usas?</li>
+    <li>Que son las variables de entorno?</li>
+    <li>Que es WebSocket? Cuando lo usas en vez de HTTP?</li>
+    <li>Que es la inyeccion SQL y como la previenes?</li>
+    <li>Que es XSS y como lo previenes?</li>
+  </ol>
+
+  <h3>AWS / Cloud (10)</h3>
+  <ol start="101">
+    <li>Que es cloud computing? Que ventajas tiene?</li>
+    <li>Diferencia entre IaaS, PaaS y SaaS</li>
+    <li>Que es EC2?</li>
+    <li>Que es S3 y para que se usa?</li>
+    <li>Que es RDS?</li>
+    <li>Que es una VPC?</li>
+    <li>Que es IAM en AWS?</li>
+    <li>Que son las Availability Zones?</li>
+    <li>Que es el modelo de responsabilidad compartida?</li>
+    <li>Diferencia entre On-Demand, Reserved y Spot instances</li>
+  </ol>
+
+  <h3>Terraform / IaC (5)</h3>
+  <ol start="111">
+    <li>Que es Infrastructure as Code?</li>
+    <li>Que es Terraform y como funciona? (write, plan, apply)</li>
+    <li>Que es el state en Terraform?</li>
+    <li>Diferencia entre Terraform y Ansible</li>
+    <li>Que es un modulo en Terraform?</li>
+  </ol>
+
+  <h3>Sobre ti (bonus)</h3>
+  <ol start="116">
+    <li>Cuentame sobre ti</li>
+    <li>Por que quieres trabajar aqui?</li>
+    <li>Cual es tu mayor fortaleza?</li>
+    <li>Cual es tu mayor debilidad?</li>
+    <li>Donde te ves en 5 anos?</li>
+    <li>Cuentame un proyecto del que estes orgulloso</li>
+    <li>Como manejas la presion?</li>
+    <li>Como trabajas en equipo?</li>
+    <li>Tienes alguna pregunta para nosotros?</li>
+    <li>Que salario esperas?</li>
+  </ol>
+
+  <div class="tip"><strong>Para la pregunta 109 ("Tienes preguntas?"):</strong> SIEMPRE di que si. Pregunta: "Como es el dia a dia del equipo?", "Que herramientas usais?", "Cuales son los mayores retos tecnicos ahora mismo?", "Como es el proceso de onboarding?"</div>
+</div>
+
+<div class="page">
+  <div style="text-align:center; padding: 40px 0;">
+    <h2>Fin de la Guia</h2>
+    <p style="font-size: 11pt; color: #555; margin: 10px 0;">
+      Preparado para Lucas Vicente &mdash; Marzo 2026
+    </p>
+    <p style="font-size: 9pt; color: #888;">
+      Imprime este PDF o subelo a NotebookLM para generar tests interactivos.<br>
+      Usa el test de autoevaluacion en <code>test-autoevaluacion.html</code> para medir tu progreso.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

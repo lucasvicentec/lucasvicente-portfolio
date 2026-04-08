@@ -91,6 +91,23 @@ const getTerminalIntroByLocale = (locale: Locale): string[] =>
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
     {
+      title: "RiftPanel",
+      tag: "Producción",
+      type: "Panel de servidores de juegos / SaaS",
+      context: "Los proveedores de hosting de juegos necesitan Pterodactyl + WHMCS + portal de clientes — tres herramientas separadas con coste y complejidad elevados.",
+      decision: "Backend en Go (Fiber) en lugar de PHP para rendimiento superior. Frontend React + TypeScript. Integración directa con Wings (daemon de Pterodactyl) para compatibilidad total con nodos existentes.",
+      result: "Plataforma todo-en-uno en producción con facturación integrada (Stripe/Paddle), 40+ plantillas de juegos, 31 módulos, sistema de licencias propio y distribución via Docker Hub.",
+      evidence: [
+        "17+ versiones publicadas con CI/CD automatizado",
+        "Facturación automática: Paddle webhook → licencia generada → email enviado",
+        "31 módulos (redes MC, crash detection, AI assistant, tienda hosting)",
+        "Instalación en 30 segundos con un solo comando",
+      ],
+      stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, xterm.js, ECharts, WebSocket",
+      live: "https://riftpanel.net",
+      screenshots: ["/images/riftpanel_1.png", "/images/riftpanel_2.png", "/images/riftpanel_3.png", "/images/riftpanel_4.png"],
+    },
+    {
       title: "Informo",
       tag: "Producción",
       type: "SaaS de canal de denuncias",
@@ -185,6 +202,23 @@ const projectsByLocale: Record<Locale, Project[]> = {
     },
   ],
   en: [
+    {
+      title: "RiftPanel",
+      tag: "Production",
+      type: "Game server management panel / SaaS",
+      context: "Game hosting providers need Pterodactyl + WHMCS + client portal — three separate tools with high cost and complexity.",
+      decision: "Go backend (Fiber) instead of PHP for superior performance. React + TypeScript frontend. Direct Wings daemon integration for full compatibility with existing nodes.",
+      result: "All-in-one platform in production with built-in billing (Stripe/Paddle), 40+ game templates, 31 modules, custom license system, and Docker Hub distribution.",
+      evidence: [
+        "17+ versions published with automated CI/CD",
+        "Automatic billing: Paddle webhook → license generated → email sent",
+        "31 modules (MC networks, crash detection, AI assistant, hosting store)",
+        "30-second install with a single command",
+      ],
+      stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, xterm.js, ECharts, WebSocket",
+      live: "https://riftpanel.net",
+      screenshots: ["/images/riftpanel_1.png", "/images/riftpanel_2.png", "/images/riftpanel_3.png", "/images/riftpanel_4.png"],
+    },
     {
       title: "Informo",
       tag: "Production",

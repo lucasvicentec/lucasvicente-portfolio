@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Practice Lab - Lucas Vicente</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:#0a0a0f;color:#e2e8f0;height:100vh;overflow:hidden}
+
+    /* Layout */
+    .app{display:grid;grid-template-columns:280px 1fr 1fr;grid-template-rows:auto 1fr auto;height:100vh}
+    .header{grid-column:1/-1;padding:10px 20px;background:#111118;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between}
+    .header h1{font-size:15px;font-weight:800;background:linear-gradient(90deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .header .streak{font-size:12px;color:#64748b}
+    .header .streak span{color:#eab308;font-weight:700}
+
+    /* Sidebar */
+    .sidebar{background:#111118;border-right:1px solid #1e1e2e;overflow-y:auto;padding:12px;grid-row:2/4}
+    .sidebar h2{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#475569;margin:12px 0 8px;padding:0 8px}
+    .ex-btn{width:100%;padding:10px 12px;border:1.5px solid #1e1e2e;border-radius:10px;background:#0a0a0f;color:#94a3b8;cursor:pointer;font-family:inherit;font-size:12px;text-align:left;margin-bottom:6px;transition:all .15s;display:flex;align-items:center;gap:10px}
+    .ex-btn:hover{border-color:#334155;color:#e2e8f0}
+    .ex-btn.active{border-color:#2563eb;background:#0f1a2e;color:#60a5fa}
+    .ex-btn.completed{border-color:#22c55e40}
+    .ex-btn .ex-num{width:26px;height:26px;border-radius:7px;background:#1e1e2e;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+    .ex-btn.active .ex-num{background:#2563eb;color:#fff}
+    .ex-btn.completed .ex-num{background:#22c55e30;color:#22c55e}
+    .ex-btn .ex-info{line-height:1.3}
+    .ex-btn .ex-title{font-weight:600;font-size:12px;display:block}
+    .ex-btn .ex-diff{font-size:10px;color:#475569}
+    .ex-check{margin-left:auto;font-size:14px}
+
+    /* Editor panel */
+    .editor-panel{display:flex;flex-direction:column;border-right:1px solid #1e1e2e;grid-row:2/3}
+    .panel-header{padding:8px 16px;background:#111118;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .panel-header .tab{font-size:12px;font-weight:600;color:#64748b;padding:4px 12px;border-radius:6px}
+    .panel-header .tab.active{background:#1e1e2e;color:#e2e8f0}
+    .editor-wrap{flex:1;position:relative;overflow:hidden}
+    #editor{width:100%;height:100%;background:#0a0a0f;color:#e2e8f0;border:none;resize:none;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;padding:16px 16px 16px 56px;outline:none;tab-size:2;-moz-tab-size:2;white-space:pre;overflow:auto}
+    #editor::placeholder{color:#334155}
+    .line-numbers{position:absolute;top:0;left:0;width:40px;padding:16px 8px 16px 0;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;color:#334155;pointer-events:none;overflow:hidden;user-select:none}
+
+    /* Preview panel */
+    .preview-panel{display:flex;flex-direction:column;grid-row:2/3}
+    #preview{flex:1;background:#fff;border:none;width:100%;height:100%}
+
+    /* Instructions bar */
+    .instructions{grid-column:2/4;background:#111118;border-top:1px solid #1e1e2e;padding:12px 20px;overflow-y:auto;max-height:220px;grid-row:3}
+    .instructions h3{font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .instructions .req{font-size:12px;color:#94a3b8;line-height:1.7;margin-bottom:4px;padding-left:16px;position:relative}
+    .instructions .req::before{content:">";position:absolute;left:0;color:#2563eb;font-weight:700;font-family:'JetBrains Mono',monospace}
+    .instructions .hint-btn{padding:5px 14px;border:1px solid #334155;border-radius:6px;background:transparent;color:#64748b;cursor:pointer;font-family:inherit;font-size:11px;margin-top:8px;transition:all .2s}
+    .instructions .hint-btn:hover{border-color:#eab308;color:#eab308}
+    .instructions .hint{font-size:11px;color:#eab308;background:#1a1500;border:1px solid #eab30830;border-radius:8px;padding:10px 14px;margin-top:8px;line-height:1.6;display:none}
+    .instructions .hint.show{display:block}
+
+    /* Action buttons */
+    .actions{display:flex;gap:8px;align-items:center}
+    .run-btn{padding:6px 16px;border:none;border-radius:7px;background:#22c55e;color:#000;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+    .run-btn:hover{background:#16a34a}
+    .reset-btn{padding:6px 12px;border:1px solid #334155;border-radius:7px;background:transparent;color:#64748b;font-family:inherit;font-size:11px;cursor:pointer;transition:all .15s}
+    .reset-btn:hover{border-color:#ef4444;color:#ef4444}
+    .check-btn{padding:6px 16px;border:none;border-radius:7px;background:#2563eb;color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+    .check-btn:hover{background:#1d4ed8}
+
+    /* Status */
+    .status{font-size:11px;padding:4px 10px;border-radius:5px;font-weight:600}
+    .status-ok{background:#0f291830;color:#22c55e;border:1px solid #22c55e30}
+    .status-err{background:#2a0f0f30;color:#ef4444;border:1px solid #ef444430}
+    .status-info{background:#0f1a2e;color:#60a5fa;border:1px solid #60a5fa30}
+
+    /* Progress */
+    .progress{padding:12px;border-top:1px solid #1e1e2e}
+    .progress-label{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+    .progress-bar{height:6px;background:#1e1e2e;border-radius:3px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#2563eb,#22c55e);border-radius:3px;transition:width .4s}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:#1e1e2e;border-radius:3px}
+    ::-webkit-scrollbar-thumb:hover{background:#334155}
+
+    /* Toast */
+    .toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transform:translateX(120%);transition:transform .3s ease;font-family:'Inter',sans-serif}
+    .toast.show{transform:translateX(0)}
+    .toast-success{background:#0f2918;color:#22c55e;border:1px solid #22c55e40}
+    .toast-error{background:#2a0f0f;color:#ef4444;border:1px solid #ef444440}
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <h1>React Practice Lab</h1>
+    <div class="streak">Completados: <span id="completedCount">0</span> / <span id="totalCount">10</span></div>
+    <div class="actions">
+      <span id="statusMsg" class="status status-info">Escribe y pulsa Ejecutar</span>
+      <button class="reset-btn" onclick="resetExercise()">Reiniciar</button>
+      <button class="run-btn" onclick="runCode()">Ejecutar</button>
+      <button class="check-btn" onclick="checkSolution()">Comprobar</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Fundamentos</h2>
+    <div id="exerciseList"></div>
+    <div class="progress">
+      <div class="progress-label">Progreso total</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Editor -->
+  <div class="editor-panel">
+    <div class="panel-header">
+      <span class="tab active">App.tsx</span>
+    </div>
+    <div class="editor-wrap">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="// Escribe tu codigo aqui..."></textarea>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-panel">
+    <div class="panel-header">
+      <span class="tab active">Preview</span>
+    </div>
+    <iframe id="preview"></iframe>
+  </div>
+
+  <!-- Instructions -->
+  <div class="instructions" id="instructions"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// EXERCISES DATA
+// ═══════════════════════════════════════════
+const exercises = [
+  {
+    id: 1,
+    title: "Hola Mundo",
+    difficulty: "Basico",
+    description: "Crea un componente que muestre un h1 con 'Hola Mundo'",
+    requirements: [
+      "Importa React (no hace falta en este entorno, pero acostumbrate)",
+      "Crea una funcion App que devuelva JSX",
+      "Dentro del return, pon un <div> con un <h1> que diga 'Hola Mundo'",
+    ],
+    hint: "La estructura minima es: function App() { return (<div><h1>Hola Mundo</h1></div>) }",
+    starter: "",
+    check: (doc) => {
+      const h1 = doc.querySelector("h1");
+      return h1 && h1.textContent.toLowerCase().includes("hola mundo");
+    }
+  },
+  {
+    id: 2,
+    title: "useState basico",
+    difficulty: "Basico",
+    description: "Crea un contador con un boton que sume 1 cada vez que lo pulsas",
+    requirements: [
+      "Usa useState para guardar un numero (empieza en 0)",
+      "Muestra el numero en un <p>",
+      "Un <button> que al hacer click sume 1 al contador",
+    ],
+    hint: "const [count, setCount] = useState(0) — el boton lleva onClick={() => setCount(count + 1)}",
+    starter: "",
+    check: (doc) => {
+      const btn = doc.querySelector("button");
+      const p = doc.querySelector("p");
+      return btn && p && p.textContent.includes("0");
+    }
+  },
+  {
+    id: 3,
+    title: "Input controlado",
+    difficulty: "Basico",
+    description: "Un input que muestra en tiempo real lo que escribes debajo",
+    requirements: [
+      "useState para guardar el texto",
+      "Un <input> conectado al estado con value y onChange",
+      "Un <p> debajo que muestre lo que escribes",
+    ],
+    hint: "onChange={(e) => setTexto(e.target.value)} — el input necesita value={texto}",
+    starter: "",
+    check: (doc) => {
+      const input = doc.querySelector("input");
+      const p = doc.querySelector("p");
+      return input && p && input.getAttribute("value") !== null;
+    }
+  },
+  {
+    id: 4,
+    title: "Fetch + Lista",
+    difficulty: "Medio",
+    description: "Carga usuarios de una API y muestralos en una lista",
+    requirements: [
+      "useEffect con [] para hacer fetch al montar",
+      "fetch a: https://jsonplaceholder.typicode.com/users",
+      "Guarda los datos con useState",
+      "Muestra cada usuario en un <li> con su nombre",
+      "Pon key={user.id} en cada <li>",
+    ],
+    hint: "useEffect(() => { fetch(url).then(res => res.json()).then(data => setUsers(data)) }, [])",
+    starter: "",
+    check: (doc) => {
+      const items = doc.querySelectorAll("li");
+      return items.length >= 5;
+    }
+  },
+  {
+    id: 5,
+    title: "Buscador con filter",
+    difficulty: "Medio",
+    description: "Igual que el anterior pero con un input que filtre la lista por nombre",
+    requirements: [
+      "Fetch de usuarios (igual que ejercicio 4)",
+      "Un estado para la busqueda",
+      "Un <input> conectado al estado de busqueda",
+      "Usa .filter() antes de .map() para filtrar por nombre",
+      "El filtro debe ignorar mayusculas/minusculas",
+    ],
+    hint: "users.filter(u => u.name.toLowerCase().includes(search.toLowerCase())).map(...)",
+    starter: "",
+    check: (doc) => {
+      const input = doc.querySelector("input");
+      const items = doc.querySelectorAll("li");
+      return input && items.length >= 5;
+    }
+  },
+  {
+    id: 6,
+    title: "Loading y Error",
+    difficulty: "Medio",
+    description: "Anade estados de carga y error al fetch del ejercicio anterior",
+    requirements: [
+      "Estado loading (empieza true, se pone false al recibir datos o error)",
+      "Estado error (string vacio, se llena si falla el fetch)",
+      "Si loading es true, muestra 'Cargando...'",
+      "Si hay error, muestra el mensaje de error en rojo",
+      "Si todo OK, muestra la lista",
+    ],
+    hint: "Tres estados: loading, error, users. En el .then() setLoading(false). En el .catch(err => { setError(err.message); setLoading(false) })",
+    starter: "",
+    check: (doc) => {
+      const text = doc.body.textContent;
+      const items = doc.querySelectorAll("li");
+      return items.length >= 5 || text.includes("Cargando");
+    }
+  },
+  {
+    id: 7,
+    title: "Formulario basico",
+    difficulty: "Medio",
+    description: "Formulario con nombre y email que muestra los datos al enviar",
+    requirements: [
+      "Un estado objeto: {name: '', email: ''}",
+      "Dos inputs conectados al estado",
+      "e.preventDefault() en el submit",
+      "Al enviar, muestra los datos debajo del form",
+      "Limpia el formulario despues de enviar",
+    ],
+    hint: "setForm({...form, [e.target.name]: e.target.value}) — usa el atributo name del input como key dinamica",
+    starter: "",
+    check: (doc) => {
+      const inputs = doc.querySelectorAll("input");
+      const form = doc.querySelector("form");
+      return inputs.length >= 2 && form;
+    }
+  },
+  {
+    id: 8,
+    title: "Validacion de form",
+    difficulty: "Dificil",
+    description: "Anade validacion al formulario: nombre obligatorio, email con @ y .",
+    requirements: [
+      "Funcion validate() que revisa cada campo",
+      "Nombre: obligatorio (no vacio)",
+      "Email: debe contener @ y .",
+      "Muestra errores en rojo debajo de cada campo",
+      "Solo valida al hacer submit, no mientras escribe",
+      "Si todo OK, muestra mensaje de exito",
+    ],
+    hint: "validate() devuelve {name: 'error msg', email: 'error msg'}. Si Object.values(errors).some(e => e !== '') hay errores.",
+    starter: "",
+    check: (doc) => {
+      const form = doc.querySelector("form");
+      const inputs = doc.querySelectorAll("input");
+      return form && inputs.length >= 2;
+    }
+  },
+  {
+    id: 9,
+    title: "Todo: crear y listar",
+    difficulty: "Dificil",
+    description: "Input + boton para agregar tareas a una lista",
+    requirements: [
+      "Estado para la lista de tareas (array de objetos: {id, text, completed})",
+      "Estado para el input de nueva tarea",
+      "Boton que agrega la tarea (no permitir vacias)",
+      "Mostrar lista de tareas",
+      "Usa Date.now() como id",
+    ],
+    hint: "setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]) — luego setNewTodo('')",
+    starter: "",
+    check: (doc) => {
+      const input = doc.querySelector("input");
+      const btn = doc.querySelector("button");
+      return input && btn;
+    }
+  },
+  {
+    id: 10,
+    title: "Todo: CRUD completo",
+    difficulty: "Dificil",
+    description: "Todo list con crear, completar, editar y borrar",
+    requirements: [
+      "Todo lo del ejercicio 9",
+      "Checkbox para marcar completada (texto tachado)",
+      "Boton borrar: filter para eliminar",
+      "Boton editar: convierte texto en input, guarda con Enter o boton",
+      "Mostrar 'X tareas pendientes'",
+    ],
+    hint: "Para editar: estado editingId y editText. map() para cambiar el item. filter() para borrar. Checkbox: toggle completed.",
+    starter: "",
+    check: (doc) => {
+      const text = doc.body.textContent.toLowerCase();
+      return text.includes("pendiente") || text.includes("tarea");
+    }
+  }
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const STORAGE_KEY = "react_practice_lab";
+let currentExercise = 0;
+let completedExercises = new Set();
+
+function loadProgress() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (d) {
+      completedExercises = new Set(d.completed || []);
+      currentExercise = d.current || 0;
+    }
+  } catch {}
+}
+
+function saveProgress() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    completed: [...completedExercises],
+    current: currentExercise
+  }));
+}
+
+// ═══════════════════════════════════════════
+// RENDER SIDEBAR
+// ═══════════════════════════════════════════
+function renderSidebar() {
+  const list = document.getElementById("exerciseList");
+  list.innerHTML = exercises.map((ex, i) => {
+    const isActive = i === currentExercise;
+    const isDone = completedExercises.has(ex.id);
+    let cls = "ex-btn";
+    if (isActive) cls += " active";
+    if (isDone) cls += " completed";
+    return `<button class="${cls}" onclick="selectExercise(${i})">
+      <div class="ex-num">${isDone ? "&#10003;" : ex.id}</div>
+      <div class="ex-info">
+        <span class="ex-title">${ex.title}</span>
+        <span class="ex-diff">${ex.difficulty}</span>
+      </div>
+    </button>`;
+  }).join("");
+
+  document.getElementById("completedCount").textContent = completedExercises.size;
+  document.getElementById("totalCount").textContent = exercises.length;
+  document.getElementById("progressFill").style.width = ((completedExercises.size / exercises.length) * 100) + "%";
+}
+
+// ═══════════════════════════════════════════
+// RENDER INSTRUCTIONS
+// ═══════════════════════════════════════════
+function renderInstructions() {
+  const ex = exercises[currentExercise];
+  const inst = document.getElementById("instructions");
+  inst.innerHTML = `
+    <h3>${ex.id}. ${ex.title} <span style="font-size:10px;color:#475569;font-weight:400">${ex.difficulty}</span></h3>
+    <p style="font-size:12px;color:#94a3b8;margin-bottom:10px">${ex.description}</p>
+    ${ex.requirements.map(r => `<div class="req">${r}</div>`).join("")}
+    <button class="hint-btn" onclick="toggleHint()">Mostrar pista</button>
+    <div class="hint" id="hintBox">${ex.hint}</div>
+  `;
+}
+
+function toggleHint() {
+  document.getElementById("hintBox").classList.toggle("show");
+}
+
+// ═══════════════════════════════════════════
+// EDITOR
+// ═══════════════════════════════════════════
+const editor = document.getElementById("editor");
+const lineNumbers = document.getElementById("lineNumbers");
+
+// Disable autocomplete aggressively
+editor.setAttribute("autocomplete", "off");
+editor.setAttribute("autocorrect", "off");
+editor.setAttribute("autocapitalize", "off");
+editor.setAttribute("data-gramm", "false");
+editor.setAttribute("data-gramm_editor", "false");
+editor.setAttribute("data-enable-grammarly", "false");
+
+function updateLineNumbers() {
+  const lines = editor.value.split("\n").length;
+  lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => `<div>${i + 1}</div>`).join("");
+}
+
+editor.addEventListener("input", updateLineNumbers);
+editor.addEventListener("scroll", () => { lineNumbers.style.transform = `translateY(-${editor.scrollTop}px)`; });
+
+// Tab support
+editor.addEventListener("keydown", (e) => {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    editor.value = editor.value.substring(0, start) + "  " + editor.value.substring(end);
+    editor.selectionStart = editor.selectionEnd = start + 2;
+    updateLineNumbers();
+  }
+  // Ctrl+Enter to run
+  if (e.key === "Enter" && e.ctrlKey) {
+    e.preventDefault();
+    runCode();
+  }
+});
+
+// ═══════════════════════════════════════════
+// SAVE / LOAD CODE PER EXERCISE
+// ═══════════════════════════════════════════
+function saveCode() {
+  const key = `react_lab_code_${exercises[currentExercise].id}`;
+  localStorage.setItem(key, editor.value);
+}
+
+function loadCode() {
+  const key = `react_lab_code_${exercises[currentExercise].id}`;
+  const saved = localStorage.getItem(key);
+  editor.value = saved || exercises[currentExercise].starter;
+  updateLineNumbers();
+}
+
+editor.addEventListener("input", saveCode);
+
+// ═══════════════════════════════════════════
+// RUN CODE
+// ═══════════════════════════════════════════
+function runCode() {
+  const rawCode = editor.value;
+  const iframe = document.getElementById("preview");
+
+  // Strip import/export so Babel in the iframe can handle it
+  let code = rawCode;
+  code = code.replace(/^\s*import\s+.*?from\s+['"].*?['"]\s*;?\s*$/gm, '');
+  code = code.replace(/^\s*import\s+['"].*?['"]\s*;?\s*$/gm, '');
+  code = code.replace(/export\s+default\s+/g, '');
+
+  // Escape for safe injection into script tag
+  const escaped = code.replace(/<\/script>/gi, '<\\/script>');
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Inter', -apple-system, sans-serif; padding: 20px; margin: 0; color: #1a1a1a; }
+    h1 { font-size: 22px; margin-bottom: 12px; }
+    h2 { font-size: 18px; margin-bottom: 10px; }
+    p { margin-bottom: 8px; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 4px; }
+    input { padding: 8px 12px; border: 1.5px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: inherit; margin: 4px 0; }
+    input:focus { outline: none; border-color: #2563eb; }
+    button { padding: 8px 16px; border: none; border-radius: 6px; background: #2563eb; color: white; font-size: 14px; cursor: pointer; font-family: inherit; margin: 4px; }
+    button:hover { background: #1d4ed8; }
+    textarea { padding: 8px 12px; border: 1.5px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: inherit; width: 100%; min-height: 80px; }
+    form { display: flex; flex-direction: column; gap: 8px; max-width: 400px; }
+    label { font-weight: 600; font-size: 14px; }
+    .error { color: #ef4444; font-size: 12px; }
+  </style>
+  <script src="https://unpkg.com/react@19/umd/react.development.js"><\/script>
+  <script src="https://unpkg.com/react-dom@19/umd/react-dom.development.js"><\/script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const { useState, useEffect, useRef, useCallback, useMemo } = React;
+    try {
+      var userCode = ${JSON.stringify(escaped)};
+      var compiled = Babel.transform(userCode, { presets: ['react'] }).code;
+      eval(compiled);
+      var _root = ReactDOM.createRoot(document.getElementById("root"));
+      _root.render(React.createElement(App));
+    } catch(err) {
+      document.getElementById("root").innerHTML = '<div style="color:#ef4444;font-family:monospace;padding:20px;background:#fff0f0;border-radius:8px"><strong>Error:</strong><br>' + err.message + '</div>';
+    }
+  <\/script>
+</body>
+</html>`;
+
+  iframe.srcdoc = html;
+  setStatus("Ejecutando...", "info");
+
+  setTimeout(() => {
+    try {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      const root = iframeDoc.getElementById("root");
+      if (root && root.innerHTML && !root.innerHTML.includes("Error:")) {
+        setStatus("Ejecutado OK", "ok");
+      } else if (root && root.innerHTML.includes("Error:")) {
+        setStatus("Error en el codigo", "err");
+      }
+    } catch { setStatus("Ejecutado", "info"); }
+  }, 1500);
+}
+
+// ═══════════════════════════════════════════
+// CHECK SOLUTION
+// ═══════════════════════════════════════════
+function checkSolution() {
+  const iframe = document.getElementById("preview");
+  try {
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    const ex = exercises[currentExercise];
+
+    if (ex.check(iframeDoc)) {
+      completedExercises.add(ex.id);
+      saveProgress();
+      renderSidebar();
+      setStatus("Correcto!", "ok");
+      showToast("Ejercicio " + ex.id + " completado!", "success");
+
+      // Auto-advance after 1.5s
+      if (currentExercise < exercises.length - 1) {
+        setTimeout(() => {
+          selectExercise(currentExercise + 1);
+        }, 1500);
+      }
+    } else {
+      setStatus("No cumple los requisitos. Revisa las instrucciones.", "err");
+      showToast("Aun no esta correcto. Sigue intentando!", "error");
+    }
+  } catch {
+    setStatus("Ejecuta el codigo primero", "err");
+  }
+}
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function selectExercise(i) {
+  saveCode();
+  currentExercise = i;
+  saveProgress();
+  loadCode();
+  renderSidebar();
+  renderInstructions();
+  setStatus("Escribe y pulsa Ejecutar", "info");
+  // Clear preview
+  document.getElementById("preview").srcdoc = '<html><body style="font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;color:#999"><p>Pulsa Ejecutar para ver el resultado</p></body></html>';
+}
+
+function resetExercise() {
+  editor.value = "";
+  updateLineNumbers();
+  saveCode();
+  document.getElementById("preview").srcdoc = "";
+  setStatus("Reiniciado", "info");
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById("statusMsg");
+  el.textContent = msg;
+  el.className = "status status-" + type;
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast toast-" + type + " show";
+  setTimeout(() => { t.className = "toast toast-" + type; }, 3000);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+loadProgress();
+renderSidebar();
+selectExercise(currentExercise);
+</script>
+</body>
+</html>

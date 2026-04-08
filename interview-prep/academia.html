@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Academy - Lucas Vicente</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#08080d;--bg2:#0f0f18;--bg3:#161622;--border:#1e1e2e;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;--blue:#2563eb;--green:#22c55e;--red:#ef4444;--yellow:#eab308;--purple:#a78bfa;--cyan:#22d3ee}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+    /* ── NAV ── */
+    .topnav{position:sticky;top:0;z-index:100;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;height:52px;gap:20px}
+    .topnav .logo{font-size:15px;font-weight:800;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+    .topnav .nav-tabs{display:flex;gap:2px;flex:1;justify-content:center}
+    .nav-t{padding:14px 16px;border:none;background:none;color:var(--text3);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+    .nav-t:hover{color:var(--text2)}
+    .nav-t.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+    .topnav .stats-mini{display:flex;gap:14px;font-size:11px;color:var(--text3);white-space:nowrap}
+    .stats-mini span{color:var(--yellow);font-weight:700}
+
+    /* ── VIEWS ── */
+    .view{display:none;padding:24px;max-width:1200px;margin:0 auto}
+    .view.active{display:block}
+
+    /* ── DASHBOARD ── */
+    .dash-hero{text-align:center;padding:32px 0 24px}
+    .dash-hero h2{font-size:28px;font-weight:800;margin-bottom:6px}
+    .dash-hero p{color:var(--text2);font-size:14px}
+    .dash-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+    .d-stat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center}
+    .d-stat .val{font-size:28px;font-weight:800}
+    .d-stat .lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+    .streak-val{color:var(--yellow)}.done-val{color:var(--green)}.pend-val{color:var(--blue)}.time-val{color:var(--purple)}.pct-val{color:var(--cyan)}
+
+    /* Calendar - GitHub style */
+    .calendar-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:28px}
+    .calendar-wrap h3{font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:600}
+    .cal-legend{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-bottom:10px;font-size:10px;color:var(--text3)}
+    .cal-legend-box{width:12px;height:12px;border-radius:2px}
+    .cal-container{display:flex;gap:6px}
+    .cal-labels{display:flex;flex-direction:column;gap:2px;padding-top:22px}
+    .cal-labels span{font-size:9px;color:var(--text3);height:14px;line-height:14px}
+    .cal-months{display:flex;gap:2px;margin-bottom:4px;padding-left:0}
+    .cal-months span{font-size:10px;color:var(--text3);text-align:center}
+    .cal-grid-gh{display:grid;grid-template-rows:repeat(7,14px);grid-auto-flow:column;grid-auto-columns:14px;gap:2px}
+    .cal-day{width:14px;height:14px;border-radius:3px;background:var(--bg3);cursor:default;transition:all .15s;position:relative}
+    .cal-day:hover{outline:1px solid var(--text3)}
+    .cal-day.today{outline:2px solid var(--cyan)}
+    .cal-day.lv1{background:#0e4429}
+    .cal-day.lv2{background:#006d32}
+    .cal-day.lv3{background:#26a641}
+    .cal-day.lv4{background:#39d353}
+    .cal-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1e1e2e;color:var(--text);padding:4px 8px;border-radius:4px;font-size:10px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10;border:1px solid var(--border)}
+    .cal-day:hover .cal-tooltip{opacity:1}
+
+    /* Roadmap */
+    .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+    .week-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;transition:all .2s}
+    .week-card:hover{border-color:var(--blue)}
+    .week-card.current{border-color:var(--cyan);background:#0a1520}
+    .week-card h4{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+    .week-card h4 .w-num{font-size:10px;background:var(--bg3);padding:2px 8px;border-radius:4px;color:var(--text3)}
+    .week-card.current h4 .w-num{background:var(--cyan);color:#000}
+    .week-card p{font-size:11px;color:var(--text3);line-height:1.5;margin-bottom:10px}
+    .week-card .w-topics{list-style:none;padding:0}
+    .week-card .w-topics li{font-size:11px;color:var(--text2);padding:2px 0;padding-left:14px;position:relative}
+    .week-card .w-topics li::before{content:">";position:absolute;left:0;color:var(--blue);font-family:'JetBrains Mono',monospace;font-weight:700}
+    .week-prog{height:4px;background:var(--bg3);border-radius:2px;margin-top:12px;overflow:hidden}
+    .week-prog-fill{height:100%;border-radius:2px;transition:width .4s}
+
+    /* ── TRACKS VIEW ── */
+    .tracks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .track-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:all .2s}
+    .track-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+    .track-card .t-icon{font-size:32px;margin-bottom:10px}
+    .track-card h3{font-size:16px;font-weight:700;margin-bottom:4px}
+    .track-card .t-desc{font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5}
+    .track-card .t-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
+    .track-card .t-meta span{display:flex;align-items:center;gap:4px}
+    .t-bar{height:4px;background:var(--bg3);border-radius:2px;margin-top:14px;overflow:hidden}
+    .t-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:2px;transition:width .4s}
+
+    /* ── EXERCISE VIEW ── */
+    .ex-view{display:none}
+    .ex-view.active{display:block}
+    .ex-back{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text2);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;margin-bottom:20px;transition:all .15s}
+    .ex-back:hover{border-color:var(--text2);color:var(--text)}
+    .ex-header{margin-bottom:20px}
+    .ex-header h2{font-size:22px;font-weight:800;margin-bottom:4px}
+    .ex-header .ex-meta{font-size:12px;color:var(--text3)}
+    .ex-header .ex-meta .diff{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-left:8px}
+    .diff-basico{background:#0f291830;color:var(--green)}.diff-medio{background:#1a150030;color:var(--yellow)}.diff-dificil{background:#2a0f0f30;color:var(--red)}
+    .ex-instructions{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+    .ex-instructions h3{font-size:13px;color:var(--cyan);margin-bottom:10px;font-weight:700}
+    .ex-instructions .req{font-size:12px;color:var(--text2);line-height:1.7;padding-left:16px;position:relative;margin-bottom:2px}
+    .ex-instructions .req::before{content:">";position:absolute;left:0;color:var(--blue);font-weight:700;font-family:'JetBrains Mono',monospace}
+
+    /* Code editor area */
+    .code-area{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;min-height:400px}
+    .code-area.full-width{grid-template-columns:1fr}
+    .editor-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+    .editor-box .e-header{padding:8px 14px;background:var(--bg3);font-size:11px;font-weight:600;color:var(--text3);display:flex;justify-content:space-between;align-items:center}
+    .editor-box textarea{flex:1;background:var(--bg);color:var(--text);border:none;resize:none;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;padding:14px;outline:none;tab-size:2;-moz-tab-size:2;white-space:pre;overflow:auto;min-height:300px}
+    .editor-box textarea::placeholder{color:#334155}
+    .preview-box{background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+    .preview-box .e-header{background:#f8f9fa;color:#666}
+    .preview-box iframe{flex:1;border:none;min-height:300px}
+
+    /* Open text area */
+    .open-text{width:100%;min-height:200px;background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;font-size:13px;line-height:1.7;padding:16px;outline:none;resize:vertical}
+    .open-text:focus{border-color:var(--blue)}
+    .open-text::placeholder{color:#334155}
+
+    /* SQL area */
+    .sql-area{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .sql-schema{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.8;color:var(--text2)}
+    .sql-schema .table-name{color:var(--cyan);font-weight:700}
+    .sql-schema .col{color:var(--text)}
+    .sql-schema .type{color:var(--purple)}
+
+    /* Action bar */
+    .ex-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+    .btn{padding:10px 20px;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+    .btn-run{background:var(--green);color:#000}.btn-run:hover{background:#16a34a}
+    .btn-check{background:var(--blue);color:#fff}.btn-check:hover{background:#1d4ed8}
+    .btn-hint{background:transparent;border:1px solid var(--border);color:var(--text3)}.btn-hint:hover{border-color:var(--yellow);color:var(--yellow)}
+    .btn-reset{background:transparent;border:1px solid var(--border);color:var(--text3)}.btn-reset:hover{border-color:var(--red);color:var(--red)}
+    .btn-solution{background:transparent;border:1px solid var(--border);color:var(--text3)}.btn-solution:hover{border-color:var(--purple);color:var(--purple)}
+    .btn-next{background:var(--cyan);color:#000}.btn-next:hover{opacity:.9}
+    .ex-status{margin-left:auto;font-size:12px;padding:6px 14px;border-radius:6px;font-weight:600}
+
+    /* Hint/solution boxes */
+    .hint-box,.solution-box,.model-answer{border-radius:10px;padding:14px 18px;font-size:12px;line-height:1.7;margin-bottom:12px;display:none}
+    .hint-box.show,.solution-box.show,.model-answer.show{display:block}
+    .hint-box{background:#1a150020;border:1px solid #eab30830;color:var(--yellow)}
+    .solution-box{background:#0f172a;border:1px solid var(--blue);color:var(--text2)}
+    .solution-box pre{font-family:'JetBrains Mono',monospace;font-size:12px;white-space:pre-wrap;margin-top:8px;color:var(--text)}
+    .model-answer{background:#0f291820;border:1px solid #22c55e30;color:#86efac}
+    .model-answer strong{color:var(--green)}
+
+    /* Exercise list within track */
+    .track-exercises{list-style:none}
+    .track-ex-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+    .track-ex-item:hover{border-color:var(--blue)}
+    .track-ex-item.done{border-color:#22c55e30}
+    .track-ex-item .ex-i-num{width:32px;height:32px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+    .track-ex-item.done .ex-i-num{background:#22c55e30;color:var(--green)}
+    .track-ex-item .ex-i-info{flex:1}
+    .track-ex-item .ex-i-title{font-size:13px;font-weight:600;display:block}
+    .track-ex-item .ex-i-type{font-size:10px;color:var(--text3)}
+    .track-ex-item .ex-i-diff{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
+
+    /* Toast */
+    .toast{position:fixed;top:16px;right:16px;padding:14px 22px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;transform:translateX(140%);transition:transform .3s;font-family:inherit;max-width:360px}
+    .toast.show{transform:translateX(0)}
+    .toast-success{background:#0f2918;color:var(--green);border:1px solid #22c55e40}
+    .toast-error{background:#2a0f0f;color:var(--red);border:1px solid #ef444440}
+    .toast-info{background:#0f1a2e;color:var(--blue);border:1px solid #2563eb40}
+
+    /* Exercise status */
+    .status-ok{background:#0f291830;color:var(--green);border:1px solid #22c55e30}
+    .status-err{background:#2a0f0f30;color:var(--red);border:1px solid #ef444430}
+    .status-info{background:#0f1a2e30;color:var(--blue);border:1px solid #2563eb30}
+
+    /* Daily challenge banner */
+    .daily-banner{background:linear-gradient(135deg,#0f1a2e,#1a0f2e);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+    .daily-banner .db-icon{font-size:36px}
+    .daily-banner .db-info{flex:1}
+    .daily-banner .db-info h3{font-size:14px;font-weight:700;margin-bottom:2px}
+    .daily-banner .db-info p{font-size:12px;color:var(--text3)}
+    .daily-banner .btn{flex-shrink:0}
+
+    /* ── THEORY ── */
+    .theory-content{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px 32px;line-height:1.8;font-size:13px;color:var(--text2);max-width:800px}
+    .theory-content h4{font-size:16px;font-weight:800;color:var(--cyan);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+    .theory-content h4:first-child{margin-top:0}
+    .theory-section{margin-bottom:18px}
+    .theory-code{display:inline;background:#1e1e2e;color:#22d3ee;font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 7px;border-radius:4px}
+    .theory-block{display:block;background:#0f0f18;border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;padding:12px 16px;margin:10px 0;color:var(--text);line-height:1.7;white-space:pre-wrap;overflow-x:auto}
+    .theory-key{color:var(--yellow);font-weight:700}
+    .theory-content p{margin-bottom:8px}
+    .theory-content ul{padding-left:20px;margin-bottom:10px}
+    .theory-content ul li{margin-bottom:4px}
+
+    /* ── QUIZ ── */
+    .quiz-question{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:700px;margin-bottom:16px}
+    .quiz-question h4{font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text)}
+    .quiz-progress{font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600}
+    .quiz-option{display:block;width:100%;text-align:left;padding:12px 18px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg3);color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;margin-bottom:8px;transition:all .15s;font-weight:500}
+    .quiz-option:hover:not(.disabled){border-color:var(--blue);background:#0f1a2e}
+    .quiz-option.correct{border-color:var(--green);background:#0f291830;color:var(--green)}
+    .quiz-option.wrong{border-color:var(--red);background:#2a0f0f30;color:var(--red)}
+    .quiz-option.disabled{pointer-events:none;opacity:.7}
+    .quiz-option.disabled.dim{opacity:.4}
+    .quiz-explanation{margin-top:12px;padding:12px 16px;border-radius:10px;background:#0f1a2e30;border:1px solid var(--blue);font-size:12px;color:var(--text2);line-height:1.6}
+    .quiz-score{text-align:center;padding:32px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:500px}
+    .quiz-score .score-num{font-size:48px;font-weight:800}
+    .quiz-score .score-label{font-size:13px;color:var(--text3);margin-top:4px}
+    .quiz-score .score-verdict{font-size:15px;font-weight:700;margin-top:12px}
+
+    @media(max-width:900px){
+      .dash-stats{grid-template-columns:repeat(3,1fr)}
+      .roadmap{grid-template-columns:repeat(2,1fr)}
+      .tracks-grid{grid-template-columns:1fr}
+      .code-area,.sql-area{grid-template-columns:1fr}
+      .cal-grid{grid-template-columns:repeat(15,1fr)}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="logo">Interview Academy</div>
+  <div class="nav-tabs">
+    <button class="nav-t active" onclick="showView('dashboard')">Dashboard</button>
+    <button class="nav-t" onclick="showView('tracks')">Pistas</button>
+    <button class="nav-t" onclick="showView('daily')">Reto Diario</button>
+  </div>
+  <div class="stats-mini">
+    Racha: <span id="miniStreak">0</span> dias &middot; <span id="miniDone">0</span> completados
+    <button onclick="confirmGlobalReset()" style="margin-left:10px;padding:4px 10px;border:1px solid #ef444450;border-radius:6px;background:transparent;color:#ef4444;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background='#ef444420'" onmouseout="this.style.background='transparent'">Reiniciar todo</button>
+  </div>
+</nav>
+
+<!-- DASHBOARD VIEW -->
+<div class="view active" id="view-dashboard">
+  <div class="dash-hero">
+    <h2>Plan de 30 dias</h2>
+    <p>De cero a pasar cualquier entrevista tecnica. Un ejercicio al dia minimo.</p>
+  </div>
+
+  <div class="dash-stats">
+    <div class="d-stat"><div class="val streak-val" id="statStreak">0</div><div class="lbl">Racha</div></div>
+    <div class="d-stat"><div class="val done-val" id="statDone">0</div><div class="lbl">Completados</div></div>
+    <div class="d-stat"><div class="val pend-val" id="statPending">0</div><div class="lbl">Pendientes</div></div>
+    <div class="d-stat"><div class="val time-val" id="statWeek">1</div><div class="lbl">Semana</div></div>
+    <div class="d-stat"><div class="val pct-val" id="statPct">0%</div><div class="lbl">Progreso</div></div>
+  </div>
+
+  <div class="calendar-wrap">
+    <h3>Calendario de actividad</h3>
+    <div id="calGrid"></div>
+  </div>
+
+  <div class="roadmap" id="roadmap"></div>
+
+  <div class="daily-banner" id="dailyBanner">
+    <div class="db-icon">&#127919;</div>
+    <div class="db-info">
+      <h3 id="dailyTitle">Reto de hoy</h3>
+      <p id="dailyDesc">Cargando...</p>
+    </div>
+    <button class="btn btn-next" onclick="startDailyChallenge()">Empezar</button>
+  </div>
+</div>
+
+<!-- TRACKS VIEW -->
+<div class="view" id="view-tracks">
+  <h2 style="font-size:22px;font-weight:800;margin-bottom:20px">Pistas de aprendizaje</h2>
+  <div class="tracks-grid" id="tracksGrid"></div>
+</div>
+
+<!-- TRACK DETAIL VIEW -->
+<div class="view" id="view-track-detail">
+  <button class="ex-back" onclick="showView('tracks')">&larr; Volver a pistas</button>
+  <div id="trackDetailContent"></div>
+</div>
+
+<!-- EXERCISE VIEW -->
+<div class="view" id="view-exercise">
+  <button class="ex-back" id="exBackBtn">&larr; Volver</button>
+  <div id="exerciseContent"></div>
+</div>
+
+<!-- DAILY VIEW -->
+<div class="view" id="view-daily">
+  <h2 style="font-size:22px;font-weight:800;margin-bottom:6px">Reto Diario</h2>
+  <p style="color:var(--text3);font-size:13px;margin-bottom:20px">Un ejercicio aleatorio cada dia para mantener la racha</p>
+  <div id="dailyContent"></div>
+</div>
+
+<!-- Reset confirmation modal -->
+<div id="resetModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center">
+  <div style="background:#111118;border:1px solid #ef444450;border-radius:16px;padding:32px;max-width:420px;text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">&#9888;&#65039;</div>
+    <h3 style="font-size:18px;font-weight:800;margin-bottom:8px;color:#ef4444">Reiniciar todo el progreso?</h3>
+    <p style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:20px">
+      Esto borrara <strong style="color:#fff">todos los ejercicios completados</strong>, la racha, el calendario de actividad y todo el codigo guardado.
+      <br><br>Esta accion <strong style="color:#ef4444">NO se puede deshacer</strong>.
+    </p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button onclick="closeResetModal()" style="padding:10px 24px;border:1px solid #334155;border-radius:8px;background:transparent;color:#94a3b8;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Cancelar</button>
+      <button id="resetConfirmBtn" onclick="executeGlobalReset()" style="padding:10px 24px;border:none;border-radius:8px;background:#ef4444;color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;opacity:.5;pointer-events:none">Confirmar reinicio</button>
+    </div>
+    <p style="font-size:11px;color:#475569;margin-top:14px">Escribe <strong style="color:#ef4444">REINICIAR</strong> para confirmar:</p>
+    <input id="resetInput" oninput="checkResetInput()" placeholder="Escribe REINICIAR" style="margin-top:6px;padding:8px 14px;border:1.5px solid #334155;border-radius:8px;background:#0a0a0f;color:#e2e8f0;font-family:inherit;font-size:13px;text-align:center;width:200px;outline:none" autocomplete="off">
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Load React + Babel — try multiple CDNs for reliability -->
+<script src="https://unpkg.com/react@19/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@19/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>
+// Fallback CDNs if unpkg fails (common with file:// or ad blockers)
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+async function ensureDeps() {
+  if (typeof React === 'undefined') {
+    try { await loadScript('https://cdn.jsdelivr.net/npm/react@19/umd/react.development.js'); } catch(e) {}
+  }
+  if (typeof ReactDOM === 'undefined') {
+    try { await loadScript('https://cdn.jsdelivr.net/npm/react-dom@19/umd/react-dom.development.js'); } catch(e) {}
+  }
+  if (typeof Babel === 'undefined') {
+    try { await loadScript('https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js'); } catch(e) {}
+  }
+  if (typeof React === 'undefined' || typeof ReactDOM === 'undefined' || typeof Babel === 'undefined') {
+    document.getElementById('app').innerHTML = '<div style="max-width:600px;margin:80px auto;text-align:center;padding:40px">' +
+      '<div style="font-size:48px;margin-bottom:16px">&#9888;&#65039;</div>' +
+      '<h2 style="font-size:20px;font-weight:800;margin-bottom:12px;color:#ef4444">No se pudo cargar React</h2>' +
+      '<p style="font-size:14px;color:#94a3b8;line-height:1.7;margin-bottom:20px">Los ejercicios de codigo necesitan internet para cargar React y Babel la primera vez.<br><br>Soluciones:</p>' +
+      '<div style="text-align:left;background:#111118;padding:20px;border-radius:12px;font-family:monospace;font-size:13px;color:#22d3ee;line-height:2">' +
+      '1. Abre con servidor local:<br><span style="color:#eab308;padding-left:20px">npx serve ./interview-prep</span><br>' +
+      '2. O abre en Chrome/Brave con internet activo<br>' +
+      '3. Asegurate de no tener bloqueadores de scripts</div></div>';
+    return false;
+  }
+  return true;
+}
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// ALL EXERCISES DATA
+// ═══════════════════════════════════════════════════════════
+const TRACKS = [
+  {
+    id:"js",
+    icon:"&#9889;",
+    title:"JavaScript Core",
+    desc:"Variables, funciones, closures, async/await, array methods. La base de todo.",
+    week:1,
+    color:"#eab308",
+    exercises:[
+      {id:"js_theory",title:"Fundamentos de JavaScript",type:"theory",diff:"Basico",
+        desc:"Leccion teorica sobre los fundamentos de JavaScript que necesitas para entrevistas",
+        reqs:["Lee toda la leccion con atencion","Asegurate de entender cada concepto antes de continuar"],
+        content:'<h4>Variables: let, const y var</h4><div class="theory-section"><p><span class="theory-key">const</span> para valores que no cambian. <span class="theory-key">let</span> para valores que si cambian. <span class="theory-key">var</span> es legacy, evitalo (tiene function scope en vez de block scope y se eleva con hoisting).</p><div class="theory-block">const name = "Lucas";\nlet count = 0;\ncount++; // OK\n// name = "otro"; // Error: Assignment to constant</div></div><h4>Tipos de datos</h4><div class="theory-section"><p>Primitivos: <span class="theory-code">string</span>, <span class="theory-code">number</span>, <span class="theory-code">boolean</span>, <span class="theory-code">null</span>, <span class="theory-code">undefined</span>, <span class="theory-code">symbol</span>, <span class="theory-code">bigint</span>.</p><p><span class="theory-key">null</span> = ausencia intencional de valor. <span class="theory-key">undefined</span> = variable declarada pero sin asignar.</p></div><h4>Funciones: arrow vs normal</h4><div class="theory-section"><div class="theory-block">// Funcion normal\nfunction suma(a, b) { return a + b; }\n\n// Arrow function\nconst suma = (a, b) => a + b;\n\n// Diferencia clave: arrow NO tiene su propio this</div></div><h4>Scope y Closures</h4><div class="theory-section"><p><span class="theory-key">Scope</span> determina donde una variable es accesible. <span class="theory-key">Closure</span> es cuando una funcion recuerda las variables del scope donde fue creada, incluso despues de que ese scope haya terminado.</p><div class="theory-block">function makeCounter() {\n  let count = 0; // variable del scope externo\n  return () => ++count; // closure: recuerda count\n}\nconst counter = makeCounter();\ncounter(); // 1\ncounter(); // 2</div></div><h4>Array Methods esenciales</h4><div class="theory-section"><ul><li><span class="theory-key">map()</span> - transforma cada elemento, devuelve nuevo array</li><li><span class="theory-key">filter()</span> - filtra elementos segun condicion, devuelve nuevo array</li><li><span class="theory-key">reduce()</span> - acumula valores en uno solo</li><li><span class="theory-key">find()</span> - devuelve el primer elemento que cumple condicion</li></ul><div class="theory-block">const nums = [1, 2, 3, 4, 5];\nnums.map(n => n * 2);      // [2, 4, 6, 8, 10]\nnums.filter(n => n > 3);   // [4, 5]\nnums.reduce((acc, n) => acc + n, 0); // 15\nnums.find(n => n > 3);     // 4</div></div><h4>Destructuring y Spread</h4><div class="theory-section"><div class="theory-block">// Destructuring de objetos\nconst {name, age} = {name: "Lucas", age: 25};\n\n// Destructuring de arrays\nconst [first, ...rest] = [1, 2, 3]; // first=1, rest=[2,3]\n\n// Spread operator\nconst copy = {...original, newProp: "valor"};\nconst merged = [...arr1, ...arr2];</div></div><h4>Async/Await y Promises</h4><div class="theory-section"><p>Una <span class="theory-key">Promise</span> representa un valor que estara disponible en el futuro. <span class="theory-key">async/await</span> es syntax sugar para trabajar con Promises de forma mas legible.</p><div class="theory-block">// Con .then()\nfetch(url).then(res => res.json()).then(data => console.log(data));\n\n// Con async/await (equivalente, mas legible)\nasync function getData() {\n  const res = await fetch(url);\n  const data = await res.json();\n  console.log(data);\n}</div></div>'},
+      {id:"js_quiz",title:"Quiz: JavaScript Core",type:"quiz",diff:"Basico",
+        desc:"Comprueba tus conocimientos de JavaScript con este quiz",
+        reqs:["Responde las 8 preguntas","Necesitas un 70% para aprobar"],
+        questions:[
+          {q:"Cual es la diferencia entre == y ===?",opts:["== compara valor y tipo, === solo valor","== solo compara valor (con coercion), === compara valor y tipo","Son identicos en JavaScript","=== es mas lento que =="],c:1,exp:"== hace coercion de tipos (\"5\" == 5 es true), mientras que === compara valor Y tipo sin coercion (\"5\" === 5 es false). Siempre usa ===."},
+          {q:"Cual es la diferencia entre let y const?",opts:["let es para funciones, const para variables","const no se puede reasignar, let si","let tiene scope global, const tiene block scope","No hay diferencia real"],c:1,exp:"const no permite reasignar la referencia (const x = 5; x = 6 da error). Pero ojo: si es un objeto, puedes mutar sus propiedades. let permite reasignar."},
+          {q:"Que es hoisting en JavaScript?",opts:["Un patron de diseno para organizar codigo","El proceso de mover declaraciones al inicio de su scope antes de ejecutar","Un metodo para optimizar rendimiento","La forma en que JavaScript maneja errores"],c:1,exp:"JavaScript mueve las declaraciones (no las asignaciones) al inicio del scope. var se eleva con valor undefined. let/const se elevan pero no se inicializan (temporal dead zone). Las funciones declaradas con function se elevan completas."},
+          {q:"Que devuelve el metodo .map() de un array?",opts:["El mismo array modificado","Un nuevo array con los elementos transformados","Un unico valor acumulado","El primer elemento que cumple la condicion"],c:1,exp:"map() crea un NUEVO array aplicando la funcion a cada elemento. No modifica el original. Si necesitas acumular en un valor, usa reduce()."},
+          {q:"Que es un closure?",opts:["Un metodo para cerrar conexiones de red","Una funcion que recuerda las variables del scope donde fue creada","Un tipo de bucle especial en JavaScript","Una forma de encapsular errores"],c:1,exp:"Un closure es una funcion que captura y recuerda las variables de su scope lexico exterior, incluso cuando se ejecuta fuera de ese scope. Ejemplo: function make() { let x = 0; return () => ++x; }"},
+          {q:"Para que sirve async/await?",opts:["Para ejecutar codigo en paralelo con multiples hilos","Para escribir codigo asincrono de forma mas legible, como si fuera sincrono","Para acelerar la ejecucion de funciones","Para manejar errores de sintaxis"],c:1,exp:"async/await es syntax sugar sobre Promises. Permite escribir codigo asincrono (fetch, timers, etc.) de forma secuencial y legible, sin encadenar .then(). await pausa la ejecucion de la funcion async hasta que la Promise se resuelve."},
+          {q:"Que hace el spread operator (...)?",opts:["Elimina duplicados de un array","Expande un iterable en sus elementos individuales","Comprime multiples valores en uno","Convierte un objeto en un array"],c:1,exp:"El spread (...) expande arrays u objetos: [...arr] copia un array, {...obj, nuevo: val} copia un objeto anadiendo propiedades. Tambien se usa en parametros rest: function(...args) para recibir argumentos variables."},
+          {q:"Cual es la diferencia entre null y undefined?",opts:["Son exactamente lo mismo","null es asignado intencionalmente, undefined significa que no se ha asignado","null es para numeros, undefined para strings","undefined es un error, null es un valor valido"],c:1,exp:"undefined: la variable existe pero no tiene valor asignado (let x; -> undefined). null: valor asignado intencionalmente para indicar ausencia (let x = null). typeof null es 'object' (bug historico), typeof undefined es 'undefined'."}
+        ]},
+      {id:"js1",title:"Array Methods",type:"code",diff:"Basico",
+        desc:"Practica map, filter, reduce y find",
+        reqs:["Dado el array [1,2,3,4,5,6,7,8,9,10]:","Usa .filter() para obtener solo los pares","Usa .map() para multiplicar cada par por 3","Usa .reduce() para sumar todos los resultados","Muestra el resultado final en un <p>"],
+        hint:"filter(n => n % 2 === 0) — map(n => n * 3) — reduce((acc, n) => acc + n, 0)",
+        solution:`function App() {\n  const nums = [1,2,3,4,5,6,7,8,9,10];\n  const result = nums\n    .filter(n => n % 2 === 0)\n    .map(n => n * 3)\n    .reduce((acc, n) => acc + n, 0);\n  return <div><h1>Array Methods</h1><p>Resultado: {result}</p></div>\n}`,
+        check:(doc)=>{const p=doc.querySelector("p");return p&&p.textContent.includes("90")}},
+      {id:"js2",title:"Destructuring y Spread",type:"code",diff:"Basico",
+        desc:"Practica destructuring de objetos/arrays y spread operator",
+        reqs:["Crea un objeto persona = {name:'Lucas', age:25, city:'Madrid'}","Usa destructuring para extraer name y city","Crea un nuevo objeto con spread que anada role:'developer'","Muestra todos los datos en la pantalla"],
+        hint:"const {name, city} = persona — const nuevo = {...persona, role: 'developer'}",
+        solution:`function App() {\n  const persona = {name:'Lucas', age:25, city:'Madrid'};\n  const {name, city} = persona;\n  const nuevo = {...persona, role: 'developer'};\n  return (\n    <div>\n      <h1>{name} de {city}</h1>\n      <p>Role: {nuevo.role}</p>\n      <p>Edad: {nuevo.age}</p>\n    </div>\n  )\n}`,
+        check:(doc)=>{const t=doc.body.textContent;return t.includes("Lucas")&&t.includes("developer")}},
+      {id:"js3",title:"Promesas y async/await",type:"code",diff:"Medio",
+        desc:"Haz un fetch con async/await en vez de .then()",
+        reqs:["Crea una funcion async que haga fetch a jsonplaceholder.typicode.com/posts?_limit=5","Usa await en vez de .then()","Llama a la funcion dentro de useEffect","Muestra los titulos de los posts en una lista"],
+        hint:"async function fetchPosts() { const res = await fetch(url); const data = await res.json(); setPosts(data) }",
+        solution:`function App() {\n  const [posts, setPosts] = useState([]);\n  useEffect(() => {\n    async function fetchPosts() {\n      const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");\n      const data = await res.json();\n      setPosts(data);\n    }\n    fetchPosts();\n  }, []);\n  return (\n    <div>\n      <h1>Posts</h1>\n      <ul>{posts.map(p => <li key={p.id}>{p.title}</li>)}</ul>\n    </div>\n  )\n}`,
+        check:(doc)=>doc.querySelectorAll("li").length>=3},
+      {id:"js4",title:"Closures en practica",type:"open",diff:"Medio",
+        desc:"Explica que es un closure y da un ejemplo real",
+        reqs:["Que es un closure en tus propias palabras?","Da un ejemplo practico de cuando usarias uno","Por que es util en React?"],
+        keywords:["funcion","recuerda","scope","variables","exterior","ejemplo","react","usestate","event","captura"],
+        model:"Un closure es una funcion que recuerda las variables del scope donde fue creada, incluso cuando se ejecuta fuera de ese scope. Ejemplo: un counter factory → function makeCounter() { let count = 0; return () => ++count }. En React, cada vez que usas useState, el setter es un closure que recuerda a que estado pertenece. Los event handlers dentro de componentes son closures que capturan el estado actual."},
+      {id:"js5",title:"Debugging: encuentra el bug",type:"code",diff:"Medio",
+        desc:"Este codigo tiene 3 bugs. Encuentra y corrige",
+        reqs:["El codigo deberia mostrar una lista de numeros del 1 al 5 multiplicados por 2","Hay 3 errores: encuentralos y corrigelos","Pista: mira bien los tipos, el metodo del array y el return"],
+        starter:`function App() {\n  const nums = "1,2,3,4,5";\n  const doubled = nums.map(n => n * 2);\n  return (\n    <div>\n      <h1>Numeros</h1>\n      <ul>\n        {doubled.map(n => (\n          <li>{n}</li>\n        ))}\n      </ul>\n    </div>\n  )\n}`,
+        hint:'Bug 1: "1,2,3,4,5" es un string, no array. Bug 2: Falta key en los <li>. Bug 3: Tecnicamente funciona con key arreglado, pero la forma correcta es [1,2,3,4,5]',
+        solution:`function App() {\n  const nums = [1,2,3,4,5];\n  const doubled = nums.map(n => n * 2);\n  return (\n    <div>\n      <h1>Numeros</h1>\n      <ul>\n        {doubled.map((n, i) => (\n          <li key={i}>{n}</li>\n        ))}\n      </ul>\n    </div>\n  )\n}`,
+        check:(doc)=>{const items=doc.querySelectorAll("li");return items.length===5&&items[0].textContent==="2"}}
+    ]
+  },
+  {
+    id:"react",
+    icon:"&#9883;",
+    title:"React Practico",
+    desc:"Componentes, hooks, formularios, fetch, CRUD. Lo que te piden en live coding.",
+    week:1,
+    color:"#22d3ee",
+    exercises:[
+      {id:"react_theory",title:"Fundamentos de React",type:"theory",diff:"Basico",
+        desc:"Todo lo que necesitas saber de React para entrevistas tecnicas",
+        reqs:["Lee la leccion completa","Entiende cada concepto antes de pasar al quiz"],
+        content:'<h4>Componentes y JSX</h4><div class="theory-section"><p>React se basa en <span class="theory-key">componentes</span>: funciones que devuelven JSX (HTML-like syntax en JavaScript). Cada componente es una pieza reutilizable de UI.</p><div class="theory-block">function Saludo({ nombre }) {\n  return &lt;h1&gt;Hola, {nombre}!&lt;/h1&gt;;\n}\n// Uso: &lt;Saludo nombre="Lucas" /&gt;</div></div><h4>Props vs State</h4><div class="theory-section"><p><span class="theory-key">Props</span>: datos que un componente padre pasa a un hijo. Son de solo lectura.</p><p><span class="theory-key">State</span>: datos internos del componente que pueden cambiar. Cuando cambian, el componente se re-renderiza.</p><div class="theory-block">// Props: vienen del padre, no se modifican\nfunction Card({ title, color }) { ... }\n\n// State: datos locales que cambian\nconst [count, setCount] = useState(0);</div></div><h4>useState</h4><div class="theory-section"><p>Hook para manejar estado local. Devuelve <span class="theory-code">[valor, setter]</span>. Llamar al setter causa un re-render.</p><div class="theory-block">const [name, setName] = useState("");\nconst [items, setItems] = useState([]);\nconst [form, setForm] = useState({email: "", pass: ""});\n\n// IMPORTANTE: nunca mutes el estado directamente\n// MAL:  items.push(newItem)\n// BIEN: setItems([...items, newItem])</div></div><h4>useEffect y Dependency Array</h4><div class="theory-section"><p><span class="theory-key">useEffect</span> ejecuta side effects: fetch de datos, suscripciones, timers, etc.</p><div class="theory-block">// Se ejecuta en CADA render\nuseEffect(() => { ... });\n\n// Se ejecuta solo al montar ([] = sin dependencias)\nuseEffect(() => { fetchData(); }, []);\n\n// Se ejecuta cuando cambia userId\nuseEffect(() => { fetchUser(userId); }, [userId]);\n\n// Cleanup al desmontar\nuseEffect(() => {\n  const timer = setInterval(tick, 1000);\n  return () => clearInterval(timer);\n}, []);</div></div><h4>Eventos: onClick, onChange</h4><div class="theory-section"><div class="theory-block">&lt;button onClick={() => setCount(count + 1)}&gt;Sumar&lt;/button&gt;\n&lt;input value={text} onChange={e => setText(e.target.value)} /&gt;</div></div><h4>Listas con map + key</h4><div class="theory-section"><p>Para renderizar listas usamos <span class="theory-code">.map()</span>. Cada elemento necesita una <span class="theory-key">key</span> unica para que React optimice el re-render.</p><div class="theory-block">{users.map(user => (\n  &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;\n))}</div></div><h4>Formularios controlados</h4><div class="theory-section"><p>El valor del input esta controlado por el state de React. Asi tenemos siempre el valor actual.</p><div class="theory-block">const [email, setEmail] = useState("");\n&lt;input value={email} onChange={e => setEmail(e.target.value)} /&gt;</div></div><h4>Fetch pattern comun</h4><div class="theory-section"><div class="theory-block">const [data, setData] = useState([]);\nconst [loading, setLoading] = useState(true);\n\nuseEffect(() => {\n  fetch("https://api.example.com/data")\n    .then(r => r.json())\n    .then(d => { setData(d); setLoading(false); })\n    .catch(() => setLoading(false));\n}, []);\n\nif (loading) return &lt;p&gt;Cargando...&lt;/p&gt;;</div></div><h4>Inmutabilidad</h4><div class="theory-section"><p><span class="theory-key">Nunca mutes el estado directamente</span>. Siempre crea copias nuevas. React compara referencias para decidir si re-renderizar.</p><div class="theory-block">// Anadir a array: setItems([...items, newItem])\n// Eliminar: setItems(items.filter(i => i.id !== id))\n// Actualizar: setItems(items.map(i => i.id === id ? {...i, done: true} : i))\n// Objeto: setForm({...form, email: "nuevo"})</div></div>'},
+      {id:"react_quiz",title:"Quiz: React",type:"quiz",diff:"Basico",
+        desc:"Comprueba tus conocimientos de React",
+        reqs:["Responde las 8 preguntas","Necesitas un 70% para aprobar"],
+        questions:[
+          {q:"Que es el Virtual DOM?",opts:["Una base de datos virtual que almacena el estado","Una copia ligera del DOM real que React usa para calcular cambios minimos","Un navegador virtual integrado en React","El DOM del servidor en SSR"],c:1,exp:"React mantiene un Virtual DOM (objeto JS que representa el UI). Cuando el estado cambia, React calcula la diferencia (diffing) entre el Virtual DOM anterior y el nuevo, y aplica solo los cambios minimos al DOM real."},
+          {q:"Que pasa si useEffect tiene un array de dependencias vacio []?",opts:["Se ejecuta en cada render","Se ejecuta solo una vez al montar el componente","No se ejecuta nunca","Da un error de sintaxis"],c:1,exp:"Con [] como dependency array, useEffect se ejecuta UNA sola vez despues del primer render (como componentDidMount). Sin array, se ejecuta en cada render. Con [dep], se ejecuta cuando dep cambia."},
+          {q:"Por que son importantes las keys en listas de React?",opts:["Son obligatorias por la sintaxis de JSX","Permiten a React identificar que elementos cambiaron, se anadieron o eliminaron","Mejoran el SEO de la pagina","Sirven para acceder a los elementos con getElementById"],c:1,exp:"Las keys ayudan a React a identificar cada elemento de la lista de forma unica. Sin keys (o con keys como el indice), React no puede optimizar el re-render y puede causar bugs visuales al reordenar o eliminar elementos."},
+          {q:"Cual es la diferencia entre props y state?",opts:["Props son para estilos, state para datos","Props vienen del padre y son de solo lectura; state es interno y mutable","Props son mas rapidos que state","No hay diferencia, son intercambiables"],c:1,exp:"Props son datos pasados de padre a hijo (inmutables para el hijo). State son datos internos del componente que pueden cambiar con un setter. Cuando el state cambia, el componente se re-renderiza."},
+          {q:"Que hace useState?",opts:["Crea una variable global accesible desde cualquier componente","Declara una variable de estado local y su funcion setter para actualizarla","Conecta el componente con una base de datos","Crea un efecto secundario"],c:1,exp:"useState devuelve un par [valor, setter]. El setter causa un re-render del componente con el nuevo valor. Es el hook mas basico para manejar estado reactivo en componentes funcionales."},
+          {q:"Como cargas datos al montar un componente?",opts:["Directamente en el cuerpo de la funcion del componente","Con useEffect y un array de dependencias vacio","Con un for loop dentro del return","Con useState pasando la URL"],c:1,exp:"useEffect(() => { fetch(url).then(...) }, []) se ejecuta una vez al montar. Nunca hagas fetch directamente en el cuerpo del componente porque se ejecutaria en cada render."},
+          {q:"Que es un componente controlado?",opts:["Un componente que no permite interaccion del usuario","Un input cuyo valor esta controlado por el estado de React","Un componente envuelto en un try/catch","Un componente que no tiene props"],c:1,exp:"En un componente controlado, el valor del input viene del state (value={state}) y se actualiza con onChange (onChange={e => setState(e.target.value)}). React es la 'fuente de verdad' del valor."},
+          {q:"Por que NO debes mutar el estado directamente?",opts:["Porque JavaScript no lo permite","Porque React no detectaria el cambio y no re-renderizaria","Porque causa errores de sintaxis","Porque el navegador lo bloquea"],c:1,exp:"React compara referencias de objetos para decidir si re-renderizar. Si mutas (items.push(x)), la referencia es la misma y React no detecta el cambio. Debes crear una copia nueva (setItems([...items, x])) para que React vea una referencia diferente."}
+        ]},
+      {id:"r1",title:"Contador con useState",type:"code",diff:"Basico",
+        desc:"Crea un contador con botones de sumar, restar y resetear",
+        reqs:["useState para el contador (empieza en 0)","Boton + que suma 1","Boton - que resta 1 (no bajar de 0)","Boton Reset que vuelve a 0","Muestra el numero actual"],
+        hint:"const [count, setCount] = useState(0) — onClick={() => setCount(Math.max(0, count - 1))} para no bajar de 0",
+        solution:`function App() {\n  const [count, setCount] = useState(0);\n  return (\n    <div>\n      <h1>Contador: {count}</h1>\n      <button onClick={() => setCount(count + 1)}>+</button>\n      <button onClick={() => setCount(Math.max(0, count - 1))}>-</button>\n      <button onClick={() => setCount(0)}>Reset</button>\n    </div>\n  )\n}`,
+        check:(doc)=>{const btns=doc.querySelectorAll("button");return btns.length>=3&&doc.body.textContent.includes("0")}},
+      {id:"r2",title:"Toggle de tema",type:"code",diff:"Basico",
+        desc:"Boton que alterna entre modo claro y oscuro",
+        reqs:["useState boolean para el tema (true=oscuro, false=claro)","Un boton que alterna el valor","Cambia el background y color del texto segun el tema","Muestra 'Modo oscuro' o 'Modo claro'"],
+        hint:"const [dark, setDark] = useState(true) — style={{background: dark ? '#111' : '#fff', color: dark ? '#fff' : '#111'}}",
+        solution:`function App() {\n  const [dark, setDark] = useState(true);\n  return (\n    <div style={{background: dark ? '#111' : '#fff', color: dark ? '#fff' : '#111', padding: 20, minHeight: '100vh'}}>\n      <h1>{dark ? 'Modo oscuro' : 'Modo claro'}</h1>\n      <button onClick={() => setDark(!dark)}>Cambiar tema</button>\n    </div>\n  )\n}`,
+        check:(doc)=>doc.querySelector("button")&&doc.body.textContent.includes("Modo")},
+      {id:"r3",title:"Fetch + Lista + Buscador",type:"code",diff:"Medio",
+        desc:"El ejercicio clasico: carga usuarios, muestralos, filtra por nombre",
+        reqs:["useEffect + fetch a jsonplaceholder.typicode.com/users","useState para usuarios, busqueda y loading","Muestra 'Cargando...' mientras carga","Input que filtre por nombre (case insensitive)","Muestra 'X usuarios encontrados'"],
+        hint:".filter(u => u.name.toLowerCase().includes(search.toLowerCase())).map(...)",
+        solution:`function App() {\n  const [users, setUsers] = useState([]);\n  const [search, setSearch] = useState("");\n  const [loading, setLoading] = useState(true);\n  useEffect(() => {\n    fetch("https://jsonplaceholder.typicode.com/users")\n      .then(r => r.json())\n      .then(d => { setUsers(d); setLoading(false); })\n      .catch(() => setLoading(false));\n  }, []);\n  const filtered = users.filter(u => u.name.toLowerCase().includes(search.toLowerCase()));\n  if (loading) return <p>Cargando...</p>;\n  return (\n    <div>\n      <h1>Usuarios</h1>\n      <input placeholder="Buscar..." value={search} onChange={e => setSearch(e.target.value)} />\n      <p>{filtered.length} usuarios encontrados</p>\n      <ul>{filtered.map(u => <li key={u.id}>{u.name} — {u.email}</li>)}</ul>\n    </div>\n  )\n}`,
+        check:(doc)=>{const input=doc.querySelector("input");const items=doc.querySelectorAll("li");return input&&items.length>=5}},
+      {id:"r4",title:"Formulario con validacion",type:"code",diff:"Medio",
+        desc:"Formulario de contacto con validacion manual",
+        reqs:["Campos: nombre, email, mensaje","Todos obligatorios","Email debe contener @ y .","Mensaje minimo 10 caracteres","Errores en rojo debajo de cada campo","Solo valida al submit, no mientras escribe","Mensaje de exito si todo OK + limpiar form"],
+        hint:"validate() devuelve {name:'', email:'', message:''}. Object.values(errors).some(e => e !== '') para saber si hay errores",
+        solution:`function App() {\n  const [form, setForm] = useState({name:'', email:'', message:''});\n  const [errors, setErrors] = useState({name:'', email:'', message:''});\n  const [ok, setOk] = useState(false);\n  function handle(e) { setForm({...form, [e.target.name]: e.target.value}); setOk(false); }\n  function validate() {\n    const e = {name:'', email:'', message:''};\n    if (!form.name.trim()) e.name = 'Obligatorio';\n    if (!form.email.includes('@') || !form.email.includes('.')) e.email = 'Email no valido';\n    if (form.message.trim().length < 10) e.message = 'Minimo 10 caracteres';\n    return e;\n  }\n  function submit(ev) {\n    ev.preventDefault();\n    const e = validate();\n    setErrors(e);\n    if (Object.values(e).some(x => x !== '')) return;\n    setOk(true);\n    setForm({name:'', email:'', message:''});\n  }\n  return (\n    <div>\n      <h1>Contacto</h1>\n      {ok && <p style={{color:'green'}}>Enviado!</p>}\n      <form onSubmit={submit}>\n        <input name="name" placeholder="Nombre" value={form.name} onChange={handle} />\n        {errors.name && <p style={{color:'red'}}>{errors.name}</p>}\n        <input name="email" placeholder="Email" value={form.email} onChange={handle} />\n        {errors.email && <p style={{color:'red'}}>{errors.email}</p>}\n        <textarea name="message" placeholder="Mensaje" value={form.message} onChange={handle}></textarea>\n        {errors.message && <p style={{color:'red'}}>{errors.message}</p>}\n        <button type="submit">Enviar</button>\n      </form>\n    </div>\n  )\n}`,
+        check:(doc)=>doc.querySelector("form")&&doc.querySelectorAll("input").length>=2},
+      {id:"r5",title:"Todo CRUD completo",type:"code",diff:"Dificil",
+        desc:"El ejercicio definitivo: crear, listar, completar, editar, borrar tareas",
+        reqs:["Input + boton para agregar tarea","No permitir vacias","Checkbox para completar (texto tachado)","Boton editar: texto se convierte en input editable","Boton borrar con filter","Contador de tareas pendientes"],
+        hint:"Modelo: {id: Date.now(), text, completed: false}. Para editar: estados editingId y editText. map() para actualizar, filter() para borrar.",
+        solution:`function App() {\n  const [todos, setTodos] = useState([]);\n  const [input, setInput] = useState("");\n  const [editId, setEditId] = useState(null);\n  const [editText, setEditText] = useState("");\n  function add() {\n    if (!input.trim()) return;\n    setTodos([...todos, {id: Date.now(), text: input.trim(), completed: false}]);\n    setInput("");\n  }\n  const pending = todos.filter(t => !t.completed).length;\n  return (\n    <div>\n      <h1>Tareas</h1>\n      <div><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&add()} placeholder="Nueva tarea..." /><button onClick={add}>Agregar</button></div>\n      <p>{pending} pendientes</p>\n      <ul>{todos.map(t => <li key={t.id}>\n        <input type="checkbox" checked={t.completed} onChange={()=>setTodos(todos.map(x=>x.id===t.id?{...x,completed:!x.completed}:x))} />\n        {editId===t.id?<><input value={editText} onChange={e=>setEditText(e.target.value)} /><button onClick={()=>{setTodos(todos.map(x=>x.id===t.id?{...x,text:editText}:x));setEditId(null)}}>Guardar</button></>:\n        <><span style={{textDecoration:t.completed?"line-through":"none"}}>{t.text}</span>\n        <button onClick={()=>{setEditId(t.id);setEditText(t.text)}}>Editar</button>\n        <button onClick={()=>setTodos(todos.filter(x=>x.id!==t.id))}>Borrar</button></>}\n      </li>)}</ul>\n    </div>\n  )\n}`,
+        check:(doc)=>{const input=doc.querySelector("input");const btn=doc.querySelector("button");return input&&btn&&doc.body.textContent.includes("pendiente")}}
+    ]
+  },
+  {
+    id:"ts",
+    icon:"&#128220;",
+    title:"TypeScript",
+    desc:"Tipos, interfaces, generics. Lo que diferencia un junior de un mid.",
+    week:2,
+    color:"#2563eb",
+    exercises:[
+      {id:"ts_theory",title:"Fundamentos de TypeScript",type:"theory",diff:"Basico",
+        desc:"Todo lo que necesitas saber de TypeScript para entrevistas",
+        reqs:["Lee la leccion completa","Entiende interfaces, generics y utility types"],
+        content:'<h4>Por que TypeScript?</h4><div class="theory-section"><p>TypeScript anade <span class="theory-key">tipos estaticos</span> a JavaScript. Detecta errores en tiempo de desarrollo (antes de ejecutar), mejora el autocompletado del editor, y sirve como documentacion viva del codigo.</p></div><h4>Tipos basicos</h4><div class="theory-section"><div class="theory-block">const name: string = "Lucas";\nconst age: number = 25;\nconst active: boolean = true;\nconst tags: string[] = ["react", "node"];\nconst tuple: [string, number] = ["Lucas", 25];</div></div><h4>Interfaces vs Types</h4><div class="theory-section"><p>Ambos definen la forma de un objeto. <span class="theory-key">interface</span> se puede extender con extends y es mas comun para objetos. <span class="theory-key">type</span> es mas flexible (unions, intersections, aliases).</p><div class="theory-block">interface User {\n  id: number;\n  name: string;\n  email: string;\n}\n\ntype Status = "active" | "inactive" | "banned";\ntype UserWithStatus = User &amp; { status: Status };</div></div><h4>Generics</h4><div class="theory-section"><p><span class="theory-key">Generics</span> permiten crear componentes reutilizables que trabajan con multiples tipos.</p><div class="theory-block">// Funcion generica\nfunction first&lt;T&gt;(arr: T[]): T | undefined {\n  return arr[0];\n}\nfirst([1, 2, 3]);      // tipo: number\nfirst(["a", "b"]);     // tipo: string\n\n// Tipo generico\ntype ApiResponse&lt;T&gt; = {\n  data: T;\n  loading: boolean;\n  error: string | null;\n};</div></div><h4>Utility Types</h4><div class="theory-section"><ul><li><span class="theory-key">Partial&lt;T&gt;</span> - Hace todas las propiedades opcionales. Ideal para updates parciales.</li><li><span class="theory-key">Omit&lt;T, K&gt;</span> - Quita propiedades. Ej: Omit&lt;User, "id"&gt; para crear sin id.</li><li><span class="theory-key">Pick&lt;T, K&gt;</span> - Solo las propiedades indicadas. Ej: Pick&lt;User, "name" | "email"&gt;.</li><li><span class="theory-key">Record&lt;K, V&gt;</span> - Objeto con keys tipo K y values tipo V. Ej: Record&lt;string, User&gt; como cache.</li></ul><div class="theory-block">// Update parcial\nfunction updateUser(id: number, changes: Partial&lt;User&gt;) { ... }\nupdateUser(1, { name: "Nuevo" }); // OK, no necesita todos los campos\n\n// Crear sin id\ntype CreateUser = Omit&lt;User, "id"&gt;;</div></div><h4>Tipando React</h4><div class="theory-section"><div class="theory-block">// Props de componente\ntype ButtonProps = {\n  children: React.ReactNode;\n  onClick: () => void;\n  variant?: "primary" | "secondary";\n};\n\n// Eventos\nconst handleChange = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) => { ... };\n\n// Estado\nconst [users, setUsers] = useState&lt;User[]&gt;([]);</div></div>'},
+      {id:"ts_quiz",title:"Quiz: TypeScript",type:"quiz",diff:"Basico",
+        desc:"Comprueba tus conocimientos de TypeScript",
+        reqs:["Responde las 5 preguntas","Necesitas un 70% para aprobar"],
+        questions:[
+          {q:"Cual es la principal ventaja de TypeScript sobre JavaScript?",opts:["Es mas rapido en ejecucion","Detecta errores en tiempo de desarrollo con tipos estaticos","Tiene mas funciones built-in","Es compatible con mas navegadores"],c:1,exp:"TypeScript detecta errores antes de ejecutar el codigo (en tiempo de compilacion). Esto previene bugs como acceder a propiedades inexistentes, pasar argumentos del tipo incorrecto, etc. No cambia la velocidad de ejecucion porque se compila a JavaScript."},
+          {q:"Cual es la diferencia practica entre interface y type?",opts:["interface es para objetos y se puede extender; type es mas flexible con unions y aliases","No hay ninguna diferencia","interface es para funciones, type para objetos","type es deprecated en favor de interface"],c:0,exp:"interface se extiende con extends y permite declaration merging. type permite unions (A | B), intersections (A & B), y aliases de primitivos. Para objetos/componentes React, interface es la convencion. Para unions y tipos complejos, type."},
+          {q:"Que hace Partial<T>?",opts:["Elimina todas las propiedades de T","Hace que todas las propiedades de T sean opcionales","Hace que todas las propiedades sean de solo lectura","Convierte T en un array"],c:1,exp:"Partial<User> convierte { id: number; name: string } en { id?: number; name?: string }. Es muy util para funciones de update donde no necesitas enviar todos los campos."},
+          {q:"Para que sirven los Generics?",opts:["Para generar codigo automaticamente","Para crear componentes y funciones que trabajan con multiples tipos de forma segura","Para mejorar el rendimiento","Para conectar con APIs externas"],c:1,exp:"Los generics permiten escribir funciones y tipos reutilizables que mantienen la seguridad de tipos. Ejemplo: function first<T>(arr: T[]): T permite trabajar con arrays de cualquier tipo sin perder informacion del tipo."},
+          {q:"Cual es la diferencia entre unknown y any?",opts:["Son lo mismo","unknown es seguro (debes verificar el tipo antes de usar), any desactiva el type checking","any es mas nuevo que unknown","unknown solo funciona con objetos"],c:1,exp:"any desactiva completamente el type checking (puedes hacer lo que quieras sin errores). unknown es el tipo seguro: TypeScript te obliga a verificar el tipo antes de operar con el valor. Siempre prefiere unknown sobre any."}
+        ]},
+      {id:"ts1",title:"Tipos basicos y interfaces",type:"open",diff:"Basico",
+        desc:"Escribe las interfaces TypeScript para estos datos",
+        reqs:["Define un type 'User' con: id (number), name (string), email (string), active (boolean)","Define un type 'Post' con: id, title, body (strings), userId (number), tags (array de strings)","Define un type 'ApiResponse<T>' generico con: data (T), loading (boolean), error (string o null)","Escribe un ejemplo de uso: ApiResponse<User[]>"],
+        model:"type User = { id: number; name: string; email: string; active: boolean }\ntype Post = { id: number; title: string; body: string; userId: number; tags: string[] }\ntype ApiResponse<T> = { data: T; loading: boolean; error: string | null }\n\n// Uso: const response: ApiResponse<User[]> = { data: [], loading: true, error: null }"},
+      {id:"ts2",title:"Utility types",type:"open",diff:"Medio",
+        desc:"Explica y da ejemplo de Partial, Pick, Omit y Record",
+        reqs:["Que hace Partial<T>? Ejemplo con User","Que hace Pick<T, K>? Ejemplo practico","Que hace Omit<T, K>? Cuando lo usarias?","Que hace Record<K, V>? Ejemplo real"],
+        model:"Partial<User> — Hace todo opcional. Para updates: function updateUser(id: number, changes: Partial<User>)\n\nPick<User, 'name' | 'email'> — Solo esas propiedades. Para formularios que no necesitan todo.\n\nOmit<User, 'id'> — Todo menos id. Para crear nuevos users (el id lo genera la DB).\n\nRecord<string, number> — Objeto con keys string y values number. Ej: Record<string, User> para un cache de usuarios por ID."},
+      {id:"ts3",title:"Tipando componentes React",type:"open",diff:"Medio",
+        desc:"Escribe los tipos para componentes React comunes",
+        reqs:["Props de un Button: children, onClick, variant ('primary'|'secondary'), disabled?","Props de un UserCard: user (con tus types), onDelete (recibe id)","Props de un Input controlado: value, onChange, placeholder?, error?","El tipo del estado de un formulario con useState"],
+        model:"type ButtonProps = { children: React.ReactNode; onClick: () => void; variant: 'primary' | 'secondary'; disabled?: boolean }\n\ntype UserCardProps = { user: User; onDelete: (id: number) => void }\n\ntype InputProps = { value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string; error?: string }\n\n// Form state:\nconst [form, setForm] = useState<{name: string; email: string}>({name: '', email: ''})"}
+    ]
+  },
+  {
+    id:"sql",
+    icon:"&#128450;",
+    title:"SQL y Base de Datos",
+    desc:"SELECT, JOIN, GROUP BY, subqueries. Te lo preguntan siempre.",
+    week:2,
+    color:"#a78bfa",
+    exercises:[
+      {id:"sql_theory",title:"Fundamentos de SQL",type:"theory",diff:"Basico",
+        desc:"Las bases de SQL que necesitas para cualquier entrevista tecnica",
+        reqs:["Lee toda la leccion","Entiende JOINs, GROUP BY y cuando usar indices"],
+        content:'<h4>SELECT, WHERE, ORDER BY</h4><div class="theory-section"><p>La base de toda query SQL: seleccionar datos, filtrarlos y ordenarlos.</p><div class="theory-block">SELECT name, email FROM users WHERE active = true ORDER BY created_at DESC LIMIT 10;</div></div><h4>JOINs: INNER y LEFT</h4><div class="theory-section"><p><span class="theory-key">INNER JOIN</span>: solo filas con coincidencia en AMBAS tablas.</p><p><span class="theory-key">LEFT JOIN</span>: TODAS las filas de la tabla izquierda + coincidencias de la derecha (NULL si no hay).</p><div class="theory-block">-- Usuarios CON pedidos (INNER)\nSELECT u.name, o.total\nFROM users u INNER JOIN orders o ON u.id = o.user_id;\n\n-- TODOS los usuarios, con o sin pedidos (LEFT)\nSELECT u.name, o.total\nFROM users u LEFT JOIN orders o ON u.id = o.user_id;\n\n-- Usuarios SIN pedidos\nSELECT u.name FROM users u\nLEFT JOIN orders o ON u.id = o.user_id\nWHERE o.id IS NULL;</div></div><h4>GROUP BY y HAVING</h4><div class="theory-section"><p><span class="theory-key">GROUP BY</span> agrupa filas para aplicar funciones de agregacion. <span class="theory-key">HAVING</span> filtra DESPUES de agrupar (WHERE filtra ANTES).</p><div class="theory-block">-- Total gastado por usuario\nSELECT u.name, SUM(o.total) as total_spent\nFROM users u JOIN orders o ON u.id = o.user_id\nGROUP BY u.id, u.name\nHAVING SUM(o.total) > 100\nORDER BY total_spent DESC;</div></div><h4>Funciones de agregacion</h4><div class="theory-section"><ul><li><span class="theory-code">COUNT(*)</span> - numero de filas</li><li><span class="theory-code">SUM(col)</span> - suma de valores</li><li><span class="theory-code">AVG(col)</span> - promedio</li><li><span class="theory-code">MAX(col)</span> / <span class="theory-code">MIN(col)</span> - maximo/minimo</li></ul></div><h4>Foreign Keys</h4><div class="theory-section"><p>Una <span class="theory-key">foreign key</span> crea una relacion entre tablas. Garantiza integridad referencial (no puedes tener un pedido de un usuario que no existe).</p><div class="theory-block">CREATE TABLE orders (\n  id SERIAL PRIMARY KEY,\n  user_id INT REFERENCES users(id),\n  total DECIMAL(10,2)\n);</div></div><h4>Indices</h4><div class="theory-section"><p>Un <span class="theory-key">indice</span> es una estructura que acelera las busquedas en una columna (como el indice de un libro). Crealos en columnas que uses frecuentemente en WHERE, JOIN u ORDER BY.</p><div class="theory-block">CREATE INDEX idx_users_email ON users(email);\n-- Ahora: SELECT * FROM users WHERE email = \'x@y.com\'\n-- es mucho mas rapido con millones de filas</div><p>Trade-off: los indices aceleran SELECT pero ralentizan INSERT/UPDATE porque hay que mantener el indice actualizado.</p></div><h4>Transacciones</h4><div class="theory-section"><p>Una <span class="theory-key">transaccion</span> agrupa operaciones que deben ejecutarse todas o ninguna (ACID).</p><div class="theory-block">BEGIN;\n  UPDATE accounts SET balance = balance - 100 WHERE id = 1;\n  UPDATE accounts SET balance = balance + 100 WHERE id = 2;\nCOMMIT;\n-- Si algo falla: ROLLBACK deshace todo</div></div>'},
+      {id:"sql_quiz",title:"Quiz: SQL",type:"quiz",diff:"Basico",
+        desc:"Comprueba tus conocimientos de SQL",
+        reqs:["Responde las 5 preguntas","Necesitas un 70% para aprobar"],
+        questions:[
+          {q:"Cual es la diferencia entre INNER JOIN y LEFT JOIN?",opts:["INNER JOIN es mas rapido que LEFT JOIN","INNER JOIN devuelve solo coincidencias en ambas tablas; LEFT JOIN devuelve todas las filas de la izquierda","LEFT JOIN no permite condiciones ON","Son equivalentes pero con sintaxis diferente"],c:1,exp:"INNER JOIN: solo filas con match en AMBAS tablas. LEFT JOIN: TODAS las filas de la tabla izquierda, y si no hay match en la derecha, rellena con NULL. Ejemplo: para encontrar usuarios SIN pedidos, usa LEFT JOIN + WHERE orders.id IS NULL."},
+          {q:"Que es un indice en SQL?",opts:["Un tipo de tabla temporal","Una estructura que acelera la busqueda en columnas especificas","Un backup automatico de los datos","Una restriccion de integridad"],c:1,exp:"Un indice es como el indice de un libro: permite encontrar datos sin escanear toda la tabla. Se crean en columnas usadas en WHERE, JOIN u ORDER BY. Trade-off: aceleran SELECT pero ralentizan INSERT/UPDATE."},
+          {q:"Cual es la diferencia entre WHERE y HAVING?",opts:["WHERE filtra antes de agrupar, HAVING filtra despues de GROUP BY","Son intercambiables","WHERE solo funciona con numeros","HAVING es mas rapido que WHERE"],c:0,exp:"WHERE filtra filas ANTES de agrupar (no puede usar funciones de agregacion). HAVING filtra DESPUES de GROUP BY (puede usar SUM, COUNT, etc.). Ejemplo: HAVING COUNT(*) > 5 filtra grupos con mas de 5 filas."},
+          {q:"Que es una foreign key?",opts:["Una clave encriptada para seguridad","Una referencia que vincula una columna con la primary key de otra tabla","Un tipo de indice automatico","Un campo obligatorio en toda tabla"],c:1,exp:"Una foreign key crea una relacion entre tablas y garantiza integridad referencial. Si orders.user_id referencia users.id, no puedes crear un pedido con un user_id que no existe en users."},
+          {q:"Para que sirve GROUP BY?",opts:["Para ordenar resultados","Para agrupar filas con el mismo valor y aplicar funciones de agregacion como COUNT o SUM","Para limitar el numero de resultados","Para unir dos tablas"],c:1,exp:"GROUP BY agrupa filas que comparten un valor en la columna indicada. Permite aplicar funciones de agregacion por grupo: SELECT city, COUNT(*) FROM users GROUP BY city devuelve cuantos usuarios hay por ciudad."}
+        ]},
+      {id:"sq1",title:"SELECT y WHERE basico",type:"open",diff:"Basico",
+        desc:"Escribe las queries SQL para estos requisitos",
+        reqs:["Tabla: users (id, name, email, role, created_at)","1. Todos los usuarios con role = 'admin'","2. Usuarios creados despues del 2025-01-01","3. Contar cuantos usuarios hay por role","4. Los 5 usuarios mas recientes"],
+        model:"1. SELECT * FROM users WHERE role = 'admin';\n2. SELECT * FROM users WHERE created_at > '2025-01-01';\n3. SELECT role, COUNT(*) as total FROM users GROUP BY role;\n4. SELECT * FROM users ORDER BY created_at DESC LIMIT 5;"},
+      {id:"sq2",title:"JOINs",type:"open",diff:"Medio",
+        desc:"Practica INNER JOIN y LEFT JOIN",
+        reqs:["Tablas: users(id, name), orders(id, user_id, total, created_at)","1. Lista de usuarios con sus pedidos (nombre, total del pedido)","2. Usuarios que NO tienen pedidos","3. Total gastado por cada usuario","4. El usuario que mas ha gastado"],
+        model:"1. SELECT u.name, o.total FROM users u INNER JOIN orders o ON u.id = o.user_id;\n2. SELECT u.name FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE o.id IS NULL;\n3. SELECT u.name, SUM(o.total) as total_gastado FROM users u INNER JOIN orders o ON u.id = o.user_id GROUP BY u.id, u.name;\n4. SELECT u.name, SUM(o.total) as total FROM users u INNER JOIN orders o ON u.id = o.user_id GROUP BY u.id, u.name ORDER BY total DESC LIMIT 1;"},
+      {id:"sq3",title:"Disena un schema",type:"open",diff:"Dificil",
+        desc:"Disena las tablas para un sistema de canal de denuncias (como Informo)",
+        reqs:["Que tablas necesitas? (minimo 4)","Que columnas tiene cada tabla?","Cuales son las foreign keys?","Como garantizas que un denunciante es anonimo en el schema?","Donde guardarias los mensajes entre empresa y denunciante?"],
+        model:"Tablas:\n1. organizations (id, name, cif, slug, plan, created_at)\n2. reports (id, org_id FK, tracking_code, category, encrypted_content, status, is_anonymous, created_at)\n3. report_messages (id, report_id FK, encrypted_body, sender_type ENUM('reporter','admin'), created_at)\n4. audit_logs (id, org_id FK, action, details, created_at)\n\nAnonimato: No hay user_id en reports cuando is_anonymous=true. El reporter se identifica solo por tracking_code. El contenido esta cifrado (encrypted_content) para que ni el admin de DB pueda leerlo.\n\nMensajes: Tabla report_messages vinculada a report_id. sender_type diferencia quien envio."}
+    ]
+  },
+  {
+    id:"design",
+    icon:"&#127959;",
+    title:"System Design",
+    desc:"Arquitectura y decisiones tecnicas. Lo que separa mid de senior.",
+    week:3,
+    color:"#ef4444",
+    exercises:[
+      {id:"design_theory",title:"Introduccion a System Design",type:"theory",diff:"Basico",
+        desc:"Como abordar preguntas de System Design en entrevistas",
+        reqs:["Lee la leccion completa","Memoriza los componentes comunes y cuando usarlos"],
+        content:'<h4>Como abordar una pregunta de diseno</h4><div class="theory-section"><p>Sigue estos pasos:</p><ul><li>1. <span class="theory-key">Clarifica requisitos</span> - Pregunta: cuantos usuarios? que features? lectura vs escritura?</li><li>2. <span class="theory-key">Diseno de alto nivel</span> - Dibuja los componentes principales y como se conectan</li><li>3. <span class="theory-key">Profundiza</span> - Detalla la parte mas critica (DB schema, API, cache)</li><li>4. <span class="theory-key">Trade-offs</span> - Explica por que elegiste X sobre Y</li></ul></div><h4>Componentes comunes</h4><div class="theory-section"><ul><li><span class="theory-key">Frontend</span> - React/Next.js, la interfaz de usuario</li><li><span class="theory-key">API</span> - REST o GraphQL, procesa la logica de negocio</li><li><span class="theory-key">Base de datos</span> - Almacena datos persistentes (PostgreSQL, MongoDB)</li><li><span class="theory-key">Cache</span> - Datos frecuentes en memoria (Redis)</li><li><span class="theory-key">CDN</span> - Archivos estaticos cerca del usuario (Cloudflare)</li><li><span class="theory-key">Load Balancer</span> - Distribuye trafico entre servidores</li><li><span class="theory-key">Message Queue</span> - Tareas asincronas (emails, procesamiento)</li></ul></div><h4>Escalabilidad: horizontal vs vertical</h4><div class="theory-section"><p><span class="theory-key">Vertical</span>: mas CPU/RAM en un servidor. Simple pero tiene limite.</p><p><span class="theory-key">Horizontal</span>: mas servidores. Escala infinitamente pero necesita load balancer y estado compartido.</p></div><h4>Cache</h4><div class="theory-section"><p>Almacena datos frecuentes para evitar consultas costosas:</p><ul><li><span class="theory-key">Redis</span> - Cache en servidor, datos de sesion, rate limiting</li><li><span class="theory-key">CDN</span> - Cache de archivos estaticos en edge servers</li><li><span class="theory-key">Browser cache</span> - HTTP headers (Cache-Control, ETag)</li></ul><p>Regla: si un dato se lee 100x mas de lo que se escribe, usa cache.</p></div><h4>Load Balancing</h4><div class="theory-section"><p>Distribuye peticiones entre multiples servidores. Algoritmos: Round Robin, Least Connections, IP Hash. En cloud: AWS ALB, Cloudflare, Nginx.</p></div><h4>SQL vs NoSQL</h4><div class="theory-section"><ul><li><span class="theory-key">SQL</span> (PostgreSQL, MySQL): relaciones, transacciones ACID, datos estructurados. Ideal para: e-commerce, finanzas, SaaS.</li><li><span class="theory-key">NoSQL</span> (MongoDB, DynamoDB): flexible, escala horizontal, sin schema fijo. Ideal para: logs, datos de IoT, documentos variables.</li></ul><p>Regla general: si necesitas JOINs y transacciones, SQL. Si necesitas flexibilidad de schema y escala masiva, NoSQL.</p></div><h4>Autenticacion</h4><div class="theory-section"><ul><li><span class="theory-key">JWT</span> (JSON Web Token): stateless, el token contiene la info del usuario. No necesita DB lookup en cada request. Ideal para APIs.</li><li><span class="theory-key">Sessions</span>: stateful, el servidor guarda la sesion. Mas seguro (puedes invalidar al instante) pero necesita almacenamiento (Redis).</li></ul></div><h4>CORS</h4><div class="theory-section"><p><span class="theory-key">Cross-Origin Resource Sharing</span>: politica del browser que bloquea requests a dominios diferentes. Se soluciona con headers en el servidor:</p><div class="theory-block">Access-Control-Allow-Origin: https://tudominio.com\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE\nAccess-Control-Allow-Headers: Content-Type, Authorization</div></div>'},
+      {id:"sd1",title:"Disena un URL shortener",type:"open",diff:"Medio",
+        desc:"Como diseñarias un servicio como bit.ly?",
+        reqs:["Que componentes necesitas? (frontend, API, DB, cache)","Como generas los codigos cortos?","Como rediriges al usuario? (status code)","Como escalas si tienes millones de URLs?","Que base de datos usarias y por que?"],
+        model:"Componentes: React frontend, API REST (Node/Next.js), PostgreSQL, Redis cache.\n\nCodigos: Base62 encoding del ID autoincremental, o hash MD5 truncado a 7 chars. Colisiones se resuelven con retry.\n\nRedireccion: HTTP 301 (permanente) o 302 (temporal). 301 cachea en browser, 302 permite analytics.\n\nEscala: Redis cache para URLs populares (99% de trafico). DB solo para nuevas y poco usadas. CDN para el redirect.\n\nDB: PostgreSQL por fiabilidad. Indice en short_code para lookup rapido. Particionado por fecha si crece mucho."},
+      {id:"sd2",title:"Disena el sistema de Informo",type:"open",diff:"Dificil",
+        desc:"Explica la arquitectura completa de tu SaaS de denuncias",
+        reqs:["Diagrama de componentes (describe textualmente)","Flujo de una denuncia de principio a fin","Como implementas el cifrado e2e?","Donde esta la clave de cifrado?","Como garantizas que el admin de Supabase no lee denuncias?","Que pasa si la clave se pierde?"],
+        model:"Componentes: Next.js 15 (SSR + API routes), Supabase (PostgreSQL + Auth + Storage), AES-256-GCM en capa de app.\n\nFlujo: Reporter abre /[slug]/nueva -> escribe denuncia -> frontend envia a API route -> API cifra con AES-256-GCM usando clave de entorno -> guarda blob cifrado en Supabase -> devuelve tracking_code al reporter.\n\nCifrado: La clave AES esta en env var del servidor (ENCRYPTION_KEY). Nunca llega al browser ni a Supabase. Los datos se cifran ANTES de INSERT y se descifran DESPUES de SELECT, solo en la API route.\n\nProteccion: Supabase solo ve blobs cifrados. Sin la clave del env, los datos son ilegibles. Ni RLS ni el dashboard de Supabase pueden descifrarlos.\n\nPerdida de clave: Los datos serian irrecuperables. Se mitiga con backup seguro de la clave y rotation plan con legacy key fallback."},
+      {id:"sd3",title:"Monolito vs Microservicios",type:"open",diff:"Medio",
+        desc:"Tu jefe quiere migrar el monolito a microservicios. Que le dices?",
+        reqs:["Ventajas reales de microservicios","Desventajas y complejidad anadida","Cuando SI tiene sentido migrar?","Cuando NO tiene sentido?","Que le recomendarias a una startup de 5 personas?"],
+        model:"Ventajas: Escalar partes independientemente, deploys independientes, equipos autonomos, aislamiento de fallos.\n\nDesventajas: Complejidad de red (latencia, errores), debugging distribuido, consistencia eventual, mas infra (service mesh, API gateway), testing mas complejo.\n\nSI migrar: Cuando partes del sistema necesitan escalar independientemente (ej: el servicio de video necesita 10x mas recursos que auth). Cuando hay equipos grandes que se bloquean entre si.\n\nNO migrar: Menos de 10 devs, producto aun buscando product-market fit, no hay problemas reales de escala.\n\nStartup de 5: Monolito bien estructurado (modular). Puedes extraer servicios despues cuando tengas datos reales de donde estan los cuellos de botella. Premature optimization is the root of all evil."}
+    ]
+  },
+  {
+    id:"behavioral",
+    icon:"&#128172;",
+    title:"Preguntas Personales",
+    desc:"Cuentame sobre ti, mayor fortaleza, conflictos. Lo que abre y cierra puertas.",
+    week:3,
+    color:"#22c55e",
+    exercises:[
+      {id:"behavioral_theory",title:"Como responder preguntas behavioral",type:"theory",diff:"Basico",
+        desc:"Aprende el formato STAR y los errores comunes en preguntas personales",
+        reqs:["Lee la leccion completa","Practica el formato STAR con tus propias experiencias"],
+        content:'<h4>Formato STAR</h4><div class="theory-section"><p>Todas tus respuestas a preguntas behavioral deben seguir el formato <span class="theory-key">STAR</span>:</p><ul><li><span class="theory-key">S - Situacion</span>: Contexto. Donde trabajabas? Que proyecto? Que pasaba?</li><li><span class="theory-key">T - Tarea</span>: Que necesitabas hacer? Cual era tu responsabilidad?</li><li><span class="theory-key">A - Accion</span>: Que hiciste TU concretamente? (no el equipo, TU)</li><li><span class="theory-key">R - Resultado</span>: Cual fue el impacto medible? Numeros, mejoras, aprendizaje.</li></ul><div class="theory-block">Ejemplo:\nS: "En Informo, necesitabamos cifrado real para cumplir la ley."\nT: "Tenia que garantizar que ni el admin de la DB pudiera leer denuncias."\nA: "Implemente AES-256-GCM en la capa de aplicacion, con key rotation."\nR: "Datos 100% ilegibles sin la clave. Cumplimiento legal AIPI garantizado."</div></div><h4>Tips para respuestas efectivas</h4><div class="theory-section"><ul><li><span class="theory-key">Se concreto</span> - "Reduje el tiempo de carga un 40%" es mejor que "mejore el rendimiento"</li><li><span class="theory-key">Usa numeros</span> - "60 servidores", "3 semanas", "99.9% uptime"</li><li><span class="theory-key">Nunca hables mal de nadie</span> - Ni de jefes, ni companeros, ni empresas anteriores</li><li><span class="theory-key">Muestra aprendizaje</span> - Cada desafio te enseno algo. Que fue?</li><li><span class="theory-key">Se honesto</span> - Si no sabes algo, dilo. "No lo he implementado, pero mi approach seria..."</li></ul></div><h4>Errores comunes</h4><div class="theory-section"><ul><li>Respuestas demasiado largas (max 2 minutos por respuesta)</li><li>No dar ejemplos concretos ("soy bueno trabajando en equipo" sin evidencia)</li><li>Hablar solo de tecnologia sin mencionar impacto de negocio</li><li>No preparar preguntas para el entrevistador</li><li>Criticar empleadores o companeros anteriores</li></ul></div><h4>Prepara tu pitch de 2 minutos</h4><div class="theory-section"><p>La pregunta <span class="theory-key">"Cuentame sobre ti"</span> abre el 90% de entrevistas. Estructura:</p><ul><li>1. Quien eres (1 frase)</li><li>2. Que haces actualmente</li><li>3. Tu mayor logro tecnico (con numeros)</li><li>4. Que buscas (y por que esta empresa)</li></ul><p>Practica cronometrado hasta que quede natural en menos de 2 minutos.</p></div>'},
+      {id:"b1",title:"Cuentame sobre ti",type:"open",diff:"Basico",
+        desc:"La pregunta mas importante. Practica tu pitch de 2 minutos.",
+        reqs:["Quien eres (1 frase)","Que haces actualmente (trabajo + proyectos)","Tu mayor logro tecnico","Que buscas en tu proximo rol","Maximo 2 minutos hablado"],
+        model:"Soy Lucas, desarrollador full-stack y DevOps. Actualmente trabajo como tecnico informatico en la Comunidad de Madrid a traves de Ayesa, y soy socio en Hytalia Network donde dirijo la operacion tecnica de la plataforma.\n\nPor mi cuenta he construido productos en produccion: Informo, un SaaS de canal de denuncias con cifrado e2e para cumplimiento de la Ley 2/2023; Finesse, una PWA de finanzas con offline mode; y cofunde VarynHost, un servicio de hosting con mas de 60 servidores activos.\n\nBusco un rol donde pueda asumir responsabilidad tecnica real, tomar decisiones de arquitectura y construir producto con impacto. Me motiva la fiabilidad en produccion y construir cosas que funcionen de verdad."},
+      {id:"b2",title:"Mayor desafio tecnico",type:"open",diff:"Medio",
+        desc:"Cuentame un problema tecnico dificil que resolviste",
+        reqs:["Usa el formato STAR: Situacion, Tarea, Accion, Resultado","Situacion: que contexto habia?","Tarea: que tenias que resolver?","Accion: que hiciste concretamente?","Resultado: cual fue el impacto medible?"],
+        model:"Situacion: En Informo, necesitaba que las denuncias fueran realmente anonimas y confidenciales, no solo 'en teoria'. Un admin de Supabase podria leer los datos en claro.\n\nTarea: Implementar cifrado real end-to-end sin complicar el desarrollo ni ralentizar la experiencia del usuario.\n\nAccion: Implemente AES-256-GCM a nivel de aplicacion. Los datos se cifran en la API route antes de tocar Supabase. La clave vive solo en env vars del servidor. Cree funciones de encrypt/decrypt reutilizables y un sistema de key rotation con fallback a legacy key.\n\nResultado: Las denuncias son ilegibles incluso para mi como admin de la base de datos. Cumplimiento legal AIPI garantizado. Cero impacto en velocidad percibida por el usuario."},
+      {id:"b3",title:"Trabajo en equipo / conflicto",type:"open",diff:"Medio",
+        desc:"Cuentame sobre un conflicto o desacuerdo en equipo",
+        reqs:["Cual fue la situacion?","Que posturas habia?","Como lo manejaste?","Cual fue el resultado?","Que aprendiste?"],
+        model:"En Hytalia Network, tuve un desacuerdo con mi socio sobre la arquitectura de la plataforma. El queria migrar todo a microservicios inmediatamente. Yo argumentaba que con nuestro tamano de equipo (3 personas), la complejidad nos iba a paralizar.\n\nEn vez de imponer mi opinion, propuse un experimento: extraer un solo servicio (el de notificaciones) como microservicio durante un sprint, y evaluar el overhead real. El resultado fue que el overhead de mantener la infra distribuida nos costaba mas tiempo del que ahorraba.\n\nDecidimos mantener el monolito modular con la opcion de extraer servicios cuando el equipo creciera. Aprendi que los datos concretos convencen mas que las opiniones."},
+      {id:"b4",title:"Por que deberiamos contratarte?",type:"open",diff:"Basico",
+        desc:"Resume en 3-4 puntos por que eres el candidato correcto",
+        reqs:["Que te diferencia de otros candidatos?","Que aportas desde el dia 1?","Como encaja tu experiencia con lo que buscan?","Se concreto: menciona proyectos, numeros, resultados"],
+        model:"1. Construyo end-to-end: No solo frontend o backend. Puedo montar la app, la infra, el CI/CD, el monitoring. Informo es un SaaS completo que construi solo.\n\n2. Experiencia real en produccion: VarynHost tiene 60+ clientes dependiendo del uptime. No son proyectos de portfolio, son productos con usuarios reales.\n\n3. Tomo decisiones de producto: Elijo el cifrado AES-256 por requisitos legales, no por moda. Cada decision tecnica tiene una razon de negocio.\n\n4. Autonomia con comunicacion: Trabajo remoto hace anos, entrego sin supervision, y se comunicar trade-offs tecnicos a no-tecnicos."},
+      {id:"b5",title:"Donde te ves en 5 anos?",type:"open",diff:"Basico",
+        desc:"Tu vision profesional a medio plazo",
+        reqs:["Que rol te gustaria tener?","Que tipo de problemas quieres resolver?","Como encaja esta empresa en ese camino?","Se honesto pero estrategico"],
+        model:"En 5 anos quiero estar en un rol de Staff Engineer o Tech Lead donde pueda: 1) Tomar decisiones de arquitectura que afecten al producto, 2) Mentorizar a desarrolladores mas junior, 3) Seguir construyendo con las manos, no solo gestionar.\n\nMe interesa la interseccion entre producto y tecnologia. Quiero que mis decisiones tecnicas tengan impacto directo en el negocio.\n\nEsta empresa encaja porque [adaptar a la empresa concreta: tamano, producto, cultura tecnica]."}
+    ]
+  },
+  {
+    id:"projects",
+    icon:"&#128188;",
+    title:"Tus Proyectos",
+    desc:"Practica explicar Informo, Finesse, VarynHost, StackWatch como un pro.",
+    week:4,
+    color:"#f97316",
+    exercises:[
+      {id:"projects_theory",title:"Como presentar tus proyectos",type:"theory",diff:"Basico",
+        desc:"Aprende a explicar tus proyectos de forma que impresione en entrevistas",
+        reqs:["Lee la leccion completa","Prepara tus proyectos siguiendo el formato Problema-Decision-Resultado"],
+        content:'<h4>Formato: Problema - Decision - Resultado</h4><div class="theory-section"><p>Cada proyecto debe explicarse en 3 partes:</p><ul><li><span class="theory-key">Problema</span>: Que necesidad real resuelve? (1-2 frases)</li><li><span class="theory-key">Decision</span>: Que decision tecnica dificil tomaste y por que?</li><li><span class="theory-key">Resultado</span>: Cual es el impacto? Numeros, usuarios, metricas.</li></ul><div class="theory-block">Ejemplo (Informo):\nProblema: "Empresas de +50 empleados necesitan canal de denuncias por ley."\nDecision: "Cifrado AES-256 en capa de app en vez de confiar en la DB."\nResultado: "SaaS en produccion con cifrado e2e, 3 planes, compliance AIPI."</div></div><h4>Como explicar trade-offs</h4><div class="theory-section"><p>Los entrevistadores quieren ver que piensas criticamente. Para cada decision:</p><ul><li>Que <span class="theory-key">elegiste</span> y que <span class="theory-key">descartaste</span></li><li>Que <span class="theory-key">ganaste</span> con esa eleccion</li><li>Que <span class="theory-key">sacrificaste</span></li><li>Por que <span class="theory-key">valio la pena</span> el trade-off</li></ul><div class="theory-block">"Elegi Supabase sobre backend propio.\nGane: Auth, RLS, Realtime en dias.\nSacrifique: control total sobre migraciones.\nValio la pena: el objetivo era validar el producto rapido."</div></div><h4>Como responder "por que X y no Y?"</h4><div class="theory-section"><p>Estructura: <span class="theory-key">Reconoce Y</span> -> <span class="theory-key">Explica el contexto</span> -> <span class="theory-key">Justifica X</span></p><div class="theory-block">"Por que Supabase y no Firebase?"\n\n"Firebase es excelente para apps moviles y tiene mejor\necosistema de SDKs. Pero para Informo necesitaba\nPostgreSQL por las relaciones complejas entre denuncias,\norganizaciones y mensajes. Ademas, RLS de Supabase me\npermite seguridad a nivel de fila sin middleware custom."</div></div><h4>Prepara numeros y metricas</h4><div class="theory-section"><p>Los numeros concretos dan credibilidad. Prepara para cada proyecto:</p><ul><li>Usuarios/clientes activos</li><li>Uptime / disponibilidad</li><li>Tiempo de desarrollo</li><li>Mejoras de rendimiento (%, ms, etc.)</li><li>Stack y por que lo elegiste</li></ul></div><h4>Preguntas incomodas</h4><div class="theory-section"><p>Prepara respuestas para:</p><ul><li><span class="theory-key">"Cuantos clientes de pago tienes?"</span> - Se honesto. Si es nuevo, explica que el MVP esta validado tecnicamente.</li><li><span class="theory-key">"Por que no es open source?"</span> - Es un SaaS comercial. Puedes hacer demo en vivo.</li><li><span class="theory-key">"Como verifico que lo hiciste tu?"</span> - URLs en produccion + demo en vivo + explicacion tecnica profunda.</li></ul></div>'},
+      {id:"p1",title:"Pitch de Informo (2 min)",type:"open",diff:"Medio",
+        desc:"Explica Informo como si estuvieras en una entrevista",
+        reqs:["Que problema resuelve? (1 frase)","Que es y para quien? (contexto de negocio)","Que decision tecnica dificil tomaste?","Cual fue el resultado?","Stack y por que lo elegiste"],
+        model:"Problema: Las empresas con +50 empleados estan obligadas por ley a tener un canal de denuncias, pero la mayoria no tienen la infraestructura tecnica.\n\nQue es: Informo es un SaaS que ofrece canal de denuncias como servicio. La empresa se registra, personaliza su canal, y sus empleados pueden reportar de forma anonima.\n\nDecision dificil: Cifrado a nivel de aplicacion (AES-256-GCM) en vez de confiar en el cifrado de la base de datos. Cuesta mas desarrollo pero garantiza que ni yo como admin puedo leer las denuncias.\n\nResultado: Plataforma en produccion con cifrado e2e, panel de gestion, seguimiento anonimo, exportacion Libro-Registro AIPI, y 3 planes de suscripcion con trial sin tarjeta.\n\nStack: Next.js 15 (SSR + API routes), Supabase (Auth + PostgreSQL), Zod (validacion), Docker (deployment). Supabase por velocidad de desarrollo sin sacrificar seguridad gracias al cifrado propio."},
+      {id:"p2",title:"Pitch de Finesse (2 min)",type:"open",diff:"Medio",
+        desc:"Explica Finesse como si estuvieras en una entrevista",
+        reqs:["Que problema resuelve?","Que lo diferencia de Splitwise?","Que decision tecnica destacarias?","Features clave","Stack"],
+        model:"Problema: Splitwise es limitado para gestionar finanzas personales y grupales con proyecciones y presupuestos.\n\nFinesse es una PWA de finanzas compartidas que funciona offline, importa datos de CSV/Splitwise, tiene categorias personalizadas y un asistente financiero con IA (Fina).\n\nDecision tecnica: Supabase (Auth + RLS + Realtime) sobre backend propio para acelerar el MVP. RLS garantiza que cada usuario solo ve sus datos sin escribir middleware de autorizacion.\n\nFeatures: OAuth con Google, modo offline con Service Worker y sync automatico, importacion CSV, PWA instalable.\n\nStack: Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion."},
+      {id:"p3",title:"Trade-offs tecnicos",type:"open",diff:"Dificil",
+        desc:"Explica 3 decisiones tecnicas dificiles y sus trade-offs",
+        reqs:["Decision 1: Supabase vs backend propio en Finesse","Decision 2: AES-256-GCM vs cifrado de DB en Informo","Decision 3: Docker Swarm vs Kubernetes en VarynHost","Para cada una: que elegiste, que sacrificaste, por que valio la pena"],
+        model:"1. Supabase vs Backend propio (Finesse):\nElegi Supabase. Sacrifique: control total sobre la capa de datos, migraciones complejas. Gane: Auth, RLS, Realtime, Storage en dias en vez de semanas. Valio la pena porque el objetivo era validar el producto rapido.\n\n2. AES-256-GCM vs TDE (Informo):\nElegi cifrado a nivel de app. Sacrifique: complejidad de desarrollo (funciones encrypt/decrypt, key rotation). Gane: anonimato real, cumplimiento legal genuino. Valio la pena porque es un requisito legal no negociable.\n\n3. Docker Swarm vs K8s (VarynHost):\nElegi Swarm. Sacrifique: auto-scaling avanzado, ecosistema mas grande. Gane: simplicidad operativa con 1-2 personas gestionando. Valio la pena porque K8s para 60 servidores con equipo de 2 es matar moscas a canonazos."},
+      {id:"p4",title:"Preguntas dificiles sobre tus proyectos",type:"open",diff:"Dificil",
+        desc:"Prepara respuestas para las preguntas incomodas",
+        reqs:["Si Informo es tan bueno, cuantos clientes de pago tienes?","Por que no tienes repo publico de Informo?","VarynHost con 60 clientes suena pequeno. Es un negocio real?","Si sabes hacer todo esto, por que trabajas de tecnico N1?","Como puedo verificar que hiciste estos proyectos tu?"],
+        model:"Clientes de Informo: Es un producto recien lanzado. Tengo la plataforma en produccion lista para vender. El MVP esta validado tecnicamente, ahora toca traccion comercial.\n\nRepo privado: Es un SaaS comercial. El codigo es propiedad intelectual del negocio. Puedo hacer demo en vivo y explicar la arquitectura en detalle.\n\nVarynHost: 60 clientes pagando mensualmente por hosting es un negocio real. Facturacion recurrente, soporte 24/7, infraestructura en EU. El tamano no define la complejidad tecnica.\n\nTecnico N1: Es mi trabajo actual mientras busco una posicion que refleje mis capacidades reales. Los proyectos los hago fuera del horario laboral. Busco activamente ese salto.\n\nVerificacion: Los proyectos estan en produccion con URLs publicas (informo.es, finesseapp.es, varynhost.com). Puedo hacer live demo y mostrar el dashboard, la arquitectura, y responder cualquier pregunta tecnica."}
+    ]
+  },
+  {
+    id:"mock",
+    icon:"&#127916;",
+    title:"Simulacro Completo",
+    desc:"Entrevista tecnica de 45 min simulada. El examen final.",
+    week:4,
+    color:"#ec4899",
+    exercises:[
+      {id:"m1",title:"Ronda 1: Personal (10 min)",type:"open",diff:"Medio",
+        desc:"Responde como si tuvieras al entrevistador delante. Escribe tus respuestas completas.",
+        reqs:["Cuentame sobre ti (2 min)","Por que quieres cambiar de trabajo?","Que te motiva como desarrollador?","Donde te ves en 3 anos?"],
+        model:"[No hay respuesta modelo para esta. Revisa tus respuestas de la pista 'Preguntas Personales' y adapta.]"},
+      {id:"m2",title:"Ronda 2: Tecnica teorica (10 min)",type:"open",diff:"Medio",
+        desc:"Responde estas preguntas tecnicas de forma concisa y clara",
+        reqs:["Que diferencia hay entre SSR, SSG y CSR?","Que es CORS y como lo solucionas?","Diferencia entre autenticacion y autorizacion?","Cuando usarias Redis y cuando PostgreSQL?","Que es un indice en SQL y cuando lo creas?"],
+        model:"SSR: HTML se genera en cada peticion (datos frescos). SSG: HTML se genera en build (rapido, CDN). CSR: JS se ejecuta en el browser y genera el HTML.\n\nCORS: Politica del browser que bloquea requests cross-origin. Se soluciona con headers Access-Control-Allow-Origin en el servidor.\n\nAuth vs Authz: Autenticacion = QUIEN eres (login). Autorizacion = QUE puedes hacer (permisos).\n\nRedis vs PostgreSQL: Redis para cache, sesiones, datos temporales (rapido, en memoria). PostgreSQL para datos persistentes, relaciones, transacciones.\n\nIndice: Estructura que acelera SELECTs en una columna. Se crea en columnas de WHERE, JOIN, ORDER BY frecuentes."},
+      {id:"m3",title:"Ronda 3: Live coding (20 min)",type:"code",diff:"Dificil",
+        desc:"Construye una app de notas con las siguientes features en 20 minutos",
+        reqs:["Input para titulo y textarea para contenido","Boton agregar que crea una nota","Lista de notas con titulo, preview del contenido (primeros 50 chars) y fecha","Boton borrar en cada nota","Buscar notas por titulo","Contador de notas"],
+        hint:"Combina todo lo aprendido: useState para notas, input, search. filter + map para renderizar. Date.now() para id y new Date().toLocaleDateString() para fecha.",
+        solution:`function App() {\n  const [notes, setNotes] = useState([]);\n  const [title, setTitle] = useState("");\n  const [body, setBody] = useState("");\n  const [search, setSearch] = useState("");\n  function add() {\n    if (!title.trim()) return;\n    setNotes([{id:Date.now(), title:title.trim(), body:body.trim(), date:new Date().toLocaleDateString()}, ...notes]);\n    setTitle(""); setBody("");\n  }\n  const filtered = notes.filter(n => n.title.toLowerCase().includes(search.toLowerCase()));\n  return (\n    <div>\n      <h1>Notas ({filtered.length})</h1>\n      <input placeholder="Titulo" value={title} onChange={e=>setTitle(e.target.value)} />\n      <textarea placeholder="Contenido..." value={body} onChange={e=>setBody(e.target.value)}></textarea>\n      <button onClick={add}>Agregar nota</button>\n      <br/><br/>\n      <input placeholder="Buscar notas..." value={search} onChange={e=>setSearch(e.target.value)} />\n      <ul>{filtered.map(n => <li key={n.id}>\n        <strong>{n.title}</strong> <small>({n.date})</small>\n        <button onClick={()=>setNotes(notes.filter(x=>x.id!==n.id))}>Borrar</button>\n        <p>{n.body.substring(0,50)}{n.body.length>50?"...":""}</p>\n      </li>)}</ul>\n    </div>\n  )\n}`,
+        check:(doc)=>{const inputs=doc.querySelectorAll("input");return inputs.length>=2&&doc.querySelector("button")&&doc.querySelector("textarea")}},
+      {id:"m4",title:"Ronda 4: System Design (5 min)",type:"open",diff:"Dificil",
+        desc:"Dibuja (describe textualmente) la arquitectura de Informo",
+        reqs:["Componentes principales y como se conectan","Flujo de una denuncia nueva","Flujo de consulta de seguimiento","Donde entra el cifrado","Como se exporta el Libro-Registro"],
+        model:"[Browser] -> [Cloudflare CDN] -> [Next.js (Vercel/Docker)]\n                                          |-> [API Routes]\n                                                |-> encrypt(data) -> [Supabase PostgreSQL]\n                                                |-> [Supabase Auth]\n                                                |-> [Supabase Storage (attachments)]\n\nDenuncia nueva: Reporter abre /[slug]/nueva -> llena form -> POST /api/reports -> API cifra con AES-256-GCM -> INSERT en Supabase -> devuelve tracking_code\n\nSeguimiento: Reporter va a /[slug]/seguimiento -> ingresa tracking_code -> GET /api/reports/track -> API busca report, descifra, devuelve status y mensajes\n\nLibro-Registro: Admin va a dashboard/settings -> click exportar -> API query todos los reports de la org -> descifra -> genera Excel con jsPDF/XLSX -> descarga"}
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// PERSISTENCE
+// ═══════════════════════════════════════════════════════════
+const SAVE_KEY = "interview_academy_v2";
+let state = {completed:[], streak:0, lastDate:null, codes:{}, texts:{}, dailyLog:{}};
+
+function load() { try { const d=JSON.parse(localStorage.getItem(SAVE_KEY)); if(d) state={...state,...d}; } catch{} }
+function save() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
+
+function markDone(exId) {
+  if (!state.completed.includes(exId)) { state.completed.push(exId); updateStreak(); save(); }
+}
+function isDone(exId) { return state.completed.includes(exId); }
+function updateStreak() {
+  const today = new Date().toISOString().slice(0,10);
+  if (!state.dailyLog[today]) state.dailyLog[today] = 0;
+  state.dailyLog[today]++;
+  if (state.lastDate === today) return;
+  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if (state.lastDate === yesterday) state.streak++;
+  else if (state.lastDate !== today) state.streak = 1;
+  state.lastDate = today;
+}
+function saveCode(exId, code) { state.codes[exId] = code; save(); }
+function loadSavedCode(exId) { return state.codes[exId] || ""; }
+function saveText(exId, text) { state.texts[exId] = text; save(); }
+function loadSavedText(exId) { return state.texts[exId] || ""; }
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+let currentView = "dashboard";
+let currentTrack = null;
+let currentEx = null;
+let cameFromView = null;
+
+function showView(name) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.querySelectorAll(".nav-t").forEach(t => t.classList.remove("active"));
+  document.getElementById("view-"+name).classList.add("active");
+  // Highlight nav
+  const navBtns = document.querySelectorAll(".nav-t");
+  if (name==="dashboard") navBtns[0].classList.add("active");
+  else if (name==="tracks"||name==="track-detail") navBtns[1].classList.add("active");
+  else if (name==="daily") navBtns[2].classList.add("active");
+  else if (name==="exercise") {
+    // Highlight the nav tab matching the current track
+    if (currentTrack) navBtns[1].classList.add("active");
+  }
+  currentView = name;
+  if (name === "dashboard") renderDashboard();
+  if (name === "tracks") renderTracks();
+  if (name === "daily") renderDailyView();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+function renderDashboard() {
+  const allEx = TRACKS.flatMap(t => t.exercises);
+  const total = allEx.length;
+  const done = state.completed.length;
+  const pct = total > 0 ? Math.round((done/total)*100) : 0;
+  const currentWeek = Math.min(4, Math.ceil((done+1) / (total/4)));
+
+  document.getElementById("statStreak").textContent = state.streak;
+  document.getElementById("statDone").textContent = done;
+  document.getElementById("statPending").textContent = total - done;
+  document.getElementById("statWeek").textContent = currentWeek;
+  document.getElementById("statPct").textContent = pct + "%";
+  document.getElementById("miniStreak").textContent = state.streak;
+  document.getElementById("miniDone").textContent = done;
+
+  // ── Insights panel (readiness, weak areas, stats) ──
+  function renderInsightsPanel() {
+    const allEx = TRACKS.flatMap(t => t.exercises);
+    const totalEx = allEx.length;
+    const doneCount = state.completed.length;
+    const pctDone = totalEx > 0 ? Math.round((doneCount / totalEx) * 100) : 0;
+
+    // Per-track stats
+    const trackStats = TRACKS.map(t => {
+      const total = t.exercises.length;
+      const done = t.exercises.filter(e => isDone(e.id)).length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      return { title: t.title, icon: t.icon, done, total, pct, color: t.color, id: t.id };
+    });
+
+    // Find weakest track
+    const weakest = trackStats.filter(t => t.pct < 100).sort((a, b) => a.pct - b.pct)[0];
+    // Find strongest track
+    const strongest = trackStats.filter(t => t.done > 0).sort((a, b) => b.pct - a.pct)[0];
+
+    // Activity stats
+    const dailyEntries = Object.entries(state.dailyLog);
+    const activeDays = dailyEntries.filter(([_, c]) => c > 0).length;
+    const totalExDone = dailyEntries.reduce((s, [_, c]) => s + c, 0);
+    const avgPerDay = activeDays > 0 ? (totalExDone / activeDays).toFixed(1) : "0";
+
+    // Streak
+    const streak = state.streak || 0;
+
+    // Readiness verdict
+    let readiness, readyColor, readyEmoji, readyTip;
+    if (pctDone >= 90) {
+      readiness = "Listo para entrevistas"; readyColor = "#22c55e"; readyEmoji = "&#128640;";
+      readyTip = "Has completado casi todo. Haz un simulacro completo para confirmar.";
+    } else if (pctDone >= 70) {
+      readiness = "Casi listo"; readyColor = "#22d3ee"; readyEmoji = "&#128170;";
+      readyTip = "Buen progreso! Enfocate en " + (weakest ? weakest.title : "los temas pendientes") + " para cerrar huecos.";
+    } else if (pctDone >= 40) {
+      readiness = "En camino"; readyColor = "#eab308"; readyEmoji = "&#9889;";
+      readyTip = "Vas bien pero necesitas mas practica" + (weakest ? " en " + weakest.title : "") + ". Mantén la racha diaria.";
+    } else if (pctDone >= 10) {
+      readiness = "Empezando"; readyColor = "#f97316"; readyEmoji = "&#128293;";
+      readyTip = "Buen inicio! Haz al menos 1-2 ejercicios al dia" + (weakest ? ". Empieza por " + weakest.title : "") + ".";
+    } else {
+      readiness = "Sin empezar"; readyColor = "#ef4444"; readyEmoji = "&#128680;";
+      readyTip = "Empieza hoy. Un ejercicio al dia durante 30 dias y estaras listo para entrevistas.";
+    }
+
+    // Build HTML
+    let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;border-top:1px solid var(--border);padding-top:16px">';
+
+    // Left: readiness + tip
+    html += '<div>';
+    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">';
+    html += '<span style="font-size:28px">' + readyEmoji + '</span>';
+    html += '<div><div style="font-size:18px;font-weight:800;color:' + readyColor + '">' + readiness + '</div>';
+    html += '<div style="font-size:11px;color:var(--text3)">' + pctDone + '% completado &middot; ' + doneCount + '/' + totalEx + ' ejercicios</div></div>';
+    html += '</div>';
+    html += '<div style="font-size:12px;color:var(--text2);line-height:1.6;background:var(--bg3);padding:10px 14px;border-radius:8px;border-left:3px solid ' + readyColor + '">' + readyTip + '</div>';
+
+    // Activity stats
+    html += '<div style="display:flex;gap:16px;margin-top:12px">';
+    html += '<div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--yellow)">' + streak + '</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Racha</div></div>';
+    html += '<div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--green)">' + activeDays + '</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Dias activos</div></div>';
+    html += '<div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--cyan)">' + avgPerDay + '</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Ej/dia</div></div>';
+    html += '<div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--purple)">' + totalExDone + '</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Total hechos</div></div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Right: track breakdown bars
+    html += '<div>';
+    html += '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Progreso por pista</div>';
+    trackStats.forEach(t => {
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+      html += '<span style="font-size:14px;width:20px;text-align:center">' + t.icon + '</span>';
+      html += '<span style="font-size:11px;color:var(--text2);width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + t.title + '</span>';
+      html += '<div style="flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden">';
+      html += '<div style="height:100%;width:' + t.pct + '%;background:' + t.color + ';border-radius:4px;transition:width .4s"></div>';
+      html += '</div>';
+      html += '<span style="font-size:10px;color:var(--text3);width:40px;text-align:right;flex-shrink:0">' + t.done + '/' + t.total + '</span>';
+      html += '</div>';
+    });
+
+    // Weakest area callout
+    if (weakest && weakest.pct < 50) {
+      html += '<div style="margin-top:10px;padding:8px 12px;background:#ef444415;border:1px solid #ef444430;border-radius:8px;font-size:11px;color:#fca5a5">';
+      html += '<strong style="color:#ef4444">&#9888; Area debil:</strong> ' + weakest.title + ' (' + weakest.pct + '%). ';
+      html += '<span style="cursor:pointer;text-decoration:underline" onclick="openTrack(\'' + weakest.id + '\')">';
+      html += 'Practicar ahora</span></div>';
+    }
+    if (strongest && strongest.pct >= 80) {
+      html += '<div style="margin-top:6px;padding:8px 12px;background:#22c55e15;border:1px solid #22c55e30;border-radius:8px;font-size:11px;color:#86efac">';
+      html += '<strong style="color:#22c55e">&#10003; Punto fuerte:</strong> ' + strongest.title + ' (' + strongest.pct + '%)';
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+    return html;
+  }
+
+  // Calendar - GitHub style heatmap (last 90 days)
+  const calGrid = document.getElementById("calGrid");
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // Go back ~13 weeks (91 days) and start from a Sunday
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - 90);
+  // Align to previous Sunday
+  startDate.setDate(startDate.getDate() - startDate.getDay());
+
+  const totalDays = Math.ceil((today - startDate) / 86400000) + 1;
+  const calWeeks = Math.ceil(totalDays / 7);
+
+  // Month labels
+  const monthNames = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+  let monthsHTML = "";
+  let lastMonth = -1;
+  for (let w = 0; w < calWeeks; w++) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + w * 7);
+    const m = d.getMonth();
+    if (m !== lastMonth) {
+      monthsHTML += `<span style="grid-column:${w+1}">${monthNames[m]}</span>`;
+      lastMonth = m;
+    }
+  }
+
+  // Day labels
+  const dayLabels = ["","Lun","","Mie","","Vie",""];
+
+  // Build grid cells
+  let cellsHTML = "";
+  for (let i = 0; i < calWeeks * 7; i++) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i);
+    const key = d.toISOString().slice(0,10);
+    const todayKey = today.toISOString().slice(0,10);
+    const count = state.dailyLog[key] || 0;
+    const isFuture = d > today;
+    const isToday = key === todayKey;
+
+    let cls = "cal-day";
+    if (isFuture) cls += " future";
+    else if (isToday) cls += " today";
+
+    if (!isFuture) {
+      if (count >= 5) cls += " lv4";
+      else if (count >= 3) cls += " lv3";
+      else if (count >= 1) cls += " lv2";
+      else if (count > 0) cls += " lv1";
+    }
+
+    const tooltip = isFuture ? "" : `<span class="cal-tooltip">${d.getDate()} ${monthNames[d.getMonth()]} — ${count} ejercicio${count!==1?"s":""}</span>`;
+    cellsHTML += `<div class="${cls}" ${isFuture?"style='opacity:.15'":""}>${tooltip}</div>`;
+  }
+
+  calGrid.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:6px">
+      <div style="display:flex;flex-direction:column;gap:2px;padding-top:20px">
+        ${dayLabels.map(l => `<span style="font-size:9px;color:var(--text3);height:14px;line-height:14px;width:24px;text-align:right">${l}</span>`).join("")}
+      </div>
+      <div style="flex:1;overflow-x:auto">
+        <div style="display:grid;grid-template-columns:repeat(${calWeeks},14px);gap:2px;margin-bottom:4px">
+          ${monthsHTML}
+        </div>
+        <div class="cal-grid-gh" style="grid-template-columns:repeat(${calWeeks},14px)">
+          ${cellsHTML}
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-top:16px;gap:20px;flex-wrap:wrap">
+      <div class="cal-legend" style="margin:0">
+        Menos <div class="cal-legend-box" style="background:var(--bg3)"></div>
+        <div class="cal-legend-box" style="background:#0e4429"></div>
+        <div class="cal-legend-box" style="background:#006d32"></div>
+        <div class="cal-legend-box" style="background:#26a641"></div>
+        <div class="cal-legend-box" style="background:#39d353"></div> Mas
+      </div>
+    </div>` + renderInsightsPanel();
+
+  // Roadmap
+  const weeks = [
+    {n:1,title:"Fundamentos",desc:"JavaScript, React basico, primeros componentes",topics:["Array methods","useState/useEffect","Fetch + listas","Inputs y formularios"]},
+    {n:2,title:"Intermedio",desc:"TypeScript, SQL, formularios avanzados",topics:["TypeScript types","SQL queries","Validacion de forms","Debugging"]},
+    {n:3,title:"Avanzado",desc:"System design, arquitectura, behavioral",topics:["System design","Decisiones tecnicas","Preguntas personales","Trabajo en equipo"]},
+    {n:4,title:"Simulacro",desc:"Mock interviews completas y polish final",topics:["Pitch de proyectos","Trade-offs","Live coding","Entrevista completa"]}
+  ];
+
+  document.getElementById("roadmap").innerHTML = weeks.map(w => {
+    const weekExs = TRACKS.filter(t => t.week === w.n).flatMap(t => t.exercises);
+    const weekDone = weekExs.filter(e => isDone(e.id)).length;
+    const weekPct = weekExs.length > 0 ? Math.round((weekDone/weekExs.length)*100) : 0;
+    const isCurrent = w.n === currentWeek;
+    const colors = ["#eab308","#22d3ee","#ef4444","#ec4899"];
+    return `<div class="week-card${isCurrent?" current":""}">
+      <h4><span class="w-num">Semana ${w.n}</span> ${w.title}</h4>
+      <p>${w.desc}</p>
+      <ul class="w-topics">${w.topics.map(t=>`<li>${t}</li>`).join("")}</ul>
+      <div class="week-prog"><div class="week-prog-fill" style="width:${weekPct}%;background:${colors[w.n-1]}"></div></div>
+    </div>`;
+  }).join("");
+
+  // Daily banner (deterministic per day)
+  const undone = allEx.filter(e => !isDone(e.id));
+  if (undone.length > 0) {
+    const todayKey = new Date().toISOString().slice(0,10);
+    let hash = 0;
+    for (let c = 0; c < todayKey.length; c++) hash = ((hash << 5) - hash) + todayKey.charCodeAt(c);
+    const daily = undone[Math.abs(hash) % undone.length];
+    document.getElementById("dailyTitle").textContent = "Reto de hoy: " + daily.title;
+    document.getElementById("dailyDesc").textContent = daily.desc;
+    window._dailyEx = daily;
+  } else {
+    document.getElementById("dailyTitle").textContent = "Has completado todo!";
+    document.getElementById("dailyDesc").textContent = "Increible. Repasa lo que quieras.";
+    window._dailyEx = null;
+  }
+}
+
+function startDailyChallenge() {
+  if (window._dailyEx) {
+    const ex = window._dailyEx;
+    const track = TRACKS.find(t => t.exercises.some(e => e.id === ex.id));
+    if (track) openExercise(track, ex, "daily");
+  } else {
+    showToast("Ya has completado todos los ejercicios!", "info");
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TRACKS LIST
+// ═══════════════════════════════════════════════════════════
+function renderTracks() {
+  document.getElementById("tracksGrid").innerHTML = TRACKS.map(t => {
+    const done = t.exercises.filter(e => isDone(e.id)).length;
+    const total = t.exercises.length;
+    const pct = total > 0 ? Math.round((done/total)*100) : 0;
+    return `<div class="track-card" onclick="openTrack('${t.id}')">
+      <div class="t-icon">${t.icon}</div>
+      <h3>${t.title}</h3>
+      <div class="t-desc">${t.desc}</div>
+      <div class="t-meta"><span>${done}/${total} completados</span><span>Semana ${t.week}</span></div>
+      <div class="t-bar"><div class="t-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join("");
+}
+
+function openTrack(trackId) {
+  const track = TRACKS.find(t => t.id === trackId);
+  currentTrack = track;
+  const content = document.getElementById("trackDetailContent");
+  content.innerHTML = `
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:4px">${track.icon} ${track.title}</h2>
+    <p style="color:var(--text3);font-size:13px;margin-bottom:20px">${track.desc}</p>
+    <div class="track-exercises">${track.exercises.map((ex,i) => {
+      const done = isDone(ex.id);
+      const diffCls = "diff-"+ex.diff.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+      return `<div class="track-ex-item${done?" done":""}" onclick="openExFromTrack('${track.id}','${ex.id}')">
+        <div class="ex-i-num">${done?"&#10003;":(i+1)}</div>
+        <div class="ex-i-info">
+          <span class="ex-i-title">${ex.title}</span>
+          <span class="ex-i-type">${ex.type==="code"?"Codigo":ex.type==="theory"?"Leccion teorica":ex.type==="quiz"?"Quiz":"Texto abierto"} &middot; ${ex.type==="code"?"Editor + Preview":ex.type==="theory"?"Lectura":ex.type==="quiz"?"Opciones multiples":"Redaccion"}</span>
+        </div>
+        <span class="ex-i-diff ${diffCls}">${ex.diff}</span>
+      </div>`;
+    }).join("")}</div>`;
+  showView("track-detail");
+}
+
+function openExFromTrack(trackId, exId) {
+  const track = TRACKS.find(t => t.id === trackId);
+  const ex = track.exercises.find(e => e.id === exId);
+  openExercise(track, ex);
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXERCISE VIEW
+// ═══════════════════════════════════════════════════════════
+function openExercise(track, ex, fromView) {
+  currentTrack = track;
+  currentEx = ex;
+  cameFromView = fromView || "track";
+
+  document.getElementById("exBackBtn").onclick = () => {
+    if (cameFromView === "daily") showView("daily");
+    else if (cameFromView === "dashboard") showView("dashboard");
+    else openTrack(track.id);
+  };
+
+  const content = document.getElementById("exerciseContent");
+  const diffCls = "diff-"+ex.diff.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+
+  let editorHTML = "";
+
+  if (ex.type === "code") {
+    const savedCode = loadSavedCode(ex.id) || ex.starter || "";
+    editorHTML = `
+      <div class="code-area">
+        <div class="editor-box">
+          <div class="e-header"><span>App.tsx</span><span style="font-size:10px">Ctrl+Enter = Ejecutar</span></div>
+          <textarea id="codeEditor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-gramm="false" placeholder="// Escribe tu codigo aqui...">${escHtml(savedCode)}</textarea>
+        </div>
+        <div class="preview-box">
+          <div class="e-header"><span>Preview</span><span id="previewError" style="font-size:10px;color:#ef4444"></span></div>
+          <div id="codePreview" style="padding:20px;overflow:auto;min-height:300px;flex:1"></div>
+        </div>
+      </div>
+      <div class="ex-actions">
+        <button class="btn btn-run" onclick="runExCode()">Ejecutar</button>
+        <button class="btn btn-check" onclick="checkExCode()">Comprobar</button>
+        <button class="btn btn-hint" onclick="toggleBox('hintBox')">Pista</button>
+        <button class="btn btn-solution" onclick="toggleBox('solutionBox')">Ver solucion</button>
+        <button class="btn btn-reset" onclick="resetExCode()">Reiniciar</button>
+        <button class="btn btn-next" onclick="nextExercise()">Siguiente &rarr;</button>
+        <span id="exStatus" class="ex-status" style="display:none"></span>
+      </div>
+      <div class="hint-box" id="hintBox">${ex.hint||""}</div>
+      <div class="solution-box" id="solutionBox"><strong>Solucion:</strong><pre>${escHtml(ex.solution||"")}</pre></div>`;
+  } else if (ex.type === "theory") {
+    editorHTML = '<div class="theory-content">' + ex.content + '</div>' +
+      '<div class="ex-actions" style="margin-top:16px">' +
+      '<button class="btn btn-check" onclick="markTheoryRead()">He leido y entendido</button>' +
+      '<button class="btn btn-next" onclick="nextExercise()">Siguiente &rarr;</button>' +
+      '</div>';
+  } else if (ex.type === "quiz") {
+    editorHTML = '<div id="quizContainer"></div>';
+  } else {
+    const savedText = loadSavedText(ex.id) || "";
+    editorHTML = `
+      <div class="code-area full-width">
+        <div class="editor-box" style="background:var(--bg2)">
+          <div class="e-header"><span>Tu respuesta</span><span style="font-size:10px">Escribe como si hablaras con el entrevistador</span></div>
+          <textarea id="openEditor" class="open-text" placeholder="Escribe tu respuesta aqui...">${escHtml(savedText)}</textarea>
+        </div>
+      </div>
+      <div class="ex-actions">
+        <button class="btn btn-run" onclick="evaluateOpenAnswer()" style="background:#a78bfa;color:#000">&#9883; Evaluar respuesta</button>
+        <button class="btn btn-check" onclick="showModelAnswer()">Ver respuesta modelo</button>
+        <button class="btn btn-reset" style="border-color:#334155" onclick="selfMarkDone()">Marcar completado</button>
+        <button class="btn btn-hint" onclick="toggleBox('hintBox')">Pista</button>
+        <button class="btn btn-reset" onclick="resetOpenText()">Reiniciar</button>
+        <button class="btn btn-next" onclick="nextExercise()">Siguiente &rarr;</button>
+      </div>
+      <div class="hint-box" id="hintBox">Intenta responder con el formato: situacion/contexto -> que hiciste -> resultado/impacto</div>
+      <div class="model-answer" id="modelBox"><strong>Respuesta modelo:</strong><br><br>${(ex.model||"").replace(/\n/g,"<br>")}</div>`;
+  }
+
+  content.innerHTML = `
+    <div class="ex-header">
+      <h2>${ex.title}</h2>
+      <div class="ex-meta">${track.title} <span class="diff ${diffCls}">${ex.diff}</span></div>
+    </div>
+    <div class="ex-instructions">
+      <h3>${ex.desc || ex.description}</h3>
+      ${(ex.reqs||[]).map(r => `<div class="req">${r}</div>`).join("")}
+    </div>
+    ${editorHTML}`;
+
+  // Setup editor events
+  if (ex.type === "code") {
+    const ed = document.getElementById("codeEditor");
+    ed.addEventListener("input", () => saveCode(ex.id, ed.value));
+    ed.addEventListener("keydown", (e) => {
+      if (e.key === "Tab") { e.preventDefault(); const s=ed.selectionStart,en=ed.selectionEnd; ed.value=ed.value.substring(0,s)+"  "+ed.value.substring(en); ed.selectionStart=ed.selectionEnd=s+2; }
+      if (e.key === "Enter" && e.ctrlKey) { e.preventDefault(); runExCode(); }
+    });
+  } else if (ex.type === "quiz") {
+    initQuiz(ex);
+  } else if (ex.type !== "theory") {
+    const ed = document.getElementById("openEditor");
+    if (ed) ed.addEventListener("input", () => saveText(ex.id, ed.value));
+  }
+
+  showView("exercise");
+}
+
+function escHtml(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+// Keep track of current React root so we can unmount before re-rendering
+let _previewRoot = null;
+
+function runExCode() {
+  if (typeof React === 'undefined' || typeof Babel === 'undefined') {
+    const previewDiv = document.getElementById("codePreview");
+    if (previewDiv) previewDiv.innerHTML = '<div style="color:#ef4444;font-size:13px"><strong>React no esta cargado.</strong><br><br>Necesitas internet la primera vez, o sirve la pagina con un servidor local:<br><code style="color:#eab308">npx serve ./interview-prep</code></div>';
+    setExStatus("React no disponible", "err");
+    return;
+  }
+  const code = document.getElementById("codeEditor").value;
+  const previewDiv = document.getElementById("codePreview");
+  const errorSpan = document.getElementById("previewError");
+  if (errorSpan) errorSpan.textContent = "";
+
+  let cleanCode = code;
+  cleanCode = cleanCode.replace(/^\s*import\s+.*?from\s+['"].*?['"]\s*;?\s*$/gm, '');
+  cleanCode = cleanCode.replace(/^\s*import\s+['"].*?['"]\s*;?\s*$/gm, '');
+  cleanCode = cleanCode.replace(/^\s*import\s*\{[^}]*\}\s*from\s*['"].*?['"]\s*;?\s*$/gm, '');
+  cleanCode = cleanCode.replace(/export\s+default\s+/g, '');
+  cleanCode = cleanCode.replace(/^\s*export\s+\{[^}]*\}\s*;?\s*$/gm, '');
+  cleanCode = cleanCode.replace(/export\s+(?=function|const|let|var|class)/g, '');
+
+  // Step 1: Compile JSX to JS with Babel
+  let compiled;
+  try {
+    compiled = Babel.transform(cleanCode, { presets: ['react'] }).code;
+  } catch(err) {
+    previewDiv.innerHTML = '<div style="color:#ef4444;font-family:monospace;font-size:13px"><strong>Error de sintaxis:</strong><br>' + err.message.replace(/</g, '&lt;') + '</div>';
+    setExStatus("Error de sintaxis", "err");
+    return;
+  }
+
+  // Step 2: Unmount previous render
+  if (_previewRoot) {
+    try { _previewRoot.unmount(); } catch(e) {}
+    _previewRoot = null;
+  }
+  previewDiv.innerHTML = "";
+
+  // Step 3: Eval compiled code and render into preview div
+  try {
+    // Create a fresh scope with React hooks available
+    const scopedEval = new Function(
+      'React', 'ReactDOM', 'useState', 'useEffect', 'useRef',
+      'useCallback', 'useMemo', 'useReducer', 'useContext', 'createContext',
+      compiled + '\nreturn typeof App === "function" ? App : null;'
+    );
+
+    const AppComponent = scopedEval(
+      React, ReactDOM,
+      React.useState, React.useEffect, React.useRef,
+      React.useCallback, React.useMemo, React.useReducer,
+      React.useContext, React.createContext
+    );
+
+    if (!AppComponent) {
+      previewDiv.innerHTML = '<div style="color:#ef4444;font-size:13px">No se encontro la funcion <strong>App</strong>. Asegurate de definir <code>function App()</code>.</div>';
+      setExStatus("Falta funcion App", "err");
+      return;
+    }
+
+    _previewRoot = ReactDOM.createRoot(previewDiv);
+    _previewRoot.render(React.createElement(AppComponent));
+    setExStatus("Ejecutado OK", "ok");
+
+  } catch(err) {
+    previewDiv.innerHTML = '<div style="color:#ef4444;font-family:monospace;font-size:13px"><strong>Error:</strong><br>' + err.message.replace(/</g, '&lt;') + '</div>';
+    setExStatus("Error de ejecucion", "err");
+  }
+}
+
+function checkExCode() {
+  if (!currentEx || !currentEx.check) {
+    setExStatus("Este ejercicio no tiene comprobacion automatica", "info");
+    return;
+  }
+  const previewDiv = document.getElementById("codePreview");
+  if (!previewDiv || !previewDiv.innerHTML || previewDiv.innerHTML.includes("Error")) {
+    setExStatus("Ejecuta el codigo primero", "err");
+    showToast("Pulsa 'Ejecutar' antes de comprobar", "error");
+    return;
+  }
+
+  // The check functions expect a document-like object.
+  // Since we render into a div now, we create a wrapper that mimics document methods.
+  const fakeDoc = {
+    querySelector: (sel) => previewDiv.querySelector(sel),
+    querySelectorAll: (sel) => previewDiv.querySelectorAll(sel),
+    getElementById: (id) => previewDiv.querySelector('#' + id),
+    body: { textContent: previewDiv.textContent, innerHTML: previewDiv.innerHTML }
+  };
+
+  try {
+    if (currentEx.check(fakeDoc)) {
+      markDone(currentEx.id);
+      setExStatus("Correcto!", "ok");
+      showToast("Ejercicio completado!", "success");
+      renderDashboard();
+    } else {
+      setExStatus("No cumple requisitos", "err");
+      showToast("Revisa las instrucciones", "error");
+    }
+  } catch(e) {
+    setExStatus("Error al comprobar: " + e.message, "err");
+  }
+}
+
+function showModelAnswer() {
+  const el = document.getElementById("modelBox");
+  if (el) el.classList.toggle("show");
+}
+
+// ═══════════════════════════════════════════════════════════
+// SMART ANSWER EVALUATOR (100% local, no API)
+// ═══════════════════════════════════════════════════════════
+function evaluateOpenAnswer() {
+  const ed = document.getElementById("openEditor");
+  if (!ed || !currentEx) return;
+  const answer = ed.value.trim().toLowerCase();
+
+  if (answer.length < 20) {
+    showFeedback("Tu respuesta es muy corta. Intenta desarrollar mas tus ideas.", 0, []);
+    return;
+  }
+
+  // Extract key concepts from model answer
+  const model = (currentEx.model || "").toLowerCase();
+  const manualKeywords = currentEx.keywords || [];
+
+  // Auto-extract important words from model (4+ chars, not stopwords)
+  const stopwords = new Set(["para","como","pero","este","esta","esto","tiene","hacer","puede","cuando","donde","porque","sobre","todo","cada","otro","otra","solo","sido","sera","tambien","entre","desde","hasta","antes","despues","mismo","misma","cual","esos","esas","algo","nada","bien","mejor","peor","mucho","poco","gran","parte","forma","modo","tipo","aqui","alla","muy","mas","menos","dentro","fuera","tras","bajo","contra","segun","hacia","mediante","durante","sino","aunque","pues","luego","entonces","ademas","without","their","these","those","which","would","could","should","about","there","where","being","other","after","before","between","through","with","from","into","than","then","them","they","that","this","have","been","some","what","when","were","will","your","just","only","also","more","most","such","over","very","same","each","both","many","must","does","here","still","while","take","even","come","made","like","look","know"]);
+
+  const modelWords = model.match(/[a-zA-ZáéíóúñüÁÉÍÓÚÑÜ]{4,}/g) || [];
+  const wordFreq = {};
+  modelWords.forEach(w => {
+    if (!stopwords.has(w)) wordFreq[w] = (wordFreq[w] || 0) + 1;
+  });
+
+  // Get top keywords: manual ones + most frequent from model
+  const autoKeywords = Object.entries(wordFreq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 15)
+    .map(([w]) => w);
+
+  const allKeywords = [...new Set([...manualKeywords.map(k => k.toLowerCase()), ...autoKeywords])];
+
+  // Check which keywords appear in the answer
+  const found = [];
+  const missing = [];
+  allKeywords.forEach(kw => {
+    if (answer.includes(kw)) found.push(kw);
+    else missing.push(kw);
+  });
+
+  const score = allKeywords.length > 0 ? Math.round((found.length / allKeywords.length) * 100) : 0;
+
+  // Check structure quality
+  const hasStructure = answer.includes("\n") || answer.length > 200;
+  const hasExample = /ejemplo|ej:|por ejemplo|como:|instance/i.test(answer);
+  const hasTechnical = /api|database|server|component|function|query|encrypt|auth|deploy|docker|sql|react|next|supabase/i.test(answer);
+
+  // Build feedback
+  let bonusPoints = 0;
+  const bonusFeedback = [];
+  if (hasStructure) { bonusPoints += 5; bonusFeedback.push("Buena estructura y desarrollo"); }
+  if (hasExample) { bonusPoints += 10; bonusFeedback.push("Incluyes ejemplos concretos"); }
+  if (hasTechnical) { bonusPoints += 5; bonusFeedback.push("Usas terminologia tecnica correcta"); }
+
+  const finalScore = Math.min(100, score + bonusPoints);
+
+  showFeedback(null, finalScore, missing.slice(0, 6), found, bonusFeedback);
+}
+
+function showFeedback(customMsg, score, missing, found, bonuses) {
+  let existing = document.getElementById("feedbackBox");
+  if (existing) existing.remove();
+
+  let color, emoji, verdict;
+  if (score >= 80) { color = "#22c55e"; emoji = "&#9989;"; verdict = "Excelente! Respuesta muy completa."; }
+  else if (score >= 60) { color = "#eab308"; emoji = "&#128161;"; verdict = "Buena respuesta, pero puedes mejorarla."; }
+  else if (score >= 35) { color = "#f97316"; emoji = "&#9888;&#65039;"; verdict = "Respuesta incompleta. Revisa los conceptos clave."; }
+  else { color = "#ef4444"; emoji = "&#10060;"; verdict = "Necesitas desarrollar mucho mas. Revisa la respuesta modelo."; }
+
+  if (customMsg) { verdict = customMsg; color = "#ef4444"; emoji = "&#10060;"; score = 0; }
+
+  let html = `<div id="feedbackBox" style="background:${color}15;border:1px solid ${color}40;border-radius:12px;padding:18px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="font-size:24px">${emoji}</span>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:${color}">${score}/100</div>
+        <div style="font-size:12px;color:var(--text2)">${verdict}</div>
+      </div>
+    </div>`;
+
+  if (bonuses && bonuses.length > 0) {
+    html += `<div style="margin-bottom:8px">${bonuses.map(b => `<span style="display:inline-block;font-size:11px;background:${color}20;color:${color};padding:3px 10px;border-radius:5px;margin:2px 4px 2px 0;font-weight:600">&#10003; ${b}</span>`).join("")}</div>`;
+  }
+
+  if (missing && missing.length > 0) {
+    html += `<div style="margin-top:8px">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Conceptos que faltan en tu respuesta:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        ${missing.map(m => `<span style="font-size:11px;background:#ef444420;color:#ef4444;padding:3px 10px;border-radius:5px;font-weight:600">${m}</span>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  if (found && found.length > 0) {
+    html += `<div style="margin-top:8px">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Conceptos que mencionas correctamente:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        ${found.map(f => `<span style="font-size:11px;background:#22c55e20;color:#22c55e;padding:3px 10px;border-radius:5px;font-weight:600">${f}</span>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  if (score < 80) {
+    html += `<div style="margin-top:10px;font-size:11px;color:var(--text3)">Consejo: revisa la respuesta modelo para ver que conceptos te faltan, luego intenta de nuevo sin mirarla.</div>`;
+  }
+
+  html += `</div>`;
+
+  const actions = document.querySelector(".ex-actions");
+  if (actions) actions.insertAdjacentHTML("afterend", html);
+
+  if (score >= 80) {
+    markDone(currentEx.id);
+    showToast("Respuesta aprobada! " + score + "/100", "success");
+    renderDashboard();
+  }
+}
+
+function markTheoryRead() {
+  if (!currentEx) return;
+  markDone(currentEx.id);
+  showToast("Leccion completada!", "success");
+  renderDashboard();
+}
+
+function initQuiz(ex) {
+  var qIdx = 0;
+  var score = 0;
+  var answered = false;
+  // Shuffle options for each question while tracking correct answer
+  var qs = ex.questions.map(function(q) {
+    var indices = [0,1,2,3];
+    // Fisher-Yates shuffle
+    for (var i = indices.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
+    }
+    var shuffledOpts = indices.map(function(idx) { return q.opts[idx]; });
+    var newCorrect = indices.indexOf(q.c);
+    return {q: q.q, opts: shuffledOpts, c: newCorrect, exp: q.exp};
+  });
+
+  function renderQ() {
+    var container = document.getElementById("quizContainer");
+    if (!container) return;
+    if (qIdx >= qs.length) {
+      var pct = Math.round((score / qs.length) * 100);
+      var passed = pct >= 70;
+      var color = passed ? "var(--green)" : "var(--red)";
+      var verdict = passed ? "Aprobado!" : "No aprobado (necesitas 70%)";
+      container.innerHTML = '<div class="quiz-score">' +
+        '<div class="score-num" style="color:' + color + '">' + score + '/' + qs.length + '</div>' +
+        '<div class="score-label">' + pct + '% aciertos</div>' +
+        '<div class="score-verdict" style="color:' + color + '">' + verdict + '</div>' +
+        '<div style="margin-top:20px">' +
+        (passed ? '<button class="btn btn-next" onclick="nextExercise()">Siguiente &rarr;</button>'
+               : '<button class="btn btn-run" onclick="initQuiz(currentEx)">Reintentar</button> <button class="btn btn-next" onclick="nextExercise()">Siguiente &rarr;</button>') +
+        '</div></div>';
+      if (passed) {
+        markDone(ex.id);
+        showToast("Quiz aprobado! " + score + "/" + qs.length, "success");
+        renderDashboard();
+      }
+      return;
+    }
+    var q = qs[qIdx];
+    answered = false;
+    var html = '<div class="quiz-question">' +
+      '<div class="quiz-progress">Pregunta ' + (qIdx + 1) + ' de ' + qs.length + ' &middot; Puntuacion: ' + score + '/' + qIdx + '</div>' +
+      '<h4>' + q.q + '</h4>';
+    for (var i = 0; i < q.opts.length; i++) {
+      html += '<button class="quiz-option" data-idx="' + i + '" onclick="handleQuizAnswer(' + i + ')">' + q.opts[i] + '</button>';
+    }
+    html += '<div class="quiz-explanation" id="quizExp" style="display:none"></div>' +
+      '<div style="margin-top:14px"><button class="btn btn-next" id="quizNextBtn" style="display:none" onclick="quizNext()">Siguiente pregunta &rarr;</button></div>' +
+      '</div>';
+    container.innerHTML = html;
+  }
+
+  window.handleQuizAnswer = function(idx) {
+    if (answered) return;
+    answered = true;
+    var q = qs[qIdx];
+    var btns = document.querySelectorAll(".quiz-option");
+    btns.forEach(function(btn) {
+      var bIdx = parseInt(btn.getAttribute("data-idx"));
+      if (bIdx === q.c) btn.classList.add("correct");
+      else if (bIdx === idx) btn.classList.add("wrong");
+      else btn.classList.add("dim");
+      btn.classList.add("disabled");
+    });
+    if (idx === q.c) score++;
+    var expEl = document.getElementById("quizExp");
+    if (expEl) { expEl.style.display = "block"; expEl.textContent = q.exp; }
+    var nextBtn = document.getElementById("quizNextBtn");
+    if (nextBtn) nextBtn.style.display = "inline-block";
+  };
+
+  window.quizNext = function() {
+    qIdx++;
+    renderQ();
+  };
+
+  renderQ();
+}
+
+function selfMarkDone() {
+  markDone(currentEx.id);
+  showToast("Marcado como completado!", "success");
+  renderDashboard();
+}
+
+function resetExCode() {
+  const ed = document.getElementById("codeEditor");
+  if (ed) { ed.value = currentEx.starter || ""; saveCode(currentEx.id, ed.value); }
+  // Unmount React and clear preview
+  if (_previewRoot) { try { _previewRoot.unmount(); } catch(e) {} _previewRoot = null; }
+  const preview = document.getElementById("codePreview");
+  if (preview) preview.innerHTML = '<p style="color:#999;text-align:center;margin-top:40px">Pulsa Ejecutar</p>';
+  const errSpan = document.getElementById("previewError");
+  if (errSpan) errSpan.textContent = "";
+  // Clear status
+  const st = document.getElementById("exStatus");
+  if (st) st.style.display = "none";
+}
+
+function resetOpenText() {
+  const ed = document.getElementById("openEditor");
+  if (ed) {
+    ed.value = "";
+    saveText(currentEx.id, "");
+  }
+  // Hide model answer if shown
+  const modelBox = document.getElementById("modelBox");
+  if (modelBox) modelBox.classList.remove("show");
+  // Hide hint if shown
+  const hintBox = document.getElementById("hintBox");
+  if (hintBox) hintBox.classList.remove("show");
+  // Remove feedback
+  const fb = document.getElementById("feedbackBox");
+  if (fb) fb.remove();
+}
+
+function toggleBox(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle("show");
+}
+
+function setExStatus(msg, type) {
+  const el = document.getElementById("exStatus");
+  if (!el) return;
+  el.style.display = "inline-block";
+  el.textContent = msg;
+  el.className = "ex-status status-" + type;
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast toast-" + type + " show";
+  setTimeout(() => t.className = "toast toast-" + type, 3000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DAILY VIEW
+// ═══════════════════════════════════════════════════════════
+function renderDailyView() {
+  const allEx = TRACKS.flatMap(t => t.exercises);
+  const undone = allEx.filter(e => !isDone(e.id));
+  const container = document.getElementById("dailyContent");
+
+  if (undone.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:40px 0">
+      <div style="font-size:48px;margin-bottom:16px">&#127881;</div>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px">Has completado todos los ejercicios!</h3>
+      <p style="color:var(--text3);font-size:13px">Increible trabajo. Puedes repasar cualquier pista.</p>
+    </div>`;
+    return;
+  }
+
+  // Pick a daily challenge based on date (deterministic per day)
+  const todayKey = new Date().toISOString().slice(0,10);
+  let hash = 0;
+  for (let i = 0; i < todayKey.length; i++) hash = ((hash << 5) - hash) + todayKey.charCodeAt(i);
+  const daily = undone[Math.abs(hash) % undone.length];
+  const track = TRACKS.find(t => t.exercises.some(e => e.id === daily.id));
+  window._dailyEx = daily;
+
+  container.innerHTML = `
+    <div style="background:linear-gradient(135deg,#0f1a2e,#1a0f2e);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:24px">
+      <div style="font-size:36px;margin-bottom:12px">&#127919;</div>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">${daily.title}</h3>
+      <p style="color:var(--text3);font-size:12px;margin-bottom:4px">${track.title} &middot; ${daily.type==="code"?"Codigo":daily.type==="theory"?"Leccion":daily.type==="quiz"?"Quiz":"Texto abierto"} &middot; ${daily.diff}</p>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:16px">${daily.desc}</p>
+      <button class="btn btn-next" onclick="startDailyChallenge()">Empezar reto</button>
+    </div>
+    <h3 style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:12px">Otros ejercicios pendientes</h3>
+    <div class="track-exercises">${undone.slice(0,8).map((ex,i) => {
+      const tr = TRACKS.find(tk => tk.exercises.some(e => e.id === ex.id));
+      const diffCls = "diff-"+ex.diff.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+      return `<div class="track-ex-item" onclick="openExFromTrack('${tr.id}','${ex.id}')">
+        <div class="ex-i-num">${i+1}</div>
+        <div class="ex-i-info">
+          <span class="ex-i-title">${ex.title}</span>
+          <span class="ex-i-type">${tr.title} &middot; ${ex.type==="code"?"Codigo":ex.type==="theory"?"Leccion":ex.type==="quiz"?"Quiz":"Texto abierto"}</span>
+        </div>
+        <span class="ex-i-diff ${diffCls}">${ex.diff}</span>
+      </div>`;
+    }).join("")}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// NEXT EXERCISE
+// ═══════════════════════════════════════════════════════════
+function nextExercise() {
+  if (!currentTrack || !currentEx) return;
+  const exs = currentTrack.exercises;
+  const idx = exs.findIndex(e => e.id === currentEx.id);
+  if (idx < exs.length - 1) {
+    openExercise(currentTrack, exs[idx + 1]);
+  } else {
+    showToast("Ultimo ejercicio de esta pista!", "info");
+    openTrack(currentTrack.id);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// GLOBAL RESET
+// ═══════════════════════════════════════════════════════════
+function confirmGlobalReset() {
+  const modal = document.getElementById("resetModal");
+  modal.style.display = "flex";
+  const input = document.getElementById("resetInput");
+  input.value = "";
+  document.getElementById("resetConfirmBtn").style.opacity = ".5";
+  document.getElementById("resetConfirmBtn").style.pointerEvents = "none";
+  setTimeout(() => input.focus(), 100);
+}
+
+function closeResetModal() {
+  document.getElementById("resetModal").style.display = "none";
+}
+
+function checkResetInput() {
+  const val = document.getElementById("resetInput").value.trim();
+  const btn = document.getElementById("resetConfirmBtn");
+  if (val === "REINICIAR") {
+    btn.style.opacity = "1";
+    btn.style.pointerEvents = "auto";
+  } else {
+    btn.style.opacity = ".5";
+    btn.style.pointerEvents = "none";
+  }
+}
+
+function executeGlobalReset() {
+  // Clear all state
+  state = {completed:[], streak:0, lastDate:null, codes:{}, texts:{}, dailyLog:{}};
+  save();
+  // Clear all saved code/text per exercise
+  const allKeys = Object.keys(localStorage);
+  allKeys.forEach(k => {
+    if (k.startsWith("react_lab_code_") || k.startsWith("react_practice_lab")) {
+      localStorage.removeItem(k);
+    }
+  });
+  closeResetModal();
+  showToast("Todo el progreso ha sido reiniciado", "info");
+  // Re-render everything
+  renderDashboard();
+  renderTracks();
+  showView("dashboard");
+}
+
+// Close modal with Escape
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeResetModal();
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+load();
+ensureDeps().then(ok => { if (ok) renderDashboard(); });
+</script>
+</body>
+</html>

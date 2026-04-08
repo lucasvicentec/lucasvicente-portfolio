@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centro de Preparacion - Entrevista Tech</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+    .app{max-width:860px;margin:0 auto;padding:20px}
+
+    /* ── Header ── */
+    .main-header{text-align:center;padding:24px 0;border-bottom:1px solid #1e293b;margin-bottom:24px}
+    .main-header h1{font-size:26px;font-weight:800;background:linear-gradient(90deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .main-header p{color:#64748b;font-size:13px;margin-top:6px}
+
+    /* ── Nav tabs ── */
+    .nav-tabs{display:flex;gap:4px;background:#1e293b;border-radius:12px;padding:4px;margin-bottom:24px}
+    .nav-tab{flex:1;padding:10px 8px;border:none;border-radius:10px;background:transparent;color:#64748b;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+    .nav-tab:hover{color:#94a3b8}
+    .nav-tab.active{background:#2563eb;color:#fff}
+    .nav-tab .tab-icon{font-size:18px;display:block;margin-bottom:2px}
+
+    /* ── Dashboard ── */
+    .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+    .dash-card{background:#1e293b;border-radius:12px;padding:16px;text-align:center}
+    .dash-card .val{font-size:28px;font-weight:800}
+    .dash-card .lbl{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+    .streak{color:#eab308}.correct-c{color:#22c55e}.wrong-c{color:#ef4444}.total-c{color:#60a5fa}
+
+    /* ── Skill radar (bar chart) ── */
+    .skill-bars{background:#1e293b;border-radius:12px;padding:20px;margin-bottom:24px}
+    .skill-bars h3{font-size:14px;color:#94a3b8;margin-bottom:14px;font-weight:600}
+    .skill-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .skill-bar-label{width:100px;font-size:11px;color:#94a3b8;text-align:right;flex-shrink:0}
+    .skill-bar-track{flex:1;height:20px;background:#0f172a;border-radius:4px;overflow:hidden;position:relative}
+    .skill-bar-fill{height:100%;border-radius:4px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-size:10px;font-weight:700;color:#fff;min-width:30px}
+    .skill-bar-count{width:50px;font-size:11px;color:#475569;text-align:left}
+    .bar-great{background:linear-gradient(90deg,#16a34a,#22c55e)}
+    .bar-good{background:linear-gradient(90deg,#ca8a04,#eab308)}
+    .bar-bad{background:linear-gradient(90deg,#dc2626,#ef4444)}
+    .bar-none{background:#334155}
+
+    /* ── Category buttons ── */
+    .categories{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;justify-content:center}
+    .cat-btn{padding:7px 14px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#94a3b8;cursor:pointer;font-size:12px;font-family:inherit;transition:all .2s}
+    .cat-btn:hover{border-color:#60a5fa;color:#e2e8f0}
+    .cat-btn.active{background:#2563eb;border-color:#2563eb;color:#fff}
+
+    /* ── Stats bar ── */
+    .stats{display:flex;gap:12px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+    .stat{background:#1e293b;padding:10px 16px;border-radius:10px;text-align:center;min-width:80px}
+    .stat-value{font-size:22px;font-weight:800}
+    .stat-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+
+    /* ── Progress bar ── */
+    .progress-bar{width:100%;height:5px;background:#1e293b;border-radius:3px;margin-bottom:20px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:3px;transition:width .4s}
+
+    /* ── Question card ── */
+    .question-card{background:#1e293b;border-radius:14px;padding:24px;margin-bottom:16px;border:1px solid #334155}
+    .q-category{font-size:10px;color:#60a5fa;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px}
+    .q-text{font-size:17px;font-weight:600;color:#f1f5f9;line-height:1.4;margin-bottom:18px}
+    .q-difficulty{display:inline-block;font-size:9px;padding:2px 8px;border-radius:4px;font-weight:600;margin-left:8px;vertical-align:middle}
+    .diff-easy{background:#0f2918;color:#22c55e}.diff-medium{background:#2a1f00;color:#eab308}.diff-hard{background:#2a0f0f;color:#ef4444}
+
+    /* ── Options ── */
+    .options{display:flex;flex-direction:column;gap:8px}
+    .option{padding:12px 16px;border:1.5px solid #334155;border-radius:10px;cursor:pointer;transition:all .15s;font-size:13px;line-height:1.4;background:#0f172a;display:flex;align-items:center;gap:10px}
+    .option:hover{border-color:#60a5fa;background:#162032}
+    .option.selected{border-color:#2563eb;background:#1e3a5f}
+    .option.correct{border-color:#22c55e;background:#0f2918;color:#86efac}
+    .option.wrong{border-color:#ef4444;background:#2a0f0f;color:#fca5a5}
+    .option.disabled{pointer-events:none}
+    .opt-letter{width:24px;height:24px;border-radius:6px;background:#334155;text-align:center;line-height:24px;font-size:11px;font-weight:700;flex-shrink:0}
+    .option.correct .opt-letter{background:#22c55e;color:#000}
+    .option.wrong .opt-letter{background:#ef4444;color:#fff}
+
+    /* ── Explanation ── */
+    .explanation{margin-top:14px;padding:14px;background:#162032;border-radius:10px;border-left:3px solid #2563eb;font-size:12px;line-height:1.6;color:#cbd5e1;display:none}
+    .explanation.show{display:block}
+    .explanation strong{color:#60a5fa}
+
+    /* ── Open question (interview sim) ── */
+    .open-area{width:100%;min-height:120px;background:#0f172a;border:1.5px solid #334155;border-radius:10px;color:#e2e8f0;font-family:inherit;font-size:13px;padding:14px;resize:vertical;margin-bottom:12px}
+    .open-area:focus{outline:none;border-color:#2563eb}
+    .model-answer{background:#0f2918;border:1px solid #22c55e;border-radius:10px;padding:14px;font-size:12px;line-height:1.6;color:#86efac;margin-top:10px}
+    .model-answer strong{color:#22c55e}
+    .self-rate{display:flex;gap:8px;margin-top:12px;justify-content:center}
+    .rate-btn{padding:8px 20px;border:1.5px solid #334155;border-radius:8px;background:#1e293b;color:#94a3b8;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .2s}
+    .rate-btn:hover{border-color:#60a5fa;color:#e2e8f0}
+    .rate-btn.rate-good{border-color:#22c55e;color:#22c55e}
+    .rate-btn.rate-ok{border-color:#eab308;color:#eab308}
+    .rate-btn.rate-bad{border-color:#ef4444;color:#ef4444}
+
+    /* ── Buttons ── */
+    .btn-row{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+    .btn{padding:10px 24px;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-primary{background:#2563eb;color:#fff}.btn-primary:hover{background:#1d4ed8}
+    .btn-secondary{background:#334155;color:#e2e8f0}.btn-secondary:hover{background:#475569}
+    .btn-danger{background:#7f1d1d;color:#fca5a5}.btn-danger:hover{background:#991b1b}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
+    .btn-lg{padding:14px 36px;font-size:15px}
+
+    /* ── Results ── */
+    .results{text-align:center;padding:30px 0}
+    .results h2{font-size:28px;font-weight:800;margin-bottom:4px}
+    .score{font-size:56px;font-weight:800;margin:16px 0}
+    .score-great{color:#22c55e}.score-good{color:#eab308}.score-bad{color:#ef4444}
+    .results p{color:#94a3b8;font-size:14px;margin-bottom:6px}
+
+    /* ── Review ── */
+    .review-item{background:#1e293b;border-radius:10px;padding:14px;margin-bottom:8px;text-align:left;border-left:3px solid #334155}
+    .review-item.review-correct{border-left-color:#22c55e}
+    .review-item.review-wrong{border-left-color:#ef4444}
+    .review-q{font-weight:600;font-size:13px;margin-bottom:4px}
+    .review-a{font-size:12px;color:#94a3b8}
+    .review-a strong{color:#22c55e}
+
+    /* ── Mode cards ── */
+    .mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+    .mode-card{background:#1e293b;border:1.5px solid #334155;border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;text-align:center}
+    .mode-card:hover{border-color:#60a5fa;transform:translateY(-2px)}
+    .mode-card.locked{opacity:.5;cursor:not-allowed}
+    .mode-card .mc-icon{font-size:32px;margin-bottom:8px}
+    .mode-card .mc-title{font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+    .mode-card .mc-desc{font-size:11px;color:#64748b;line-height:1.4}
+    .mode-card .mc-badge{display:inline-block;font-size:9px;padding:2px 8px;border-radius:4px;background:#7c3aed;color:#fff;font-weight:700;margin-top:8px}
+
+    /* ── History ── */
+    .history-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#1e293b;border-radius:10px;margin-bottom:6px}
+    .history-info{font-size:13px}
+    .history-date{font-size:11px;color:#475569}
+    .history-score{font-size:16px;font-weight:800}
+
+    /* ── Calendar heatmap ── */
+    .heatmap{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:20px;justify-content:center}
+    .heat-day{width:18px;height:18px;border-radius:3px;background:#1e293b}
+    .heat-1{background:#0f2918}.heat-2{background:#166534}.heat-3{background:#22c55e}.heat-4{background:#4ade80}
+
+    .hidden{display:none}
+    @media(max-width:600px){.dash-grid{grid-template-columns:repeat(2,1fr)}.mode-cards{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const Q = [
+  // ── JS ──
+  {cat:"JavaScript",q:"Cual es la diferencia entre == y ===?",opts:["== compara valor, === compara valor y tipo","Son iguales","=== es mas lento","== solo funciona con strings"],c:0,exp:"== hace coercion de tipos ('5'==5 es true). === compara valor Y tipo sin conversion ('5'===5 es false). SIEMPRE usa ===.",d:"easy"},
+  {cat:"JavaScript",q:"Que devuelve typeof null?",opts:["'null'","'undefined'","'object'","'boolean'"],c:2,exp:"Bug historico de JS. typeof null devuelve 'object' aunque null NO es un objeto.",d:"medium"},
+  {cat:"JavaScript",q:"Que es hoisting?",opts:["Mover variables al final","JS mueve declaraciones al inicio del scope antes de ejecutar","Error de compilacion","Patron de diseno"],c:1,exp:"JavaScript 'sube' declaraciones de var y funciones al inicio de su scope. Con let/const existe la 'temporal dead zone'.",d:"medium"},
+  {cat:"JavaScript",q:"Que devuelve [1,2,3].map(x => x * 2)?",opts:["[1,2,3]","[2,4,6]","6","undefined"],c:1,exp:"map() crea un NUEVO array transformando cada elemento. No muta el original.",d:"easy"},
+  {cat:"JavaScript",q:"Diferencia entre let y const?",opts:["let es global, const local","const no se puede reasignar, let si","No hay diferencia","const es mas rapido"],c:1,exp:"const no permite reasignar. Pero si es objeto/array, SI puedes mutar propiedades. Ambos tienen scope de bloque.",d:"easy"},
+  {cat:"JavaScript",q:"Que es un closure?",opts:["Funcion que se ejecuta sola","Funcion que recuerda variables de su scope exterior","Tipo de bucle","Error de JS"],c:1,exp:"Un closure captura y recuerda las variables del scope donde fue creada, incluso fuera de ese scope.",d:"medium"},
+  {cat:"JavaScript",q:"Que hace async/await?",opts:["Hace el codigo mas lento","Permite escribir codigo asincrono de forma sincrona","Crea hilos paralelos","Solo syntactic sugar sin utilidad"],c:1,exp:"async/await es sugar sobre Promesas. await 'pausa' la ejecucion hasta que la promesa se resuelve.",d:"easy"},
+  {cat:"JavaScript",q:"Que estado NO tiene una Promise?",opts:["pending","fulfilled","rejected","completed"],c:3,exp:"Los 3 estados son: pending, fulfilled, rejected. 'completed' no existe.",d:"easy"},
+  {cat:"JavaScript",q:"Diferencia entre .map() y .forEach()?",opts:["Son identicas","map devuelve nuevo array, forEach no devuelve nada","forEach es mas rapido","map muta el original"],c:1,exp:"map() devuelve nuevo array. forEach() ejecuta funcion pero devuelve undefined. En React usas map() para listas.",d:"easy"},
+  {cat:"JavaScript",q:"Que es el Event Loop?",opts:["Tipo de bucle for","Mecanismo que permite codigo asincrono en JS single-threaded","Framework","Metodo de arrays"],c:1,exp:"JS es single-threaded. El Event Loop revisa si el Call Stack esta vacio y mueve callbacks de la cola al stack.",d:"hard"},
+  {cat:"JavaScript",q:"Que hace el spread operator (...)?",opts:["Elimina elementos","Expande un iterable en elementos individuales","Crea un bucle","Compara objetos"],c:1,exp:"Spread expande arrays/objetos. [...arr1, ...arr2] combina arrays. Es inmutable.",d:"easy"},
+  {cat:"JavaScript",q:"Que es optional chaining (?.)?",opts:["Encadenar promesas","Acceder a propiedades sin error si algo es null/undefined","Tipo de bucle","Crear strings"],c:1,exp:"user?.address?.city devuelve undefined en vez de TypeError si algo no existe.",d:"easy"},
+  {cat:"JavaScript",q:"Que hace Array.reduce()?",opts:["Reduce tamano","Acumula todos los elementos en un solo valor","Elimina duplicados","Ordena"],c:1,exp:"reduce() acumula con callback. [1,2,3].reduce((acc,n) => acc+n, 0) = 6.",d:"medium"},
+  {cat:"JavaScript",q:"Diferencia entre null y undefined?",opts:["Son iguales","undefined = sin asignar, null = vacio intencional","null es error","undefined es mas nuevo"],c:1,exp:"undefined: variable declarada sin valor. null: valor asignado intencionalmente como 'vacio'.",d:"easy"},
+  {cat:"JavaScript",q:"Que son los template literals?",opts:["Plantillas HTML","Strings con backticks que permiten interpolacion con ${}","Tipo de variable","Comentarios"],c:1,exp:"Backticks (`) con ${variable} para interpolar. Soportan multilinea.",d:"easy"},
+
+  // ── TypeScript ──
+  {cat:"TypeScript",q:"Ventaja principal de TypeScript sobre JavaScript?",opts:["Mas rapido","Tipado estatico que detecta errores antes de ejecutar","Mas funciones built-in","Funciona sin navegador"],c:1,exp:"TypeScript detecta errores en compilacion, mejora autocompletado y mantenibilidad.",d:"easy"},
+  {cat:"TypeScript",q:"Cuando usas interface vs type?",opts:["Son identicos","interface para objetos, type para unions y tipos complejos","type es legacy","interface es mas lento"],c:1,exp:"Interface para objetos (extensible). Type para unions, intersections, alias. Regla: interface para objetos, type para lo demas.",d:"medium"},
+  {cat:"TypeScript",q:"Que hace Partial<T>?",opts:["Elimina propiedades","Hace todas las propiedades opcionales","Hace todo obligatorio","Crea tipo vacio"],c:1,exp:"Partial<T> convierte todo en opcional. Util para funciones de update parcial.",d:"medium"},
+  {cat:"TypeScript",q:"Que es un generic?",opts:["Tipo solo strings","Tipo parametrizado que se define al usar","Como 'any'","Tipo para APIs"],c:1,exp:"Generics son 'huecos' de tipo. function first<T>(arr: T[]): T funciona con cualquier tipo manteniendo seguridad.",d:"medium"},
+  {cat:"TypeScript",q:"Diferencia entre unknown y any?",opts:["Son identicos","unknown requiere comprobar tipo antes de usar, any no","any es mas seguro","unknown no existe"],c:1,exp:"any desactiva tipado. unknown acepta todo pero OBLIGA a comprobar tipo antes de usar. Prefiere unknown.",d:"hard"},
+  {cat:"TypeScript",q:"Que hace Omit<T, K>?",opts:["Crea tipo sin las propiedades K","Hace K opcional","Anade K a T","Elimina T"],c:0,exp:"Omit<User, 'id'> crea tipo con todo de User excepto id. Util para formularios.",d:"medium"},
+
+  // ── React ──
+  {cat:"React",q:"Que es el Virtual DOM?",opts:["Copia del DOM para calcular cambios minimos","DOM del navegador","Framework","Base de datos"],c:0,exp:"React mantiene un Virtual DOM en memoria. Compara cambios (diffing) y aplica solo los minimos al DOM real.",d:"medium"},
+  {cat:"React",q:"Para que sirve el array de dependencias en useEffect?",opts:["Importar npm","Indicar CUANDO se re-ejecuta el efecto","Declarar variables","Es opcional"],c:1,exp:"[] = solo al montar. [var1] = cuando var1 cambie. Sin array = cada render (evitar).",d:"easy"},
+  {cat:"React",q:"Por que las keys son importantes en listas?",opts:["Estetica","React las usa para identificar que elementos cambiaron","Obligatorias por TS","SEO"],c:1,exp:"Keys identifican elementos unicos. Sin ellas React no optimiza re-renders. Nunca uses indice si la lista cambia.",d:"easy"},
+  {cat:"React",q:"Diferencia entre props y state?",opts:["Son lo mismo","Props del padre (read-only), state interno (mutable)","State del padre","Props para CSS"],c:1,exp:"Props: datos del padre, inmutables. State: datos internos, cambian con setState. Cambio de state = re-render.",d:"easy"},
+  {cat:"React",q:"Que hace useState?",opts:["Variable global","Declara variable de estado y setter","Conecta DB","Importa modulo"],c:1,exp:"useState(inicial) devuelve [valor, setValor]. Persiste entre renders, setValor causa re-render.",d:"easy"},
+  {cat:"React",q:"Cuando usas useCallback?",opts:["Siempre","Cuando pasas funcion como prop a componente memoizado","Para fetch","Para eventos"],c:1,exp:"useCallback memoriza referencia de funcion. Solo util con React.memo. No uses en todo.",d:"hard"},
+  {cat:"React",q:"Que es 'use client'?",opts:["Import de libreria","Directiva que marca componente como Client Component","Hook","Middleware"],c:1,exp:"Marca componente para ejecutarse en navegador. Necesario para hooks, eventos, APIs del browser.",d:"easy"},
+  {cat:"React",q:"Que es un custom hook?",opts:["Hook de Facebook","Funcion que empieza con 'use' y reutiliza logica con hooks","Componente especial","Plugin"],c:1,exp:"Funcion con prefijo 'use' que usa otros hooks. Extrae logica reutilizable. Ej: useAuth(), useFetch().",d:"medium"},
+  {cat:"React",q:"Componente controlado vs no controlado?",opts:["Controlado usa Redux","Controlado: React maneja valor via state. No controlado: DOM maneja valor","Clase vs funcional","No hay diferencia"],c:1,exp:"Controlado: value={state} + onChange. React es fuente de verdad. No controlado: useRef para leer valor del DOM.",d:"medium"},
+  {cat:"React",q:"Que es lifting state up?",opts:["Mover state a libreria","Mover state al padre comun cuando hijos necesitan compartirlo","Eliminar state","Subir en DOM"],c:1,exp:"Cuando hermanos comparten datos, el state sube al padre comun y baja como props.",d:"medium"},
+  {cat:"React",q:"Que es React.memo?",opts:["Hook de memoria","HOC que evita re-renders si props no cambian","Funcion debug","Metodo de ciclo"],c:1,exp:"Envuelve componente y evita re-render si props son iguales (comparacion superficial).",d:"medium"},
+  {cat:"React",q:"Que es useRef?",opts:["Para crear referencias CSS","Referencia mutable que persiste entre renders sin causar re-render","Para crear rutas","Para imports"],c:1,exp:"useRef crea un objeto {current: valor} que persiste entre renders. Util para acceder al DOM o guardar valores sin re-render.",d:"medium"},
+
+  // ── React Practico (fetch, map, filter, forms, CRUD) ──
+  {cat:"React",q:"Como haces fetch de datos al cargar un componente?",opts:["fetch() en el return","useEffect con fetch() y array vacio []","useState con URL","import de API"],c:1,exp:"useEffect(() => { fetch(url).then(res => res.json()).then(data => setData(data)) }, []). El [] hace que se ejecute SOLO al montar.",d:"easy"},
+  {cat:"React",q:"Que pasa si no pones [] en useEffect con fetch?",opts:["Nada, funciona igual","Se ejecuta en CADA render, creando un bucle infinito de peticiones","Error de compilacion","Solo se ejecuta una vez"],c:1,exp:"Sin [], el efecto se ejecuta despues de CADA render. fetch -> setData -> re-render -> fetch -> setData... bucle infinito.",d:"medium"},
+  {cat:"React",q:"Como muestras una lista de elementos en React?",opts:["Un for loop en el return","array.map() que devuelve JSX para cada elemento","document.createElement","innerHTML"],c:1,exp:"array.map((item) => <li key={item.id}>{item.name}</li>). map() transforma cada elemento en JSX. Necesita key unica.",d:"easy"},
+  {cat:"React",q:"Que hace .filter() y como se usa con .map()?",opts:["filter reemplaza map","filter selecciona elementos, luego map los renderiza","Son lo mismo","filter es para objetos, map para arrays"],c:1,exp:"array.filter(item => condicion).map(item => <li>{item}</li>). Primero filtras, luego mapeas. Encadenamiento.",d:"easy"},
+  {cat:"React",q:"Como implementas un buscador que filtra una lista en tiempo real?",opts:["Con setTimeout","Estado para busqueda + filter con includes() + map para renderizar","Nuevo fetch por cada letra","Con useRef"],c:1,exp:"const [search, setSearch] = useState(''). Input con onChange que actualiza search. Filtras: array.filter(x => x.name.toLowerCase().includes(search.toLowerCase())).",d:"medium"},
+  {cat:"React",q:"Como conectas un input a un estado en React?",opts:["document.getElementById","value={estado} y onChange={(e) => setEstado(e.target.value)}","Solo con useRef","Con innerHTML"],c:1,exp:"Componente controlado: el input muestra el valor del estado (value) y actualiza el estado al cambiar (onChange). React es la fuente de verdad.",d:"easy"},
+  {cat:"React",q:"Como previenes que un formulario recargue la pagina al hacer submit?",opts:["return false","e.preventDefault() en el handleSubmit","type='button'","Con useEffect"],c:1,exp:"<form onSubmit={handleSubmit}> y dentro: function handleSubmit(e) { e.preventDefault(); // tu logica }",d:"easy"},
+  {cat:"React",q:"Como borras un elemento de una lista en React?",opts:["delete array[index]","setArray(array.filter(item => item.id !== idABorrar))","array.splice()","array.remove()"],c:1,exp:"Nunca mutes el array. Usa filter para crear nuevo array sin el elemento: setTodos(todos.filter(t => t.id !== id)).",d:"easy"},
+  {cat:"React",q:"Como editas un elemento dentro de un array en estado?",opts:["array[index] = nuevo","setArray(array.map(item => item.id === id ? {...item, campo: nuevo} : item))","array.splice","Con useRef"],c:1,exp:"map() recorre todo: si el id coincide, devuelve copia modificada con spread. Si no, devuelve el original. Inmutable.",d:"medium"},
+  {cat:"React",q:"Como manejas loading y error en un fetch?",opts:["No hace falta","3 estados: loading (boolean), error (string), data (array). Loading true al inicio, false al recibir o fallar","Con try/catch global","Solo console.log"],c:1,exp:"useState loading=true, error=''. En fetch: .then() -> setData, setLoading(false). .catch() -> setError(msg), setLoading(false). En render: if(loading) return Cargando. if(error) return Error.",d:"medium"},
+  {cat:"React",q:"Que hace e.target.value en un onChange?",opts:["El nombre del input","El valor actual que el usuario ha escrito en el input","El tipo del evento","El id del formulario"],c:1,exp:"e = evento del navegador. e.target = el elemento HTML (el input). e.target.value = lo que hay escrito en ese momento.",d:"easy"},
+  {cat:"React",q:"Como agrupar multiples inputs en un solo estado?",opts:["Un useState por cada input","Un useState con objeto: {name:'', email:''} y onChange dinamico con [e.target.name]","No se puede","Con useReducer siempre"],c:1,exp:"const [form, setForm] = useState({name:'', email:''}). onChange: setForm({...form, [e.target.name]: e.target.value}). El name del input debe coincidir con la key del objeto.",d:"medium"},
+  {cat:"React",q:"Como validas un formulario antes de enviar?",opts:["HTML required es suficiente","Creas funcion validate() que revisa campos y devuelve objeto de errores","Con una libreria siempre","No se valida en frontend"],c:1,exp:"validate() revisa cada campo, devuelve {name:'', email:'error msg'}. Si algun valor no esta vacio, hay errores. setErrors(resultado). Renderizas errores en rojo debajo de cada campo.",d:"medium"},
+  {cat:"React",q:"Que es el spread operator (...) aplicado a estado en React?",opts:["Copia superficial para actualizar sin mutar","Elimina propiedades","Crea estado nuevo","Combina componentes"],c:1,exp:"setForm({...form, name: 'nuevo'}) crea copia del objeto form y sobreescribe name. NUNCA mutes estado directamente. Siempre copia nueva.",d:"easy"},
+  {cat:"React",q:"Por que no debes mutar el estado directamente (ej: array.push)?",opts:["Es mas lento","React no detecta el cambio y no re-renderiza la pantalla","Da error de compilacion","Se puede mutar sin problema"],c:1,exp:"React compara referencia del estado anterior vs nuevo. Si mutas el mismo objeto, la referencia es igual y React no sabe que cambio. Siempre crea nuevo array/objeto.",d:"medium"},
+
+  // ── Next.js ──
+  {cat:"Next.js",q:"Diferencia entre SSR y SSG?",opts:["Son lo mismo","SSR genera en cada peticion, SSG en build time","SSG es mas lento","SSR no necesita servidor"],c:1,exp:"SSR: pagina generada en cada request (datos frescos). SSG: generada una vez en build (rapido, CDN). ISR: SSG que se regenera cada X segundos.",d:"medium"},
+  {cat:"Next.js",q:"Que es un Server Component?",opts:["Componente movil","Se ejecuta en servidor y no envia JS al cliente","De Node.js","De DB"],c:1,exp:"Server Components corren en servidor, acceden a DB directamente, no envian JS al browser. Default en App Router.",d:"medium"},
+  {cat:"Next.js",q:"Cuando necesitas 'use client'?",opts:["Siempre","Cuando usas hooks, event handlers o APIs del navegador","Solo formularios","Nunca"],c:1,exp:"Necesario para useState, useEffect, onClick, onChange, window, localStorage.",d:"easy"},
+  {cat:"Next.js",q:"Como funciona el routing en App Router?",opts:["react-router","File-based: carpetas en /app definen rutas","Archivo config","Manualmente"],c:1,exp:"Cada carpeta en /app es ruta. page.tsx es la pagina. [slug] para dinamicas. route.ts para API.",d:"easy"},
+  {cat:"Next.js",q:"Que es una API Route?",opts:["Ruta externa","Endpoint backend dentro del proyecto Next.js","Componente React","Ruta del navegador"],c:1,exp:"Endpoints HTTP en /app/api/. Cada route.ts exporta GET, POST, etc. No necesitas backend separado.",d:"easy"},
+
+  // ── SQL ──
+  {cat:"SQL",q:"Diferencia entre INNER JOIN y LEFT JOIN?",opts:["Son identicos","INNER: solo coincidencias. LEFT: todo de izquierda + coincidencias derecha","LEFT mas rapido","INNER une +2 tablas"],c:1,exp:"INNER: solo filas con match en ambas. LEFT: todas de la izquierda, NULL si no hay match a la derecha.",d:"medium"},
+  {cat:"SQL",q:"Que es un indice?",opts:["Lista de tablas","Estructura que acelera busquedas en columna","Tipo de columna","Backup"],c:1,exp:"Como indice de libro. Acelera SELECT pero ralentiza INSERT/UPDATE. Crear en columnas de WHERE/JOIN/ORDER BY.",d:"medium"},
+  {cat:"SQL",q:"Que es una transaccion?",opts:["Compra online","Grupo de operaciones que se ejecutan TODAS o NINGUNA","Tipo de query","Conexion DB"],c:1,exp:"Atomicidad: COMMIT si todo OK, ROLLBACK si algo falla. Ej: transferencia bancaria.",d:"medium"},
+  {cat:"SQL",q:"Diferencia entre WHERE y HAVING?",opts:["Son identicos","WHERE filtra antes de GROUP BY, HAVING despues","HAVING mas rapido","WHERE solo numeros"],c:1,exp:"WHERE filtra filas individuales. HAVING filtra grupos despues del GROUP BY.",d:"medium"},
+  {cat:"SQL",q:"Que es una foreign key?",opts:["Clave encriptacion","Columna que referencia primary key de otra tabla","Tipo de indice","Clave API"],c:1,exp:"Establece relacion entre tablas. Garantiza integridad: no puedes insertar ID que no existe en la tabla referenciada.",d:"easy"},
+  {cat:"SQL",q:"Que hace GROUP BY?",opts:["Ordena resultados","Agrupa filas con valores iguales para funciones de agregacion","Filtra filas","Junta tablas"],c:1,exp:"Agrupa filas iguales y permite COUNT, SUM, AVG, MAX, MIN por grupo.",d:"easy"},
+
+  // ── Docker ──
+  {cat:"Docker",q:"Diferencia entre imagen y contenedor?",opts:["Son lo mismo","Imagen: plantilla. Contenedor: instancia en ejecucion","Contenedor es plantilla","Imagen produccion, contenedor dev"],c:1,exp:"Imagen = receta (read-only). Contenedor = plato cocinado (instancia ejecutandose). Multiples contenedores de una imagen.",d:"easy"},
+  {cat:"Docker",q:"Que es un Dockerfile?",opts:["Config de Docker Desktop","Instrucciones para construir una imagen","Log de Docker","Archivo backup"],c:1,exp:"Texto con instrucciones (FROM, COPY, RUN, CMD). Cada instruccion crea una capa cacheable.",d:"easy"},
+  {cat:"Docker",q:"Que es Docker Compose?",opts:["GUI","Herramienta para aplicaciones multi-contenedor","Lenguaje","Servicio cloud"],c:1,exp:"Define servicios en docker-compose.yml. Levanta todo con docker-compose up. Maneja redes, volumes, env vars.",d:"easy"},
+  {cat:"Docker",q:"Por que COPY package.json antes que el resto?",opts:["Obligatorio","Para cache de capas: install solo se re-ejecuta si dependencias cambian","Convencion","No importa"],c:1,exp:"Docker cachea capas. Si copias todo junto, cualquier cambio invalida cache del install. Separando, solo cambia si package.json cambia.",d:"medium"},
+  {cat:"Docker",q:"Que es un volume?",opts:["Nivel sonido","Almacenamiento persistente que sobrevive al eliminar contenedor","Tipo de red","Capa de imagen"],c:1,exp:"Sin volumes, datos se pierden al eliminar contenedor. Critico para bases de datos.",d:"easy"},
+  {cat:"Docker",q:"Contenedores vs VMs?",opts:["Son identicos","Contenedores comparten kernel (ligeros). VMs tienen SO completo (pesadas, mas aisladas)","VMs mas ligeras","Contenedores mas seguros"],c:1,exp:"Contenedores: MBs, segundos en arrancar, comparten kernel. VMs: GBs, minutos, SO completo, mas aislamiento.",d:"easy"},
+
+  // ── Linux/Redes ──
+  {cat:"Linux/Redes",q:"Que pasa al escribir una URL en el navegador?",opts:["Conexion directa","DNS -> TCP handshake -> TLS -> HTTP request -> respuesta -> render","Busca en cache","Google detecta IP"],c:1,exp:"1) DNS resuelve dominio a IP. 2) TCP 3-way handshake. 3) TLS si HTTPS. 4) HTTP request. 5) Respuesta. 6) Renderizado.",d:"hard"},
+  {cat:"Linux/Redes",q:"Que es un reverse proxy?",opts:["Proxy al reves","Servidor que recibe peticiones y las redirige a backends","Firewall","VPN"],c:1,exp:"Nginx como reverse proxy: SSL termination, load balancing, cache, oculta arquitectura interna.",d:"medium"},
+  {cat:"Linux/Redes",q:"Que significa permiso 755?",opts:["7 archivos, 5 carpetas","Propietario: rwx, Grupo: r-x, Otros: r-x","Prioridad proceso","Tamano archivo"],c:1,exp:"r=4, w=2, x=1. 7=rwx, 5=r-x. Propietario todo, grupo y otros leen y ejecutan.",d:"medium"},
+  {cat:"Linux/Redes",q:"Que es DNS?",opts:["Servidor web","Sistema que traduce dominios a IPs","Protocolo seguridad","Servicio email"],c:1,exp:"DNS = guia telefonica de internet. google.com -> 142.250.184.14.",d:"easy"},
+  {cat:"Linux/Redes",q:"Diferencia HTTP vs HTTPS?",opts:["Son identicos","HTTPS encripta con SSL/TLS, HTTP no","HTTP mas rapido","HTTPS solo formularios"],c:1,exp:"HTTPS = HTTP + encriptacion SSL/TLS. Protege contra eavesdropping y man-in-the-middle.",d:"easy"},
+
+  // ── Git ──
+  {cat:"Git",q:"Diferencia entre merge y rebase?",opts:["Son identicos","Merge crea commit de union, rebase reescribe historial linealmente","Rebase mas seguro","Merge elimina commits"],c:1,exp:"Merge preserva historial (no lineal). Rebase crea historial limpio (lineal). NUNCA rebase en ramas compartidas.",d:"medium"},
+  {cat:"Git",q:"Que es un pull request?",opts:["Comando git","Peticion para que cambios sean revisados y mergeados","Tipo de merge","Copia del repo"],c:1,exp:"PR = peticion formal de merge con code review. Otros ven cambios, comentan y aprueban.",d:"easy"},
+  {cat:"Git",q:"Como resuelves un conflicto?",opts:["git fix --conflicts","Abres archivo, eliges codigo, eliminas marcadores, git add y commit","Se resuelve solo","Borras rama"],c:1,exp:"Git marca conflictos con <<<<<<< y >>>>>>>. Tu decides que mantener, limpias marcadores, add y commit.",d:"easy"},
+
+  // ── Arquitectura ──
+  {cat:"Arquitectura",q:"Que es CI/CD?",opts:["Lenguaje","CI: tests auto al subir codigo. CD: deploy automatico si pasan","Base de datos","Herramienta Docker"],c:1,exp:"CI: tests + build automatico en cada push. CD: deploy automatico a produccion si CI pasa.",d:"easy"},
+  {cat:"Arquitectura",q:"Autenticacion vs Autorizacion?",opts:["Son lo mismo","Autenticacion: QUIEN eres. Autorizacion: QUE puedes hacer","Autorizacion primero","Una para APIs, otra webs"],c:1,exp:"Autenticacion = identidad (login). Autorizacion = permisos (admin vs user). Siempre autenticacion primero.",d:"easy"},
+  {cat:"Arquitectura",q:"Que es JWT?",opts:["Framework","Token Base64 con header, payload y signature","Base de datos","Protocolo red"],c:1,exp:"JWT: Header (algoritmo) + Payload (datos) + Signature (firma). Stateless: toda la info en el token.",d:"medium"},
+  {cat:"Arquitectura",q:"Que es CORS?",opts:["Framework CSS","Politica del navegador que bloquea peticiones a dominios diferentes","Tipo cache","Protocolo HTTP"],c:1,exp:"CORS bloquea cross-origin requests. Servidor debe enviar Access-Control-Allow-Origin para permitir.",d:"medium"},
+  {cat:"Arquitectura",q:"Monolito vs Microservicios?",opts:["Monolito es malo","Monolito: todo junto, facil. Microservicios: separados, escalables pero complejos","Micro siempre mejor","Son lo mismo"],c:1,exp:"Empieza monolito. Separa en microservicios cuando hay necesidad real de escalar partes independientemente.",d:"medium"},
+  {cat:"Arquitectura",q:"Que es inyeccion SQL?",opts:["Insertar datos","Ataque: codigo SQL malicioso via inputs del usuario","Tipo JOIN","Funcion PostgreSQL"],c:1,exp:"Se previene con prepared statements, ORMs, y NUNCA concatenando input del usuario en queries.",d:"easy"},
+  {cat:"Arquitectura",q:"Que es cache?",opts:["Solo navegador","Almacenar datos frecuentes en lugar rapido: browser, CDN, Redis, React","Tipo RAM","Solo DB"],c:1,exp:"Multiples niveles: browser (estaticos), CDN (Cloudflare), Redis (app data), React (useMemo).",d:"easy"},
+
+  // ── AWS ──
+  {cat:"AWS/Cloud",q:"Que es cloud computing?",opts:["Un tipo de internet mas rapido","Alquilar recursos (servidores, storage, DB) a un proveedor en vez de comprarlos","Solo almacenamiento online","Un lenguaje de programacion"],c:1,exp:"En vez de comprar servidores fisicos, alquilas recursos a AWS/GCP/Azure. Pagas por uso, escalas en minutos.",d:"easy"},
+  {cat:"AWS/Cloud",q:"Diferencia entre IaaS, PaaS y SaaS?",opts:["Son lo mismo","IaaS: te dan servidor. PaaS: te dan plataforma. SaaS: te dan app completa","IaaS es mas caro","SaaS es para programadores"],c:1,exp:"IaaS (EC2): tu gestionas SO y apps. PaaS (Heroku): solo tu codigo. SaaS (Gmail): no gestionas nada tecnico.",d:"medium"},
+  {cat:"AWS/Cloud",q:"Que es AWS EC2?",opts:["Base de datos","Servidores virtuales (VPS) en la nube de AWS","Almacenamiento de archivos","Servicio DNS"],c:1,exp:"EC2 = Elastic Compute Cloud. Son VPS que puedes crear y destruir en segundos. Como los servidores que gestionabas pero en AWS.",d:"easy"},
+  {cat:"AWS/Cloud",q:"Que es AWS S3?",opts:["Un servidor","Almacenamiento de objetos para archivos, imagenes, backups","Una base de datos","Un servicio de email"],c:1,exp:"S3 = Simple Storage Service. Almacena archivos (objetos) con alta durabilidad. Se usa para backups, assets estaticos, logs.",d:"easy"},
+  {cat:"AWS/Cloud",q:"Que es AWS RDS?",opts:["Un servidor web","Base de datos relacional gestionada por AWS","Un CDN","Un firewall"],c:1,exp:"RDS = Relational Database Service. Es tu PostgreSQL/MySQL pero AWS gestiona backups, updates, replicas y alta disponibilidad.",d:"easy"},
+  {cat:"AWS/Cloud",q:"Que es una VPC en AWS?",opts:["Un tipo de servidor","Red virtual privada aislada dentro de AWS","Un servicio de backup","Una base de datos"],c:1,exp:"VPC = Virtual Private Cloud. Tu red privada en AWS donde colocas tus recursos. Controlas subnets, routing, security groups.",d:"medium"},
+  {cat:"AWS/Cloud",q:"Que es IAM en AWS?",opts:["Un tipo de servidor","Gestion de usuarios, roles y permisos en tu cuenta AWS","Una base de datos","Un servicio de email"],c:1,exp:"IAM = Identity and Access Management. Controla QUIEN puede hacer QUE en tu cuenta AWS. Usuarios, grupos, roles y politicas.",d:"easy"},
+  {cat:"AWS/Cloud",q:"Que son las Availability Zones?",opts:["Regiones del mundo","Data centers independientes dentro de una region para alta disponibilidad","Zonas horarias","Tipos de servidor"],c:1,exp:"Cada region AWS tiene multiples AZs (data centers separados). Despliegas en varias AZs para que si uno cae, los otros sigan.",d:"medium"},
+  {cat:"AWS/Cloud",q:"Que es el modelo de responsabilidad compartida?",opts:["AWS paga la mitad","AWS protege LA nube (hardware, red). Tu proteges lo que hay EN la nube (datos, config, apps)","Tu pagas todo","AWS gestiona todo"],c:1,exp:"AWS se encarga de la seguridad fisica, hardware y red global. Tu te encargas de tu SO, apps, datos, security groups e IAM.",d:"medium"},
+  {cat:"AWS/Cloud",q:"Diferencia entre instancias On-Demand y Reserved?",opts:["Son iguales","On-Demand: sin compromiso, mas caro. Reserved: compromiso 1-3 anos, 30-70% descuento","On-Demand es gratis","Reserved es mas caro"],c:1,exp:"On-Demand pagas por hora sin compromiso. Reserved te comprometes 1-3 anos pero ahorras hasta 70%. Spot es sobrante de AWS, hasta 90% descuento pero te pueden quitar la instancia.",d:"medium"},
+  {cat:"AWS/Cloud",q:"Que es AWS Lambda?",opts:["Un servidor virtual","Funciones serverless: ejecuta codigo sin gestionar servidor, pagas solo por ejecucion","Un servicio DNS","Una base de datos"],c:1,exp:"Lambda ejecuta funciones sin servidor. Subes tu codigo, se ejecuta cuando llega un evento, y pagas solo por los milisegundos de ejecucion. Escala automaticamente.",d:"medium"},
+  {cat:"AWS/Cloud",q:"Que es CloudFront?",opts:["Un firewall","CDN de AWS que distribuye contenido desde ubicaciones cercanas al usuario","Un servidor web","Un servicio de email"],c:1,exp:"CloudFront = CDN de AWS. Cachea contenido en edge locations por todo el mundo para que los usuarios accedan mas rapido. Como Cloudflare CDN.",d:"easy"},
+
+  // ── Terraform ──
+  {cat:"Terraform",q:"Que es Infrastructure as Code (IaC)?",opts:["Programar servidores","Definir infraestructura en archivos de codigo en vez de crearla manualmente","Un lenguaje de programacion","Un servicio cloud"],c:1,exp:"IaC permite definir servidores, redes, DBs en archivos de texto. Es reproducible, versionable en Git y automatizable.",d:"easy"},
+  {cat:"Terraform",q:"Cual es el flujo basico de Terraform?",opts:["install -> run -> deploy","write -> plan -> apply","build -> test -> release","init -> commit -> push"],c:1,exp:"Write: escribes archivos .tf. Plan: terraform plan muestra que va a hacer. Apply: terraform apply ejecuta los cambios.",d:"easy"},
+  {cat:"Terraform",q:"Que es el state en Terraform?",opts:["El estado del servidor","Archivo que guarda que recursos ha creado Terraform y su estado actual","Un tipo de variable","Un backup"],c:1,exp:"terraform.tfstate registra los recursos creados. Sin el, Terraform no sabe que existe e intentaria crear todo de nuevo. En equipo se guarda remoto (S3).",d:"medium"},
+  {cat:"Terraform",q:"Diferencia entre Terraform y Ansible?",opts:["Son identicos","Terraform CREA infraestructura (servidores, redes). Ansible CONFIGURA lo que hay dentro (instalar software, config)","Ansible es mas nuevo","Terraform es solo para AWS"],c:1,exp:"Terraform crea/destruye recursos cloud (IaC). Ansible configura y gestiona software dentro de servidores existentes (Configuration Management). Se complementan.",d:"medium"},
+  {cat:"Terraform",q:"Por que Terraform y no CloudFormation?",opts:["Son identicos","Terraform es multi-cloud (AWS, GCP, Azure). CloudFormation solo funciona con AWS","CloudFormation es gratis","Terraform es mas lento"],c:1,exp:"Terraform funciona con cualquier proveedor cloud. CloudFormation solo AWS. Si cambias de cloud o usas varios, Terraform no requiere reescribir. Ademas HCL es mas legible que JSON/YAML.",d:"medium"},
+  {cat:"Terraform",q:"Que es un provider en Terraform?",opts:["Un proveedor de internet","Un plugin que permite a Terraform interactuar con un servicio cloud especifico (AWS, GCP, etc.)","Un tipo de servidor","Una variable"],c:1,exp:"Los providers son plugins que conectan Terraform con servicios. provider 'aws' permite crear recursos en AWS. Hay providers para AWS, GCP, Azure, Cloudflare, GitHub, etc.",d:"easy"},
+  {cat:"Terraform",q:"Que hace terraform plan?",opts:["Crea los recursos","Muestra un preview de los cambios que se van a hacer SIN ejecutar nada","Destruye la infraestructura","Formatea el codigo"],c:1,exp:"terraform plan es un dry-run: te muestra que va a crear (+), modificar (~) o destruir (-) sin tocar nada. Siempre revisas el plan antes de hacer apply.",d:"easy"},
+];
+
+// ── Interview simulation questions (open-ended) ──
+const interviewQs = [
+  {cat:"Personal",q:"Cuentame sobre ti. Quien eres y que haces.",answer:"Soy desarrollador full-stack y DevOps. Trabajo como tecnico informatico en la Comunidad de Madrid a traves de Ayesa, y soy socio en Hytalia Network donde dirijo la operacion tecnica. He construido productos en produccion como Finesse (app de finanzas), StackWatch (monitorizacion) y cofunde VarynHost (hosting con +60 servidores). Me motiva construir cosas que funcionen y no se rompan."},
+  {cat:"Personal",q:"Cual es tu mayor fortaleza?",answer:"Hacer que las cosas funcionen end-to-end. No solo frontend o backend: puedo montar la infraestructura, CI/CD, monitoring, y asegurar que todo esta estable en produccion. He gestionado servidores con clientes reales dependiendo del uptime."},
+  {cat:"Personal",q:"Cual es tu mayor debilidad?",answer:"A veces quiero resolver problemas demasiado rapido sin documentar lo suficiente. Lo estoy mejorando activamente, especialmente ahora que trabajo en equipo donde la documentacion es clave."},
+  {cat:"Personal",q:"Donde te ves en 5 anos?",answer:"Quiero seguir construyendo producto en un rol mas senior donde pueda tomar decisiones de arquitectura y mentorizar a otros. Me interesa la interseccion entre desarrollo y operaciones."},
+  {cat:"Proyectos",q:"Cuentame sobre Finesse. Que es y por que lo construiste?",answer:"Vi que Splitwise tenia limitaciones, asi que construi mi propia alternativa. Es una PWA instalable que funciona offline, importa CSV, tiene categorias personalizadas y un asistente financiero con IA. Full-stack: autenticacion OAuth, Service Worker para offline, sync automatico con Supabase."},
+  {cat:"Proyectos",q:"Cuentame sobre VarynHost. Que aprendiste?",answer:"Cofunde un servicio de hosting que llego a +60 clientes y +60 servidores en EU. Automatice provisioning, paneles custom y facturacion. Lo que mas me enorgullece es que era infraestructura real con gente pagando y dependiendo del uptime. Aprendi operaciones, automatizacion y responsabilidad sobre sistemas criticos."},
+  {cat:"Proyectos",q:"Que haces exactamente en Ayesa / Comunidad de Madrid?",answer:"Soy tecnico informatico dando soporte a empleados y directivos de las consejerias. Gestiono incidencias tecnicas, diagnostico problemas, escalo al equipo correcto y soy enlace entre Ayesa (proveedor) y la gerencia de Madrid Digital."},
+  {cat:"Proyectos",q:"Que es Hytalia Network y cual es tu rol?",answer:"Es una joint venture entre Mood Studios (US) y Peyleth Solutions (ES). Soy socio con responsabilidad operativa: dirijo la operacion diaria, defino roadmap, coordino con los otros socios, y gestiono la infraestructura tecnica y continuidad del servicio."},
+  {cat:"Proyectos",q:"Cuentame sobre Informo. Que problema resuelve y como lo construiste?",answer:"Informo es un SaaS de canal de denuncias para que empresas cumplan con la Ley 2/2023 (obligatorio para +50 empleados). Lo construi con Next.js 15, React 19, Supabase y cifrado AES-256-GCM end-to-end. Las denuncias se cifran antes de guardarse, hay seguimiento anonimo con codigo, panel de gestion para la empresa, y exportacion de Libro-Registro para la AIPI. Tiene 3 planes de suscripcion con trial de 7 dias sin tarjeta."},
+  {cat:"Tecnica",q:"En Informo, por que elegiste AES-256-GCM sobre Supabase en vez de cifrado a nivel de base de datos?",answer:"El cifrado a nivel de DB (TDE) protege los datos en reposo pero el administrador de la DB puede leerlos. Con AES-256-GCM a nivel de aplicacion, los datos se cifran ANTES de llegar a Supabase. Ni siquiera yo como admin puedo leer una denuncia sin la clave. Esto es critico para un canal de denuncias donde el anonimato y la confidencialidad son requisitos legales."},
+  {cat:"Tecnica",q:"Explicame que es Docker y por que lo usas.",answer:"Docker empaqueta una app con todas sus dependencias en un contenedor aislado. Funciona igual en local, staging y produccion. Elimina el 'en mi maquina funciona'. Uso Docker Compose para levantar multiples servicios (app + DB + cache) con un solo comando."},
+  {cat:"Tecnica",q:"Que pasa cuando un usuario escribe tu URL en el navegador?",answer:"1) DNS traduce el dominio a IP. 2) TCP handshake con el servidor. 3) TLS/SSL si es HTTPS. 4) El navegador envia HTTP request. 5) Nginx (reverse proxy) recibe y redirige a mi app Next.js. 6) Next.js procesa (SSR o sirve estatico). 7) Responde HTML. 8) El navegador renderiza."},
+  {cat:"Tecnica",q:"Como despliegas tus aplicaciones en produccion?",answer:"Push a main en GitHub dispara GitHub Actions que ejecuta tests y build. Si pasa, construye imagen Docker y la despliega. Uso Docker Swarm para orquestar contenedores. Nginx como reverse proxy. Cloudflare delante para CDN, cache y proteccion DDoS."},
+  {cat:"Tecnica",q:"Diferencia entre Server Components y Client Components en Next.js?",answer:"Server Components se ejecutan en el servidor, pueden acceder a DB directamente y no envian JS al cliente. Son el default en App Router. Client Components necesitan 'use client', se ejecutan en el navegador y son necesarios para interactividad: hooks, eventos, APIs del browser."},
+  {cat:"Situacional",q:"Un servidor en produccion se cae a las 3 de la manana. Que haces?",answer:"1) Reviso alertas y logs para identificar el problema. 2) Si es urgente y afecta clientes, intento restaurar servicio inmediatamente (restart, rollback, failover). 3) Diagnostico la causa raiz. 4) Aplico fix. 5) Documento el incidente y que lo causo. 6) Implemento prevencion para que no vuelva a pasar."},
+  {cat:"Situacional",q:"Te piden una feature para ayer pero sabes que hacerla rapido va a generar deuda tecnica. Que haces?",answer:"Comunico el trade-off al equipo/manager: puedo hacerlo rapido con X limitaciones, o bien con Y tiempo extra. Si la urgencia es real, hago la version rapida pero documento la deuda tecnica y propongo un plan para limpiarla despues. Nunca silencio la deuda."},
+  {cat:"Situacional",q:"Llegas a un proyecto con codigo legacy sin tests ni documentacion. Como lo abordas?",answer:"Primero entiendo que hace el sistema (leo codigo, pregunto al equipo). Antes de cambiar nada, escribo tests para las partes criticas. Luego refactorizo incrementalmente, nunca todo de golpe. Documento lo que voy entendiendo para el siguiente que llegue."},
+];
+
+// ═══════════════════════════════════════════════════════
+// PERSISTENCE
+// ═══════════════════════════════════════════════════════
+const STORAGE_KEY = "lucas_interview_prep";
+function loadData() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return d || defaultData();
+  } catch { return defaultData(); }
+}
+function defaultData() {
+  return { history: [], catStats: {}, streak: 0, lastDate: null, totalAnswered: 0, totalCorrect: 0, dailyLog: {} };
+}
+function saveData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+let data = loadData();
+
+function updateStreak() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (data.lastDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (data.lastDate === yesterday) data.streak++;
+  else if (data.lastDate !== today) data.streak = 1;
+  data.lastDate = today;
+  saveData(data);
+}
+
+function logAnswer(cat, correct) {
+  if (!data.catStats[cat]) data.catStats[cat] = { correct: 0, total: 0 };
+  data.catStats[cat].total++;
+  data.totalAnswered++;
+  if (correct) { data.catStats[cat].correct++; data.totalCorrect++; }
+  const today = new Date().toISOString().slice(0, 10);
+  if (!data.dailyLog[today]) data.dailyLog[today] = 0;
+  data.dailyLog[today]++;
+  updateStreak();
+  saveData(data);
+}
+
+function logExam(mode, score, total, cats) {
+  data.history.unshift({ date: new Date().toISOString(), mode, score, total, cats });
+  if (data.history.length > 50) data.history.pop();
+  saveData(data);
+}
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let S = {
+  tab: "dashboard",
+  screen: "menu", // menu, quiz, results, interview, interview-q
+  cat: "all",
+  mode: "practice",
+  cQ: 0,
+  answers: [],
+  shuffled: [],
+  answered: false,
+  selOpt: -1,
+  timeLeft: 0,
+  timer: null,
+  intQ: 0,
+  intAnswers: [],
+  intShuffled: [],
+  intRevealed: false,
+  intText: ""
+};
+
+const cats = [...new Set(Q.map(q => q.cat))];
+
+function shuffle(a) { const s=[...a]; for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];} return s; }
+
+// ═══════════════════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════════════════
+function R() {
+  const app = document.getElementById("app");
+  let h = `
+    <header class="main-header">
+      <h1>Centro de Preparacion</h1>
+      <p>Entrevistas Tech &mdash; Lucas Vicente &mdash; Marzo 2026</p>
+    </header>
+    <div class="nav-tabs">
+      <button class="nav-tab ${S.tab==='dashboard'?'active':''}" onclick="setTab('dashboard')"><span class="tab-icon">📊</span>Dashboard</button>
+      <button class="nav-tab ${S.tab==='practice'?'active':''}" onclick="setTab('practice')"><span class="tab-icon">📝</span>Practica</button>
+      <button class="nav-tab ${S.tab==='exam'?'active':''}" onclick="setTab('exam')"><span class="tab-icon">🎯</span>Examenes</button>
+      <button class="nav-tab ${S.tab==='interview'?'active':''}" onclick="setTab('interview')"><span class="tab-icon">🎤</span>Simulacro</button>
+      <button class="nav-tab ${S.tab==='history'?'active':''}" onclick="setTab('history')"><span class="tab-icon">📈</span>Historial</button>
+    </div>
+  `;
+
+  if (S.tab === "dashboard") h += renderDashboard();
+  else if (S.tab === "practice") h += (S.screen === "quiz" ? renderQuiz() : S.screen === "results" ? renderResults() : renderPracticeMenu());
+  else if (S.tab === "exam") h += (S.screen === "quiz" ? renderQuiz() : S.screen === "results" ? renderResults() : renderExamMenu());
+  else if (S.tab === "interview") h += (S.screen === "interview-q" ? renderInterviewQ() : S.screen === "results" ? renderInterviewResults() : renderInterviewMenu());
+  else if (S.tab === "history") h += renderHistory();
+
+  app.innerHTML = h;
+}
+
+function renderDashboard() {
+  const pct = data.totalAnswered > 0 ? Math.round((data.totalCorrect / data.totalAnswered) * 100) : 0;
+  let bars = "";
+  cats.forEach(c => {
+    const s = data.catStats[c] || { correct: 0, total: 0 };
+    const p = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+    const cls = p >= 70 ? "bar-great" : p >= 40 ? "bar-good" : s.total === 0 ? "bar-none" : "bar-bad";
+    bars += `<div class="skill-bar-row">
+      <span class="skill-bar-label">${c}</span>
+      <div class="skill-bar-track"><div class="skill-bar-fill ${cls}" style="width:${Math.max(p,5)}%">${s.total>0?p+'%':''}</div></div>
+      <span class="skill-bar-count">${s.correct}/${s.total}</span>
+    </div>`;
+  });
+
+  // Heatmap last 30 days
+  let heatmap = "";
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+    const count = data.dailyLog[d] || 0;
+    const lvl = count === 0 ? "" : count < 10 ? "heat-1" : count < 25 ? "heat-2" : count < 50 ? "heat-3" : "heat-4";
+    heatmap += `<div class="heat-day ${lvl}" title="${d}: ${count} respuestas"></div>`;
+  }
+
+  return `
+    <div class="dash-grid">
+      <div class="dash-card"><div class="val streak">${data.streak}</div><div class="lbl">Dias seguidos</div></div>
+      <div class="dash-card"><div class="val total-c">${data.totalAnswered}</div><div class="lbl">Respondidas</div></div>
+      <div class="dash-card"><div class="val correct-c">${pct}%</div><div class="lbl">Acierto global</div></div>
+      <div class="dash-card"><div class="val" style="color:${data.history.length>0&&data.history[0].score/data.history[0].total>=.7?'#22c55e':'#ef4444'}">${data.history.length>0?Math.round(data.history[0].score/data.history[0].total*100)+'%':'--'}</div><div class="lbl">Ultimo examen</div></div>
+    </div>
+    <div class="skill-bars">
+      <h3>Dominio por Categoria</h3>
+      ${bars}
+    </div>
+    <div class="skill-bars">
+      <h3>Actividad (ultimos 30 dias)</h3>
+      <div class="heatmap">${heatmap}</div>
+      <p style="text-align:center;font-size:11px;color:#475569;margin-top:8px">Menos ◻ ◻ ◻ ◻ ◻ Mas</p>
+    </div>
+    ${pct > 0 && pct < 50 ? '<div style="background:#2a0f0f;border:1px solid #ef4444;border-radius:10px;padding:14px;text-align:center;font-size:13px;color:#fca5a5;margin-top:12px"><strong>Necesitas mas practica.</strong> Tu porcentaje global esta por debajo del 50%. Dedica mas tiempo a las categorias en rojo.</div>' : ''}
+    ${pct >= 70 ? '<div style="background:#0f2918;border:1px solid #22c55e;border-radius:10px;padding:14px;text-align:center;font-size:13px;color:#86efac;margin-top:12px"><strong>Buen progreso!</strong> Haz un examen final para validar que estas listo.</div>' : ''}
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-danger" onclick="if(confirm('Borrar TODO el progreso?')){localStorage.removeItem('${STORAGE_KEY}');data=defaultData();R();}">Resetear Progreso</button>
+    </div>
+  `;
+}
+
+function renderPracticeMenu() {
+  const catBtns = cats.map(c => `<button class="cat-btn ${S.cat===c?'active':''}" onclick="S.cat='${c}';R()">${c}</button>`).join("");
+  const n = S.cat === "all" ? Q.length : Q.filter(q => q.cat === S.cat).length;
+  return `
+    <h3 style="text-align:center;color:#94a3b8;margin-bottom:10px;font-size:12px">MODO PRACTICA</h3>
+    <p style="text-align:center;color:#475569;font-size:12px;margin-bottom:16px">Sin presion. Responde, ve la explicacion y aprende.</p>
+    <div class="categories">
+      <button class="cat-btn ${S.cat==='all'?'active':''}" onclick="S.cat='all';R()">Todas (${Q.length})</button>
+      ${catBtns}
+    </div>
+    <p style="text-align:center;color:#475569;margin-bottom:16px">${n} preguntas</p>
+    <div class="btn-row"><button class="btn btn-primary btn-lg" onclick="startQuiz('practice')">Empezar Practica</button></div>
+  `;
+}
+
+function renderExamMenu() {
+  const globalPct = data.totalAnswered > 0 ? Math.round((data.totalCorrect / data.totalAnswered) * 100) : 0;
+  const canFinal = data.totalAnswered >= 50;
+  return `
+    <h3 style="text-align:center;color:#94a3b8;margin-bottom:16px;font-size:12px">EXAMENES</h3>
+    <div class="mode-cards">
+      <div class="mode-card" onclick="startQuiz('exam-easy')">
+        <div class="mc-icon">🟢</div>
+        <div class="mc-title">Examen Basico</div>
+        <div class="mc-desc">20 preguntas faciles y medias<br>Sin limite de tiempo</div>
+      </div>
+      <div class="mode-card" onclick="startQuiz('exam-timed')">
+        <div class="mc-icon">⏱️</div>
+        <div class="mc-title">Contrarreloj</div>
+        <div class="mc-desc">20 preguntas aleatorias<br>25 segundos por pregunta</div>
+      </div>
+      <div class="mode-card" onclick="startQuiz('exam-hard')">
+        <div class="mc-icon">🔴</div>
+        <div class="mc-title">Examen Dificil</div>
+        <div class="mc-desc">15 preguntas medias y dificiles<br>20 segundos por pregunta</div>
+      </div>
+      <div class="mode-card ${canFinal?'':'locked'}" onclick="${canFinal?`startQuiz('exam-final')`:''}">
+        <div class="mc-icon">${canFinal?'🏆':'🔒'}</div>
+        <div class="mc-title">EXAMEN FINAL</div>
+        <div class="mc-desc">${canFinal?'Todas las categorias, 40 preguntas<br>30s por pregunta. Necesitas 70% para aprobar':'Necesitas +50 respuestas totales para desbloquear'}</div>
+        ${canFinal?'<div class="mc-badge">DESBLOQUEADO</div>':''}
+      </div>
+    </div>
+    ${!canFinal?`<p style="text-align:center;color:#475569;font-size:12px">Llevas ${data.totalAnswered}/50 respuestas para desbloquear el examen final</p>`:''}
+  `;
+}
+
+function renderInterviewMenu() {
+  return `
+    <h3 style="text-align:center;color:#94a3b8;margin-bottom:8px;font-size:12px">SIMULACRO DE ENTREVISTA</h3>
+    <p style="text-align:center;color:#475569;font-size:12px;margin-bottom:20px">Preguntas abiertas como en una entrevista real. Escribe tu respuesta, luego compara con la respuesta modelo. Se honesto contigo mismo.</p>
+    <div class="mode-cards">
+      <div class="mode-card" onclick="startInterview('all')">
+        <div class="mc-icon">🎤</div>
+        <div class="mc-title">Entrevista Completa</div>
+        <div class="mc-desc">15 preguntas: personales, tecnicas y situacionales</div>
+      </div>
+      <div class="mode-card" onclick="startInterview('Personal')">
+        <div class="mc-icon">👤</div>
+        <div class="mc-title">Preguntas Personales</div>
+        <div class="mc-desc">Cuentame sobre ti, fortalezas, debilidades...</div>
+      </div>
+      <div class="mode-card" onclick="startInterview('Proyectos')">
+        <div class="mc-icon">🚀</div>
+        <div class="mc-title">Defiende tus Proyectos</div>
+        <div class="mc-desc">Explica Finesse, VarynHost, Ayesa, Hytalia...</div>
+      </div>
+      <div class="mode-card" onclick="startInterview('Tecnica')">
+        <div class="mc-icon">⚙️</div>
+        <div class="mc-title">Preguntas Tecnicas Abiertas</div>
+        <div class="mc-desc">Explicame Docker, como despliegas, Next.js...</div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Quiz render (shared by practice & exams) ──
+function renderQuiz() {
+  const q = S.shuffled[S.cQ];
+  const total = S.shuffled.length;
+  const progress = ((S.cQ + 1) / total) * 100;
+  const correct = S.answers.filter(a => a.ok).length;
+  const wrong = S.answers.filter(a => !a.ok).length;
+  const diffCls = q.d === "easy" ? "diff-easy" : q.d === "hard" ? "diff-hard" : "diff-medium";
+  const diffLabel = q.d === "easy" ? "Facil" : q.d === "hard" ? "Dificil" : "Media";
+  const timed = S.mode.includes("timed") || S.mode === "exam-hard" || S.mode === "exam-final";
+
+  const opts = q.opts.map((o, i) => {
+    let cls = "option";
+    if (S.answered) { cls += " disabled"; if (i === q.c) cls += " correct"; else if (i === S.selOpt && i !== q.c) cls += " wrong"; }
+    else if (i === S.selOpt) cls += " selected";
+    return `<div class="${cls}" onclick="selOpt(${i})"><span class="opt-letter">${String.fromCharCode(65+i)}</span>${o}</div>`;
+  }).join("");
+
+  return `
+    <div class="stats">
+      <div class="stat"><div class="stat-value" style="color:#60a5fa">${S.cQ+1}/${total}</div><div class="stat-label">Pregunta</div></div>
+      <div class="stat"><div class="stat-value" style="color:#22c55e">${correct}</div><div class="stat-label">Bien</div></div>
+      <div class="stat"><div class="stat-value" style="color:#ef4444">${wrong}</div><div class="stat-label">Mal</div></div>
+      ${timed && !S.answered ? `<div class="stat"><div class="stat-value" style="color:${S.timeLeft<=8?'#ef4444':'#eab308'}">${S.timeLeft}s</div><div class="stat-label">Tiempo</div></div>` : ''}
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+    <div class="question-card">
+      <div class="q-category">${q.cat} <span class="q-difficulty ${diffCls}">${diffLabel}</span></div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${opts}</div>
+      <div class="explanation ${S.answered?'show':''}">${S.answered?`<strong>Explicacion:</strong> ${q.exp}`:''}</div>
+    </div>
+    <div class="btn-row">
+      ${S.answered
+        ? (S.cQ < total-1 ? `<button class="btn btn-primary" onclick="nextQ()">Siguiente</button>` : `<button class="btn btn-primary" onclick="showResults()">Ver Resultados</button>`)
+        : `<button class="btn btn-primary" onclick="confirmAns()" ${S.selOpt===-1?'disabled':''}>Confirmar</button>`}
+      <button class="btn btn-secondary" onclick="S.screen='menu';if(S.timer)clearInterval(S.timer);R()">Salir</button>
+    </div>
+  `;
+}
+
+function renderResults() {
+  const total = S.answers.length;
+  const correct = S.answers.filter(a => a.ok).length;
+  const pct = Math.round((correct / total) * 100);
+  const sc = pct >= 70 ? "score-great" : pct >= 50 ? "score-good" : "score-bad";
+  const isFinal = S.mode === "exam-final";
+  const passed = isFinal && pct >= 70;
+  const msg = isFinal
+    ? (passed ? "HAS APROBADO EL EXAMEN FINAL! Estas preparado para entrevistas." : "No has alcanzado el 70%. Sigue practicando y vuelve a intentarlo.")
+    : (pct >= 80 ? "Excelente! Dominas este tema." : pct >= 60 ? "Bien, pero repasa donde fallaste." : "Necesitas mas estudio. Vuelve a la guia.");
+
+  const catR = {};
+  S.answers.forEach((a, i) => {
+    const c = S.shuffled[i].cat;
+    if (!catR[c]) catR[c] = { ok: 0, t: 0 };
+    catR[c].t++; if (a.ok) catR[c].ok++;
+  });
+  const catHtml = Object.entries(catR).map(([c, r]) => {
+    const p = Math.round((r.ok / r.t) * 100);
+    const col = p >= 70 ? '#22c55e' : p >= 50 ? '#eab308' : '#ef4444';
+    return `<div class="stat"><div class="stat-value" style="color:${col}">${p}%</div><div class="stat-label">${c}</div></div>`;
+  }).join("");
+
+  const reviewHtml = S.answers.map((a, i) => {
+    const q = S.shuffled[i];
+    return `<div class="review-item ${a.ok?'review-correct':'review-wrong'}">
+      <div class="review-q">${i+1}. ${q.q}</div>
+      <div class="review-a">${a.ok ? 'Correcto' : `Tu respuesta: ${a.sel>=0?q.opts[a.sel]:'Sin responder'}. <strong>Correcta: ${q.opts[q.c]}</strong>`}</div>
+    </div>`;
+  }).join("");
+
+  return `
+    <div class="results">
+      ${isFinal ? (passed ? '<div style="font-size:48px;margin-bottom:10px">🏆</div>' : '<div style="font-size:48px;margin-bottom:10px">📚</div>') : ''}
+      <h2>${isFinal ? (passed ? 'APROBADO' : 'SUSPENDIDO') : 'Resultados'}</h2>
+      <div class="score ${sc}">${pct}%</div>
+      <p>${correct} de ${total} correctas</p>
+      <p style="margin-top:8px;font-size:15px;color:#e2e8f0">${msg}</p>
+      <div class="stats" style="margin-top:20px;flex-wrap:wrap">${catHtml}</div>
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-primary" onclick="S.screen='menu';R()">Volver</button>
+      </div>
+      <h3 style="margin-top:28px;margin-bottom:12px;color:#94a3b8;font-size:13px">Revision</h3>
+      ${reviewHtml}
+    </div>
+  `;
+}
+
+// ── Interview render ──
+function renderInterviewQ() {
+  const q = S.intShuffled[S.intQ];
+  const total = S.intShuffled.length;
+  return `
+    <div class="stats">
+      <div class="stat"><div class="stat-value" style="color:#a78bfa">${S.intQ+1}/${total}</div><div class="stat-label">Pregunta</div></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${((S.intQ+1)/total)*100}%"></div></div>
+    <div class="question-card">
+      <div class="q-category">Simulacro &mdash; ${q.cat}</div>
+      <div class="q-text">${q.q}</div>
+      <textarea class="open-area" id="int-textarea" placeholder="Escribe tu respuesta como si estuvieras en la entrevista..." oninput="S.intText=this.value;document.getElementById('btn-reveal').disabled=this.value.length<10" ${S.intRevealed?'disabled':''}>${S.intText}</textarea>
+      ${S.intRevealed ? `
+        <div class="model-answer"><strong>Respuesta modelo:</strong><br>${q.answer}</div>
+        <p style="text-align:center;color:#94a3b8;font-size:12px;margin-top:12px">Se honesto: como fue tu respuesta?</p>
+        <div class="self-rate">
+          <button class="rate-btn rate-good" onclick="rateInterview('good')">La clave</button>
+          <button class="rate-btn rate-ok" onclick="rateInterview('ok')">Mas o menos</button>
+          <button class="rate-btn rate-bad" onclick="rateInterview('bad')">No sabia</button>
+        </div>
+      ` : `
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-reveal" onclick="S.intRevealed=true;R()" ${S.intText.length<10?'disabled':''}>Ver Respuesta Modelo</button>
+          <button class="btn btn-secondary" onclick="S.screen='menu';R()">Salir</button>
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function renderInterviewResults() {
+  const total = S.intAnswers.length;
+  const good = S.intAnswers.filter(a => a === "good").length;
+  const ok = S.intAnswers.filter(a => a === "ok").length;
+  const bad = S.intAnswers.filter(a => a === "bad").length;
+  const score = Math.round(((good * 1 + ok * 0.5) / total) * 100);
+  const sc = score >= 70 ? "score-great" : score >= 50 ? "score-good" : "score-bad";
+  return `
+    <div class="results">
+      <h2>Resultado del Simulacro</h2>
+      <div class="score ${sc}">${score}%</div>
+      <div class="stats" style="margin:20px 0">
+        <div class="stat"><div class="stat-value" style="color:#22c55e">${good}</div><div class="stat-label">La clave</div></div>
+        <div class="stat"><div class="stat-value" style="color:#eab308">${ok}</div><div class="stat-label">Mas o menos</div></div>
+        <div class="stat"><div class="stat-value" style="color:#ef4444">${bad}</div><div class="stat-label">No sabia</div></div>
+      </div>
+      <p>${score >= 70 ? 'Buena preparacion! Sabes defender tu CV.' : 'Practica explicar tus proyectos en voz alta. Lee la seccion 12-13 de la guia.'}</p>
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-primary" onclick="S.screen='menu';R()">Volver</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderHistory() {
+  if (data.history.length === 0) return '<p style="text-align:center;color:#475569;padding:40px">No hay examenes completados todavia.</p>';
+  const rows = data.history.map(h => {
+    const d = new Date(h.date);
+    const pct = Math.round((h.score / h.total) * 100);
+    const col = pct >= 70 ? '#22c55e' : pct >= 50 ? '#eab308' : '#ef4444';
+    return `<div class="history-row">
+      <div><div class="history-info">${h.mode} &mdash; ${h.score}/${h.total}</div><div class="history-date">${d.toLocaleDateString('es-ES')} ${d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</div></div>
+      <div class="history-score" style="color:${col}">${pct}%</div>
+    </div>`;
+  }).join("");
+  return `<h3 style="color:#94a3b8;margin-bottom:12px;font-size:13px">Historial de Examenes</h3>${rows}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════
+function setTab(t) { S.tab = t; S.screen = "menu"; if (S.timer) clearInterval(S.timer); R(); }
+
+function startQuiz(mode) {
+  if (S.timer) clearInterval(S.timer);
+  S.mode = mode; S.screen = "quiz"; S.cQ = 0; S.answers = []; S.answered = false; S.selOpt = -1;
+
+  let pool;
+  if (mode === "practice") pool = S.cat === "all" ? [...Q] : Q.filter(q => q.cat === S.cat);
+  else if (mode === "exam-easy") pool = Q.filter(q => q.d !== "hard");
+  else if (mode === "exam-hard") pool = Q.filter(q => q.d !== "easy");
+  else pool = [...Q];
+
+  S.shuffled = shuffle(pool);
+  if (mode === "exam-easy" || mode === "exam-timed") S.shuffled = S.shuffled.slice(0, 20);
+  else if (mode === "exam-hard") S.shuffled = S.shuffled.slice(0, 15);
+  else if (mode === "exam-final") S.shuffled = S.shuffled.slice(0, 40);
+
+  const timed = mode.includes("timed") || mode === "exam-hard" || mode === "exam-final";
+  if (timed) { S.timeLeft = mode === "exam-hard" ? 20 : mode === "exam-final" ? 30 : 25; startTimer(); }
+  R();
+}
+
+function startTimer() {
+  if (S.timer) clearInterval(S.timer);
+  S.timer = setInterval(() => {
+    S.timeLeft--;
+    if (S.timeLeft <= 0) { clearInterval(S.timer); timeUp(); }
+    else R();
+  }, 1000);
+}
+
+function timeUp() {
+  if (S.answered) return;
+  S.answered = true; S.selOpt = -1;
+  const q = S.shuffled[S.cQ];
+  S.answers.push({ sel: -1, ok: false });
+  logAnswer(q.cat, false);
+  R();
+}
+
+function selOpt(i) { if (S.answered) return; S.selOpt = i; R(); }
+
+function confirmAns() {
+  if (S.selOpt === -1) return;
+  if (S.timer) clearInterval(S.timer);
+  const q = S.shuffled[S.cQ];
+  const ok = S.selOpt === q.c;
+  S.answered = true;
+  S.answers.push({ sel: S.selOpt, ok });
+  logAnswer(q.cat, ok);
+  R();
+}
+
+function nextQ() {
+  S.cQ++; S.answered = false; S.selOpt = -1;
+  const timed = S.mode.includes("timed") || S.mode === "exam-hard" || S.mode === "exam-final";
+  if (timed) { S.timeLeft = S.mode === "exam-hard" ? 20 : S.mode === "exam-final" ? 30 : 25; startTimer(); }
+  R();
+}
+
+function showResults() {
+  if (S.timer) clearInterval(S.timer);
+  const correct = S.answers.filter(a => a.ok).length;
+  if (S.mode !== "practice") logExam(S.mode, correct, S.answers.length);
+  S.screen = "results"; R();
+}
+
+function startInterview(cat) {
+  S.screen = "interview-q"; S.intQ = 0; S.intAnswers = []; S.intRevealed = false; S.intText = "";
+  S.intShuffled = cat === "all" ? shuffle([...interviewQs]) : shuffle(interviewQs.filter(q => q.cat === cat));
+  R();
+}
+
+function rateInterview(rating) {
+  S.intAnswers.push(rating);
+  if (S.intQ < S.intShuffled.length - 1) {
+    S.intQ++; S.intRevealed = false; S.intText = "";
+    R();
+  } else {
+    S.screen = "results"; R();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════════════
+document.addEventListener("keydown", e => {
+  if (S.screen !== "quiz") return;
+  if (!S.answered) {
+    if (e.key >= "1" && e.key <= "4") selOpt(+e.key - 1);
+    if ("aAbBcCdD".includes(e.key)) selOpt("aAbBcCdD".indexOf(e.key) >> 1);
+    if (e.key === "Enter" && S.selOpt !== -1) confirmAns();
+  } else {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); S.cQ < S.shuffled.length - 1 ? nextQ() : showResults(); }
+  }
+});
+
+R();
+</script>
+</body>
+</html>
