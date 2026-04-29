@@ -9,7 +9,6 @@ import {
   Linkedin,
   Mail,
   Send,
-  Sparkles,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -329,7 +328,6 @@ const copy = {
     contactCta: "Contactar",
     available: "Disponible · 15 días de aviso",
     locationPill: "Madrid · Full-time · Remoto desde Madrid",
-    eyebrow: "Full-Stack Engineer · Madrid",
     heroTitle: "Diseño, monto y mantengo producto en producción.",
     heroIntro:
       "Mi trabajo va desde infraestructura de gaming hasta paneles, herramientas internas, plataformas de comunidad y servicios online. Producto, billing, compliance e infra bajo el mismo techo cuando hace falta.",
@@ -406,7 +404,6 @@ const copy = {
     contactCta: "Contact",
     available: "Available · 15-day notice",
     locationPill: "Madrid · Full-time · Remote from Madrid",
-    eyebrow: "Full-Stack Engineer · Madrid",
     heroTitle: "I design, build, and maintain product in production.",
     heroIntro:
       "My work spans gaming infrastructure, dashboards, internal tools, community platforms, and online services. Product, billing, compliance, and infra under one roof when needed.",
@@ -573,7 +570,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen animate-blur-in bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-5">
           <a href="#home" className="flex items-center gap-2 text-sm font-semibold tracking-tight">
@@ -655,12 +652,7 @@ function App() {
               </div>
             </div>
 
-            <p className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5" />
-              {t.eyebrow}
-            </p>
-
-            <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl sm:leading-[1.1]">
+            <h1 className="mt-10 max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl sm:leading-[1.1]">
               {t.heroTitle}
             </h1>
 
