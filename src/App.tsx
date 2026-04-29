@@ -298,13 +298,11 @@ const stackGroups = [
 
 const stats = {
   es: [
-    { value: "Desde 2016", label: "en lo técnico" },
     { value: "6", label: "productos lanzados" },
     { value: "60+", label: "clientes en VarynHost" },
     { value: "5K+", label: "usuarios atendidos" },
   ],
   en: [
-    { value: "Since 2016", label: "in tech" },
     { value: "6", label: "products shipped" },
     { value: "60+", label: "VarynHost clients" },
     { value: "5K+", label: "users served" },
@@ -689,7 +687,7 @@ function App() {
               </div>
             </div>
 
-            <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-4">
+            <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-3">
               {projectStats.map((stat) => (
                 <div key={stat.label} className="bg-card px-5 py-5">
                   <p className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
