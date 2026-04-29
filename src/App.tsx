@@ -1,17 +1,32 @@
-﻿import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
-  BriefcaseBusiness,
+  Calendar,
   CheckCircle,
-  CircleHelp,
-  Command,
+  Download,
   Github,
   Linkedin,
+  Mail,
   Send,
-  ShieldCheck,
+  Sparkles,
   X,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 declare global {
   interface Window {
@@ -22,28 +37,7 @@ declare global {
   }
 }
 
-// Reemplazar con tu site key de Cloudflare Turnstile
 const TURNSTILE_SITE_KEY = "0x4AAAAAACosHZqdoFP4G353";
-import {
-  SiCloudflare,
-  SiDocker,
-  SiGithubactions,
-  SiJavascript,
-  SiLinux,
-  SiNginx,
-  SiPostgresql,
-  SiPython,
-  SiReact,
-  SiRedis,
-  SiSqlite,
-  SiTailwindcss,
-  SiTypescript,
-  SiVite,
-} from "react-icons/si";
-
-const InteractiveNebulaShader = lazy(() =>
-  import("@/components/ui/liquid-shader").then((module) => ({ default: module.InteractiveNebulaShader })),
-);
 
 type Locale = "es" | "en";
 
@@ -54,11 +48,10 @@ type Project = {
   context: string;
   decision: string;
   result: string;
-  evidence?: string[];
+  metrics?: string[];
   stack: string;
   repo?: string;
   live?: string;
-  keyCommit?: string;
   nda?: boolean;
   screenshots?: string[];
 };
@@ -71,403 +64,427 @@ type ScreenshotModal = {
 
 const LINKS = {
   githubProfile: "https://github.com/lucasvicentec",
-  githubStackWatch: "https://github.com/lucasvicentec/stackwatch",
   githubPortfolio: "https://github.com/lucasvicentec/lucasvicente-portfolio",
+  githubStackWatch: "https://github.com/lucasvicentec/stackwatch",
   linkedinProfile: "https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/",
+  email: "contacto@lucasvicente.es",
+  calendly: "https://calendly.com/lucasvicentecerri6/30min",
   statusPage: "https://status.lucasvicente.es/",
   hytaliaSite: "https://www.hytalia.net",
-  pipeline:
-    "https://github.com/lucasvicentec/lucasvicente-portfolio/blob/main/.github/workflows/deploy-cloudflare-worker.yml",
-  metricsSummary: "#metrics",
-  postmortem: "#postmortem",
 } as const;
-
-const getTerminalIntroByLocale = (locale: Locale): string[] =>
-  locale === "es"
-    ? ["Bienvenido al terminal de Lucas", 'Escribe "ayuda" para ver comandos disponibles.', ""]
-    : ["🚀 Welcome to Lucas terminal", 'Type "help" to list available commands.', ""];
-
 
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
     {
       title: "RiftPanel",
       tag: "Producción",
-      type: "Panel de servidores de juegos / SaaS",
-      context: "Los proveedores de hosting de juegos necesitan Pterodactyl + WHMCS + portal de clientes — tres herramientas separadas con coste y complejidad elevados.",
-      decision: "Backend en Go (Fiber) en lugar de PHP para rendimiento superior. Frontend React + TypeScript. Integración directa con Wings (daemon de Pterodactyl) para compatibilidad total con nodos existentes.",
-      result: "Plataforma todo-en-uno en producción con facturación integrada (Stripe/Paddle), 40+ plantillas de juegos, 31 módulos, sistema de licencias propio y distribución via Docker Hub.",
-      evidence: [
-        "17+ versiones publicadas con CI/CD automatizado",
-        "Facturación automática: Paddle webhook → licencia generada → email enviado",
-        "31 módulos (redes MC, crash detection, AI assistant, tienda hosting)",
-        "Instalación en 30 segundos con un solo comando",
-      ],
-      stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, xterm.js, ECharts, WebSocket",
+      type: "Panel SaaS para hosting de juegos",
+      context:
+        "Los proveedores de hosting necesitan Pterodactyl + WHMCS + portal de cliente. Tres herramientas separadas, alto coste y complejidad.",
+      decision:
+        "Backend en Go (Fiber) en lugar de PHP por rendimiento. Integración directa con Wings para compatibilidad total con nodos existentes.",
+      result:
+        "Plataforma todo-en-uno con facturación integrada (Stripe/Paddle), 40+ plantillas, 31 módulos, sistema de licencias propio. Salió a producción en 2 semanas vs 3-4 meses estimados a desarrollo tradicional.",
+      metrics: ["7 clientes pagando", "22 instalaciones free", "29 servidores activos", "Lanzado en 2 semanas"],
+      stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, WebSocket",
       live: "https://riftpanel.net",
-      screenshots: ["/images/riftpanel_1.png", "/images/riftpanel_2.png", "/images/riftpanel_3.png", "/images/riftpanel_4.png"],
+      screenshots: [
+        "/images/riftpanel_1.png",
+        "/images/riftpanel_2.png",
+        "/images/riftpanel_3.png",
+        "/images/riftpanel_4.png",
+      ],
     },
     {
       title: "Informo",
       tag: "Producción",
-      type: "SaaS de canal de denuncias",
-      context: "Las empresas con +50 empleados están obligadas por la Ley 2/2023 a tener un canal de denuncias. Informo ofrece esa infraestructura como servicio.",
-      decision: "Cifrado AES-256-GCM extremo a extremo sobre Supabase para garantizar anonimato real del denunciante sin sacrificar velocidad de desarrollo.",
-      result: "Plataforma SaaS en producción con denuncias cifradas, panel de gestión, seguimiento anónimo, exportación Libro-Registro para AIPI y verificación QR.",
-      evidence: [
-        "Cifrado AES-256-GCM end-to-end en denuncias y mensajes",
-        "Cumplimiento normativo AIPI con Libro-Registro exportable",
-        "Tres planes de suscripción con trial de 7 días sin tarjeta",
-      ],
+      type: "SaaS · Canal de denuncias",
+      context:
+        "Las empresas con +50 empleados están obligadas por la Ley 2/2023 a tener un canal de denuncias.",
+      decision:
+        "Cifrado AES-256-GCM extremo a extremo sobre Supabase para garantizar anonimato real sin sacrificar velocidad de desarrollo.",
+      result:
+        "SaaS en producción con denuncias cifradas, panel de gestión, seguimiento anónimo, exportación Libro-Registro AIPI y verificación QR. Producto cerrado y listo, pendiente de campaña GTM.",
+      metrics: ["Cumplimiento Ley 2/2023", "AES-256-GCM e2e", "Listo para producción"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, Supabase, AES-256, Docker, Zod",
       live: "https://informo.es",
-      screenshots: ["/images/informo_1.png", "/images/informo_2.png", "/images/informo_3.png", "/images/informo_4.png"],
+      screenshots: [
+        "/images/informo_1.png",
+        "/images/informo_2.png",
+        "/images/informo_3.png",
+        "/images/informo_4.png",
+      ],
+    },
+    {
+      title: "VarynHost",
+      tag: "Producción",
+      type: "Hosting · Infra y automatización",
+      context:
+        "Servicio de hosting con paneles custom, automatización y operación diaria para clientes reales.",
+      decision:
+        "Pterodactyl + WHMCS + APIs propias para balancear velocidad de entrega y operación mantenible.",
+      result:
+        "Infra gestionada sobre VPS/dedicados (EU), provisión automatizada y soporte continuo.",
+      metrics: ["+60 clientes activos", "98% uptime histórico", "Provisión automatizada"],
+      stack: "Pterodactyl, WHMCS, APIs REST, Linux, Docker, Nginx",
+      live: "https://varynhost.com/",
+      screenshots: [
+        "/images/varynhost_1.png",
+        "/images/varynhost_2.png",
+        "/images/varynhost_3.png",
+        "/images/varynhost_4.png",
+      ],
+    },
+    {
+      title: "StackWatch",
+      tag: "Open source",
+      type: "Monitorización autoalojable",
+      context:
+        "Falta una solución de monitorización ligera, autoalojada y simple para VPS/dedicados sin la sobrecarga de Datadog/Grafana.",
+      decision:
+        "PostgreSQL + worker interno (vs cron externo) para mantener histórico consistente y controlar reintentos en un solo punto. Open source para que cualquiera lo despliegue.",
+      result:
+        "Sistema autoalojable que cualquier persona puede usar para sus VPS o dedicados. Checks cada 60s, histórico, gestión de incidentes y status page pública.",
+      metrics: ["Open source", "Checks cada 60s", "VPS y dedicados"],
+      stack: "Next.js 16, TypeScript, PostgreSQL, Docker Swarm, REST API",
+      repo: LINKS.githubStackWatch,
+      live: LINKS.statusPage,
+      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
     },
     {
       title: "Finesse",
-      tag: "Produccion",
-      type: "PWA de finanzas compartidas",
-      context: "Alternativa a Splitwise para gestionar gastos personales y grupales con proyecciones, presupuestos y reparto inteligente.",
-      decision: "Se eligió Supabase (Auth + RLS + Realtime) sobre backend propio para acelerar el MVP sin sacrificar seguridad ni escalabilidad.",
-      result: "App en produccion con OAuth, modo offline, importacion CSV/Splitwise, categorias personalizadas y asistente financiero (Fina).",
-      evidence: ["PWA instalable con Service Worker", "OAuth con Google", "Modo offline con sync automatico"],
+      tag: "Producción",
+      type: "PWA · Finanzas compartidas",
+      context:
+        "Alternativa a Splitwise para gestionar gastos personales y grupales con proyecciones y reparto inteligente.",
+      decision:
+        "Supabase (Auth + RLS + Realtime) sobre backend propio para acelerar el MVP sin sacrificar seguridad.",
+      result:
+        "App PWA con OAuth, modo offline, importación CSV/Splitwise, categorías custom y asistente financiero (Fina).",
+      metrics: ["216 usuarios activos", "500+ gastos registrados", "248 grupos creados"],
       stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
       live: "https://finesseapp.es",
       screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
     },
     {
-      title: "StackWatch",
-      tag: "Nuevo",
-      type: "Plataforma de monitorización",
-      context: "Monitoriza mis VPS/servicios y expone una status page pública para incidencias y mantenimiento.",
-      decision:
-        "Elegí PostgreSQL + worker interno (vs cron externo) para mantener histórico consistente y controlar reintentos en un solo punto.",
-      result:
-        "Checks cada 60s, histórico e incident lifecycle en producción.",
-      evidence: ["Demo pública activa", "Pipeline de despliegue automatizado", "Repositorio con commits de incident lifecycle"],
-      stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
-      repo: LINKS.githubStackWatch,
-      live: LINKS.statusPage,
-      keyCommit: LINKS.githubStackWatch,
-      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
-    },
-    {
-      title: "VarynHost",
-      tag: "Producción",
-      type: "Hosting / Infra y automatización",
-      context: "Servicio de hosting con paneles custom, automatizaciones y operación diaria para clientes reales.",
-      decision: "Se combinó Pterodactyl + WHMCS + APIs para balancear velocidad de entrega y operación mantenible.",
-      result:
-        "Más de 60 clientes y más de 60 servidores activos. Infra gestionada sobre VPS/servidores dedicados (EU), con provisión automatizada y soporte continuo.",
-      evidence: ["Sitio público activo", "Operación con clientes reales", "Automatizaciones y paneles custom en producción"],
-      stack: "Pterodactyl, WHMCS, APIs, automatización operativa",
-      live: "https://varynhost.com/",
-      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png", "/images/varynhost_4.png"],
-    },
-    {
-      title: "MD-Ingelligence",
-      tag: "Privado",
-      type: "MadridDigital / Herramienta interna",
-      context: "Herramienta interna para consultas operativas diarias sobre ubicaciones técnicas (UT).",
-      decision:
-        "Se priorizó una arquitectura híbrida (PostgreSQL + fallback JSON) para asegurar continuidad operativa durante iteraciones de datos.",
-      result: "Uso interno continuo. Métricas y capturas públicas limitadas por NDA; solo comparto arquitectura y decisiones técnicas.",
-      evidence: ["Arquitectura high-level compartible", "Decisiones de rendimiento y ranking sin datos sensibles"],
-      stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
-      nda: true,
-      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png", "/images/madriddigital_3.png", "/images/madriddigital_4.png"],
-    },
-    {
       title: "Hytalia Web",
-      tag: "Produccion",
-      type: "Plataforma de comunidad / Infra",
-      context: "Frontend principal para usuarios de comunidad con login, panel y módulos de producto.",
-      decision: "Se mantuvo arquitectura transicional para migrar legacy sin frenar entregas semanales.",
-      result: "Producto en producción con despliegue continuo y módulos reutilizables.",
-      evidence: ["Sitio en producción", "Despliegue con contenedores y Swarm"],
+      tag: "Producción",
+      type: "Plataforma de comunidad",
+      context:
+        "Frontend principal para usuarios de comunidad con login, panel y módulos de producto.",
+      decision:
+        "Arquitectura transicional para migrar legacy sin frenar entregas semanales.",
+      result:
+        "Producto en producción con despliegue continuo y módulos reutilizables.",
+      metrics: ["+5.000 usuarios totales", "+3.000 registrados", "Récord de concurrencia"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
-    },
-    {
-      title: "Hytale Plugin Journey",
-      tag: "Activo",
-      type: "Servidor de juego / Ecosistema Java",
-      context: "Conjunto de plugins para operación y jugabilidad en servidores multijugador.",
-      decision: "Se consolidó una base compartida para evitar duplicación entre módulos y acelerar releases.",
-      result: "Iteración rápida de funcionalidades en entorno activo.",
-      evidence: ["Workflows de CI para plugins", "Base commons reutilizable en Java"],
-      stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
-      live: LINKS.hytaliaSite,
     },
   ],
   en: [
     {
       title: "RiftPanel",
       tag: "Production",
-      type: "Game server management panel / SaaS",
-      context: "Game hosting providers need Pterodactyl + WHMCS + client portal — three separate tools with high cost and complexity.",
-      decision: "Go backend (Fiber) instead of PHP for superior performance. React + TypeScript frontend. Direct Wings daemon integration for full compatibility with existing nodes.",
-      result: "All-in-one platform in production with built-in billing (Stripe/Paddle), 40+ game templates, 31 modules, custom license system, and Docker Hub distribution.",
-      evidence: [
-        "17+ versions published with automated CI/CD",
-        "Automatic billing: Paddle webhook → license generated → email sent",
-        "31 modules (MC networks, crash detection, AI assistant, hosting store)",
-        "30-second install with a single command",
-      ],
-      stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, xterm.js, ECharts, WebSocket",
+      type: "Game hosting SaaS panel",
+      context:
+        "Hosting providers need Pterodactyl + WHMCS + a customer portal. Three separate tools with high cost and complexity.",
+      decision:
+        "Go backend (Fiber) instead of PHP for performance. Direct Wings integration for full compatibility with existing nodes.",
+      result:
+        "All-in-one platform with built-in billing (Stripe/Paddle), 40+ templates, 31 modules, custom license system. Shipped to production in 2 weeks vs 3-4 months estimated for traditional development.",
+      metrics: ["7 paying customers", "22 free installs", "29 active servers", "Shipped in 2 weeks"],
+      stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, WebSocket",
       live: "https://riftpanel.net",
-      screenshots: ["/images/riftpanel_1.png", "/images/riftpanel_2.png", "/images/riftpanel_3.png", "/images/riftpanel_4.png"],
+      screenshots: [
+        "/images/riftpanel_1.png",
+        "/images/riftpanel_2.png",
+        "/images/riftpanel_3.png",
+        "/images/riftpanel_4.png",
+      ],
     },
     {
       title: "Informo",
       tag: "Production",
       type: "Whistleblowing channel SaaS",
-      context: "Companies with 50+ employees in Spain are legally required to have a whistleblowing channel (Law 2/2023). Informo provides that infrastructure as a service.",
-      decision: "End-to-end AES-256-GCM encryption on top of Supabase to guarantee real reporter anonymity without sacrificing development speed.",
-      result: "Production SaaS with encrypted reports, management dashboard, anonymous tracking, AIPI-compliant Libro-Registro export, and QR verification.",
-      evidence: [
-        "AES-256-GCM end-to-end encryption on reports and messages",
-        "AIPI regulatory compliance with exportable Libro-Registro",
-        "Three subscription tiers with 7-day no-card trial",
-      ],
+      context:
+        "Spanish companies with 50+ employees are legally required to have a whistleblowing channel (Law 2/2023).",
+      decision:
+        "End-to-end AES-256-GCM encryption on top of Supabase to guarantee real reporter anonymity without sacrificing development speed.",
+      result:
+        "Production SaaS with encrypted reports, management dashboard, anonymous tracking, AIPI-compliant export, and QR verification. Product complete and production-ready, GTM campaign pending.",
+      metrics: ["Law 2/2023 compliant", "AES-256-GCM e2e", "Production ready"],
       stack: "Next.js 15, React 19, TypeScript, Tailwind, Supabase, AES-256, Docker, Zod",
       live: "https://informo.es",
-      screenshots: ["/images/informo_1.png", "/images/informo_2.png", "/images/informo_3.png", "/images/informo_4.png"],
+      screenshots: [
+        "/images/informo_1.png",
+        "/images/informo_2.png",
+        "/images/informo_3.png",
+        "/images/informo_4.png",
+      ],
+    },
+    {
+      title: "VarynHost",
+      tag: "Production",
+      type: "Hosting · Infra and automation",
+      context:
+        "Hosting service with custom panels, automation, and day-to-day operations for real clients.",
+      decision:
+        "Pterodactyl + WHMCS + custom APIs to balance delivery speed with maintainable operations.",
+      result:
+        "Infrastructure on EU VPS/dedicated nodes with automated provisioning and continuous support.",
+      metrics: ["60+ active clients", "98% historical uptime", "Automated provisioning"],
+      stack: "Pterodactyl, WHMCS, REST APIs, Linux, Docker, Nginx",
+      live: "https://varynhost.com/",
+      screenshots: [
+        "/images/varynhost_1.png",
+        "/images/varynhost_2.png",
+        "/images/varynhost_3.png",
+        "/images/varynhost_4.png",
+      ],
+    },
+    {
+      title: "StackWatch",
+      tag: "Open source",
+      type: "Self-hosted monitoring",
+      context:
+        "Lightweight, self-hosted monitoring for VPS/dedicated servers without the overhead of Datadog/Grafana was missing.",
+      decision:
+        "PostgreSQL + an internal worker (vs external cron) to keep history consistent and retry logic centralized. Open source so anyone can self-host.",
+      result:
+        "Self-hostable system anyone can run on their VPS or dedicated servers. 60s checks, history, incident management, and a public status page.",
+      metrics: ["Open source", "60s checks", "VPS & dedicated"],
+      stack: "Next.js 16, TypeScript, PostgreSQL, Docker Swarm, REST API",
+      repo: LINKS.githubStackWatch,
+      live: LINKS.statusPage,
+      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
     },
     {
       title: "Finesse",
       tag: "Production",
       type: "Shared finance PWA",
-      context: "Splitwise alternative for managing personal and group expenses with projections, budgets, and smart splitting.",
-      decision: "Supabase (Auth + RLS + Realtime) was chosen over a custom backend to ship the MVP faster without compromising security or scalability.",
-      result: "Production app with OAuth, offline mode, CSV/Splitwise import, custom categories, and a financial assistant (Fina).",
-      evidence: ["Installable PWA with Service Worker", "Google OAuth", "Offline mode with auto-sync"],
+      context:
+        "Splitwise alternative for personal and group expense tracking with projections and smart splitting.",
+      decision:
+        "Supabase (Auth + RLS + Realtime) over a custom backend to ship the MVP faster without sacrificing security.",
+      result:
+        "PWA with OAuth, offline mode, CSV/Splitwise import, custom categories, and a financial assistant (Fina).",
+      metrics: ["216 active users", "500+ expenses tracked", "248 groups"],
       stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
       live: "https://finesseapp.es",
       screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
     },
     {
-      title: "StackWatch",
-      tag: "New",
-      type: "Monitoring platform",
-      context: "Monitors my VPS/services and exposes a public status page for incidents and maintenance.",
-      decision:
-        "I chose PostgreSQL + an internal worker (vs external cron) to keep history consistent and retry logic controlled in one place.",
-      result:
-        "60s checks, production incident lifecycle, and active public status page.",
-      evidence: ["Live demo", "Automated deployment pipeline", "Repository with incident lifecycle code"],
-      stack: "Next.js 16, TypeScript, PostgreSQL, Docker, Docker Swarm",
-      repo: LINKS.githubStackWatch,
-      live: LINKS.statusPage,
-      keyCommit: LINKS.githubStackWatch,
-      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
-    },
-    {
-      title: "VarynHost",
-      tag: "Production",
-      type: "Hosting / Infra and automation",
-      context: "Hosting service with custom panels, automations, and day-to-day operations for real clients.",
-      decision: "Pterodactyl + WHMCS + APIs were combined to balance delivery speed with maintainable operations.",
-      result:
-        "More than 60 clients and more than 60 active servers. Infrastructure runs on EU VPS/dedicated nodes with automated provisioning and continuous support.",
-      evidence: ["Public live website", "Real client operations", "Production automations and custom panels"],
-      stack: "Pterodactyl, WHMCS, APIs, operational automation",
-      live: "https://varynhost.com/",
-      screenshots: ["/images/varynhost_1.png", "/images/varynhost_2.png", "/images/varynhost_3.png", "/images/varynhost_4.png"],
-    },
-    {
-      title: "MD-Ingelligence",
-      tag: "Private",
-      type: "MadridDigital / Internal tooling",
-      context: "Internal platform for daily operational queries on technical location datasets.",
-      decision:
-        "A hybrid architecture (PostgreSQL + JSON fallback) was prioritized to guarantee continuity while iterating on data quality.",
-      result: "Stable internal usage. Public metrics and screenshots are limited due to NDA.",
-      evidence: ["Shareable high-level architecture", "Performance/relevance decisions without sensitive data"],
-      stack: "Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL, Node API Routes",
-      nda: true,
-      screenshots: ["/images/madriddigital_1.png", "/images/madriddigital_2.png", "/images/madriddigital_3.png", "/images/madriddigital_4.png"],
-    },
-    {
       title: "Hytalia Web",
       tag: "Production",
-      type: "Community platform / Infra",
-      context: "Main frontend for community users with login, admin, and product modules.",
-      decision: "A transitional architecture was kept to migrate legacy paths without blocking weekly delivery.",
-      result: "Production-ready app with continuous deploys and reusable modules.",
-      evidence: ["Production website", "Container-based deployment flow"],
+      type: "Community platform",
+      context:
+        "Main frontend for community users with login, admin panel, and product modules.",
+      decision:
+        "Transitional architecture to migrate legacy paths without blocking weekly delivery.",
+      result:
+        "Production app with continuous deploys and reusable modules.",
+      metrics: ["5,000+ total users", "3,000+ registered", "Peak concurrency record"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
       live: LINKS.hytaliaSite,
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
     },
-    {
-      title: "Hytale Plugin Journey",
-      tag: "Active",
-      type: "Game server / Java ecosystem",
-      context: "Plugin suite used for server operation and gameplay in a multiplayer environment.",
-      decision: "Shared commons were consolidated to reduce duplication and speed up releases across modules.",
-      result: "Fast iteration in active development.",
-      evidence: ["CI workflows for plugin builds", "Reusable Java commons base"],
-      stack: "Java 21, Gradle, GitHub Actions, Hytale Plugin APIs",
-      live: LINKS.hytaliaSite,
-    },
   ],
 };
 
-const coreStack = [
-  { label: "React / Next.js", icon: SiReact },
-  { label: "TypeScript", icon: SiTypescript },
-  { label: "PostgreSQL", icon: SiPostgresql },
-  { label: "Docker", icon: SiDocker },
-  { label: "Cloudflare", icon: SiCloudflare },
+const stackGroups = [
+  { label: "Frontend", items: "React · Next.js · TypeScript · Tailwind" },
+  { label: "Backend", items: "Go · Node · PostgreSQL · Supabase · Redis" },
+  { label: "Infra", items: "Docker · Docker Swarm · Linux · Nginx · Cloudflare" },
+  { label: "Tooling", items: "GitHub Actions · Vite · Stripe · Paddle · AI Tools" },
 ];
 
-const alsoUsedStack = [
-  { label: "Python", icon: SiPython },
-  { label: "Redis", icon: SiRedis },
-  { label: "Nginx", icon: SiNginx },
-  { label: "GitHub Actions", icon: SiGithubactions },
-  { label: "Linux", icon: SiLinux },
-  { label: "SQLite", icon: SiSqlite },
-  { label: "JavaScript", icon: SiJavascript },
-  { label: "Vite", icon: SiVite },
-  { label: "Tailwind", icon: SiTailwindcss },
+const stats = {
+  es: [
+    { value: "Desde 2016", label: "en lo técnico" },
+    { value: "6", label: "productos lanzados" },
+    { value: "60+", label: "clientes en VarynHost" },
+    { value: "5K+", label: "usuarios atendidos" },
+  ],
+  en: [
+    { value: "Since 2016", label: "in tech" },
+    { value: "6", label: "products shipped" },
+    { value: "60+", label: "VarynHost clients" },
+    { value: "5K+", label: "users served" },
+  ],
+} as const;
+
+const trustedBy = [
+  { name: "Hytalia Network", note: "Partner & Director" },
+  { name: "Mood Studios", note: "Joint Venture · USA" },
+  { name: "Madrid Digital", note: "Cliente vía Ayesa" },
+  { name: "VarynHost", note: "Co-fundador" },
 ];
 
 const copy = {
   es: {
     navProjects: "Casos",
-    navProcess: "Método",
+    navProcess: "Cómo trabajo",
     navHiring: "Contratación",
-    openToWork: "Disponible para remoto o híbrido",
-    eyebrow: "Full-Stack orientado a producto",
-    title: "Construyo software que mejora operaciones y escala sin romperse.",
-    intro:
-      "Me obsesionan métricas, fiabilidad y sistemas mantenibles.",
-    ctaProjects: "Ver casos",
-    ctaContact: "Contactar",
-    ctaGitHub: "GitHub",
-    featuredLabel: "Casos",
-    featuredTitle: "Casos destacados",
-    featuredSubtitle: "Cada caso incluye contexto real, tradeoff técnico y resultados verificables.",
+    contactCta: "Contactar",
+    available: "Disponible · 15 días de aviso",
+    locationPill: "Madrid · Full-time · Remoto desde Madrid",
+    eyebrow: "Full-Stack Engineer · Madrid",
+    heroTitle: "Diseño, monto y mantengo producto en producción.",
+    heroIntro:
+      "Mi trabajo va desde infraestructura de gaming hasta paneles, herramientas internas, plataformas de comunidad y servicios online. Producto, billing, compliance e infra bajo el mismo techo cuando hace falta.",
+    heroPrimary: "Ver casos",
+    heroSecondary: "Hablemos",
+    heroDownloadCv: "Descargar CV",
+    heroBookCall: "Reservar 30 min",
+    trustedByLabel: "He trabajado con",
+    sectionCasesEyebrow: "Casos",
+    sectionCasesTitle: "Trabajo seleccionado",
+    sectionCasesIntro:
+      "Cada proyecto incluye contexto real, una decisión técnica concreta y resultados medibles.",
     challenge: "Contexto",
-    architecture: "Decisión difícil",
-    impact: "Resultado",
-    stack: "Stack",
-    viewRepo: "Ver repo",
+    decision: "Decisión",
+    result: "Resultado",
+    stackLabel: "Stack",
     viewLive: "Ver online",
-    processLabel: "Método",
-    processTitle: "Cómo trabajo para entregar valor rápido y estable",
+    viewRepo: "Repositorio",
+    ndaLabel:
+      "Bajo NDA · arquitectura y decisiones compartibles, datos sensibles no públicos.",
+    sectionProcessEyebrow: "Cómo trabajo",
+    sectionProcessTitle: "Honesto sobre mi proceso",
     processItems: [
-      "Empiezo por el problema de negocio y un criterio de éxito medible.",
-      "Diseño una arquitectura simple para hoy y extensible para mañana.",
-      "Automatizo despliegues y tareas repetitivas desde el inicio.",
-      "Priorizo observabilidad y fiabilidad en producción.",
+      {
+        title: "Velocidad real, con datos",
+        body:
+          "RiftPanel salió a producción en 2 semanas. Estimación de desarrollo tradicional con equipo: 3-4 meses. 8x más rápido sin sacrificar arquitectura, billing ni infra.",
+      },
+      {
+        title: "Workflow AI-Augmented",
+        body:
+          "Cada proyecto empieza con un prompt inicial y un script que genera la arquitectura. Después escribo los .md de contexto que mis agentes necesitan para entender el producto. Iteración constante.",
+      },
+      {
+        title: "Ownership end-to-end",
+        body:
+          "Diseño, despliego, monitorizo y mantengo. He gestionado +60 servidores, billing real con Stripe/Paddle y cumplimiento regulatorio (AES-256, AIPI, Ley 2/2023).",
+      },
+      {
+        title: "Comunicación en castellano",
+        body:
+          "Soy nativo en español; mi inglés es B1-B2 escrito (puedo leer docs y comunicar por escrito). Encaje natural en empresas españolas o equipos hispanohablantes.",
+      },
     ],
-    toolingLabel: "Herramientas",
-    stackTitle: "Stack técnico",
-    stackSubtitle: "enfoque principal y tecnologías secundarias que he usado en producción.",
-    hiringBadge: "Contratación",
-    hiringTitle: "Si buscas a alguien que asuma responsabilidad técnica real",
-    hiringText:
-      "Estoy abierto a freelance, contrato o full-time. Puedo entrar en proyectos existentes o construir desde cero con enfoque de producto y entrega.",
-    hiringPoints: ["Rápido en ejecución", "Sólido en producción", "Comunicación clara con negocio y equipo"],
-    sendEmail: "Contactar",
-    contactFormTitle: "Contactar",
+    sectionStackEyebrow: "Stack",
+    sectionStackTitle: "Tecnologías que uso en producción",
+    sectionHiringEyebrow: "Contratación",
+    sectionHiringTitle: "Si tu equipo necesita ejecutar rápido sin perder calidad",
+    sectionHiringText:
+      "Abierto a roles de Full-Stack Engineer, Solutions Engineer, Founding Engineer o Platform Engineer en SaaS, hosting, plataformas o startups AI-first. Madrid presencial, híbrido o remoto desde Madrid. Full-time, 15 días de aviso.",
+    sectionHiringPoints: [
+      "Full-Stack Engineer",
+      "Solutions / Sales Engineer",
+      "Founding / Early Engineer",
+      "Platform / DevOps",
+    ],
+    contactFormTitle: "Hablemos",
+    contactFormSubtitle: "Cuéntame qué buscas. Respondo en menos de 24h.",
     contactFormName: "Nombre",
-    contactFormEmail: "Tu email",
+    contactFormEmail: "Email",
     contactFormSubject: "Asunto",
     contactFormMessage: "Mensaje",
-    contactFormSend: "Enviar mensaje",
+    contactFormSend: "Enviar",
     contactFormSending: "Enviando...",
-    contactFormSuccess: "Mensaje enviado. Te responderé lo antes posible.",
+    contactFormSuccess: "Mensaje enviado. Te respondo en menos de 24h.",
     contactFormError: "Error al enviar. Inténtalo de nuevo.",
-    contactFormClose: "Cerrar",
-    portfolioSourceLabel: "Código de este portfolio",
-    portfolioSourceText: "¿Quieres revisar la implementación, estructura y despliegue de esta web?",
-    portfolioSourceCta: "Ver codigo fuente",
-    terminalLabel: "Terminal interactivo",
-    terminalTitle: "Consola de navegación rápida",
-    terminalHint: "Prueba frases naturales: hola, quién eres, te quiero contratar, qué stack usas, contacto.",
-    terminalPlaceholder: "Escribe un comando...",
-    terminalRun: "Ejecutar",
+    footerSource: "Código fuente de este portfolio",
+    screenshotsLabel: "Capturas",
   },
   en: {
     navProjects: "Cases",
-    navProcess: "Process",
+    navProcess: "How I work",
     navHiring: "Hiring",
-    openToWork: "Open to remote or hybrid",
-    eyebrow: "Product-oriented full-stack",
-    title: "I build software that improves operations and scales without breaking.",
-    intro:
-      "I care deeply about metrics, reliability, and maintainable systems.",
-    ctaProjects: "View cases",
-    ctaContact: "Contact",
-    ctaGitHub: "GitHub",
-    featuredLabel: "Case studies",
-    featuredTitle: "Featured cases",
-    featuredSubtitle: "Each case includes real context, a technical tradeoff, and verifiable outcomes.",
-    challenge: "Challenge",
-    architecture: "Architecture",
-    impact: "Impact",
-    stack: "Stack",
-    viewRepo: "Open repo",
-    viewLive: "Open live",
-    processLabel: "Process",
-    processTitle: "How I work to deliver value fast and reliably",
+    contactCta: "Contact",
+    available: "Available · 15-day notice",
+    locationPill: "Madrid · Full-time · Remote from Madrid",
+    eyebrow: "Full-Stack Engineer · Madrid",
+    heroTitle: "I design, build, and maintain product in production.",
+    heroIntro:
+      "My work spans gaming infrastructure, dashboards, internal tools, community platforms, and online services. Product, billing, compliance, and infra under one roof when needed.",
+    heroPrimary: "View cases",
+    heroSecondary: "Let's talk",
+    heroDownloadCv: "Download CV",
+    heroBookCall: "Book 30 min",
+    trustedByLabel: "Worked with",
+    sectionCasesEyebrow: "Cases",
+    sectionCasesTitle: "Selected work",
+    sectionCasesIntro:
+      "Each project includes real context, a concrete technical decision, and measurable results.",
+    challenge: "Context",
+    decision: "Decision",
+    result: "Result",
+    stackLabel: "Stack",
+    viewLive: "Visit live",
+    viewRepo: "Repository",
+    ndaLabel:
+      "Under NDA · architecture and decisions are shareable, sensitive data is not public.",
+    sectionProcessEyebrow: "How I work",
+    sectionProcessTitle: "Honest about my process",
     processItems: [
-      "Start from the business problem and measurable success criteria.",
-      "Design architecture simple for today and extensible for tomorrow.",
-      "Automate deploys and repetitive tasks from day one.",
-      "Prioritize observability and production reliability.",
+      {
+        title: "Real speed, with data",
+        body:
+          "RiftPanel shipped to production in 2 weeks. Traditional team development estimate: 3-4 months. 8x faster without sacrificing architecture, billing, or infra.",
+      },
+      {
+        title: "AI-Augmented workflow",
+        body:
+          "Every project starts with an initial prompt and a script that generates the architecture. Then I write the .md context files my agents need to understand the product. Constant iteration.",
+      },
+      {
+        title: "End-to-end ownership",
+        body:
+          "I design, deploy, monitor, and maintain. I've managed 60+ servers, real Stripe/Paddle billing, and regulatory compliance (AES-256, AIPI, Spanish Law 2/2023).",
+      },
+      {
+        title: "Spanish-first communication",
+        body:
+          "Native Spanish speaker; B1-B2 written English (I can read docs and communicate fine in writing). Natural fit for Spanish companies or Spanish-speaking teams.",
+      },
     ],
-    toolingLabel: "Tooling",
-    stackTitle: "Tech stack",
-    stackSubtitle: "core focus plus additional tools used in production.",
-    hiringBadge: "Hiring",
-    hiringTitle: "If you need someone with real technical ownership",
-    hiringText:
-      "I am open to freelance, contract, or full-time roles. I can join existing systems or build from scratch with a product and delivery mindset.",
-    hiringPoints: ["Fast execution", "Production reliability", "Clear communication with business and team"],
-    sendEmail: "Contact",
-    contactFormTitle: "Contact",
+    sectionStackEyebrow: "Stack",
+    sectionStackTitle: "Tech I use in production",
+    sectionHiringEyebrow: "Hiring",
+    sectionHiringTitle: "If your team needs to execute fast without losing quality",
+    sectionHiringText:
+      "Open to Full-Stack Engineer, Solutions Engineer, Founding Engineer, or Platform Engineer roles at SaaS, hosting, platforms, or AI-first startups. Madrid on-site, hybrid, or remote from Madrid. Full-time, 15-day notice.",
+    sectionHiringPoints: [
+      "Full-Stack Engineer",
+      "Solutions / Sales Engineer",
+      "Founding / Early Engineer",
+      "Platform / DevOps",
+    ],
+    contactFormTitle: "Let's talk",
+    contactFormSubtitle: "Tell me what you're looking for. I reply within 24h.",
     contactFormName: "Name",
-    contactFormEmail: "Your email",
+    contactFormEmail: "Email",
     contactFormSubject: "Subject",
     contactFormMessage: "Message",
-    contactFormSend: "Send message",
+    contactFormSend: "Send",
     contactFormSending: "Sending...",
-    contactFormSuccess: "Message sent. I'll get back to you soon.",
+    contactFormSuccess: "Message sent. I'll get back within 24h.",
     contactFormError: "Failed to send. Please try again.",
-    contactFormClose: "Close",
-    portfolioSourceLabel: "Portfolio source",
-    portfolioSourceText: "Want to review implementation, structure, and deployment of this site?",
-    portfolioSourceCta: "View source code",
-    terminalLabel: "Interactive terminal",
-    terminalTitle: "Fast navigation console",
-    terminalHint: "Try natural phrases: hi, who are you, I want to hire you, what's your stack, contact.",
-    terminalPlaceholder: "Type a command...",
-    terminalRun: "Run",
+    footerSource: "Source code for this portfolio",
+    screenshotsLabel: "Screenshots",
   },
 } as const;
 
-function App({ onBackToSplash }: { onBackToSplash?: () => void }) {
+function App() {
   const [lang, setLang] = useState<Locale>("es");
   const t = copy[lang];
   const projects = projectsByLocale[lang];
-  const [terminalInput, setTerminalInput] = useState("");
-  const [terminalLines, setTerminalLines] = useState<string[]>(() => getTerminalIntroByLocale("es"));
-  const [typingLine, setTypingLine] = useState("");
+  const projectStats = stats[lang];
+
   const [activeScreenshot, setActiveScreenshot] = useState<ScreenshotModal | null>(null);
-  const terminalViewportRef = useRef<HTMLDivElement | null>(null);
-  const terminalInputRef = useRef<HTMLInputElement | null>(null);
-  const typingQueueRef = useRef<string[]>([]);
-  const typingTimeoutRef = useRef<number | undefined>(undefined);
-  const isTypingRef = useRef(false);
-  const isUnmountedRef = useRef(false);
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const [showCustomCursor, setShowCustomCursor] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -475,80 +492,24 @@ function App({ onBackToSplash }: { onBackToSplash?: () => void }) {
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetIdRef = useRef<string | undefined>(undefined);
 
-  const skillsCount = useMemo(() => coreStack.length + alsoUsedStack.length, []);
-  const coreMarquee = useMemo(() => [...coreStack, ...coreStack], []);
-  const alsoUsedMarquee = useMemo(() => [...alsoUsedStack, ...alsoUsedStack], []);
-  const terminalIntro = useMemo(() => getTerminalIntroByLocale(lang), [lang]);
-  useEffect(() => {
-    isUnmountedRef.current = false;
-    return () => {
-      isUnmountedRef.current = true;
-      if (typingTimeoutRef.current !== undefined) {
-        window.clearTimeout(typingTimeoutRef.current);
-        typingTimeoutRef.current = undefined;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!terminalViewportRef.current) return;
-    terminalViewportRef.current.scrollTop = terminalViewportRef.current.scrollHeight;
-  }, [terminalLines, typingLine]);
-
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    const finePointer = window.matchMedia("(pointer: fine)");
-    const updateCursorVisibility = () => setShowCustomCursor(finePointer.matches);
-
-    updateCursorVisibility();
-    finePointer.addEventListener("change", updateCursorVisibility);
-
-    return () => {
-      finePointer.removeEventListener("change", updateCursorVisibility);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!showCustomCursor || typeof window === "undefined") return;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${event.clientX}px, ${event.clientY}px) translate(-50%, -50%)`;
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [showCustomCursor]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    document.body.classList.toggle("custom-cursor-enabled", showCustomCursor);
-    return () => document.body.classList.remove("custom-cursor-enabled");
-  }, [showCustomCursor]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
     const handleEscape = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") {
         setActiveScreenshot(null);
-        setShowContactForm(false);
       }
     };
-
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    document.body.style.overflow = activeScreenshot || showContactForm ? "hidden" : "";
+    document.body.style.overflow = activeScreenshot ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [activeScreenshot, showContactForm]);
+  }, [activeScreenshot]);
 
   useEffect(() => {
     if (!showContactForm) {
@@ -564,7 +525,7 @@ function App({ onBackToSplash }: { onBackToSplash?: () => void }) {
       if (!turnstileContainerRef.current || !window.turnstile) return false;
       turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
         sitekey: TURNSTILE_SITE_KEY,
-        theme: "dark",
+        theme: "light",
         callback: (token: string) => setTurnstileToken(token),
         "expired-callback": () => setTurnstileToken(""),
       });
@@ -606,819 +567,550 @@ function App({ onBackToSplash }: { onBackToSplash?: () => void }) {
     [contactForm, turnstileToken, contactStatus],
   );
 
-  const sleep = (ms: number) =>
-    new Promise<void>((resolve) => {
-      typingTimeoutRef.current = window.setTimeout(resolve, ms);
-    });
-
-  const processTypingQueue = async () => {
-    if (isTypingRef.current || isUnmountedRef.current) return;
-    isTypingRef.current = true;
-
-    while (typingQueueRef.current.length > 0 && !isUnmountedRef.current) {
-      const nextLine = typingQueueRef.current.shift() ?? "";
-
-      if (!nextLine) {
-        setTerminalLines((prev) => [...prev, ""]);
-        continue;
-      }
-
-      for (let index = 1; index <= nextLine.length; index += 1) {
-        if (isUnmountedRef.current) return;
-        setTypingLine(nextLine.slice(0, index));
-        await sleep(14);
-      }
-
-      setTerminalLines((prev) => [...prev, nextLine]);
-      setTypingLine("");
-      await sleep(48);
-    }
-
-    setTypingLine("");
-    isTypingRef.current = false;
-  };
-
-  const enqueueTypedLines = (lines: string[]) => {
-    typingQueueRef.current.push(...lines);
-    void processTypingQueue();
-  };
-
-  const runCommand = (rawCommand: string) => {
-    const command = rawCommand.trim().toLowerCase();
-    const normalized = command.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    if (!command) return;
-
-    const aliases: Record<string, string> =
-      lang === "es"
-        ? {
-            ayuda: "help",
-            proyectos: "projects",
-            stack: "stack",
-            contacto: "contact",
-            servicios: "services",
-            sobre: "about",
-            cv: "cv",
-            stackwatch: "stackwatch",
-            tema: "theme",
-            github: "github",
-            linkedin: "linkedin",
-            limpiar: "clear",
-          }
-        : {
-            help: "help",
-            projects: "projects",
-            stack: "stack",
-            contact: "contact",
-            services: "services",
-            about: "about",
-            cv: "cv",
-            stackwatch: "stackwatch",
-            theme: "theme",
-            github: "github",
-            linkedin: "linkedin",
-            clear: "clear",
-          };
-
-    const detectNaturalIntent = () => {
-      const hasAny = (keywords: string[]) => keywords.some((k) => normalized.includes(k));
-
-      if (hasAny(["hola", "buenas", "hello", "hi", "hey"])) return "greet";
-      if (hasAny(["quien eres", "quien sos", "who are you", "about you"])) return "about";
-      if (hasAny(["te quiero contratar", "quiero contratarte", "contratar", "hire you", "hire", "trabajar contigo"])) return "hire";
-      if (hasAny(["precio", "coste", "costo", "tarifa", "budget", "presupuesto", "rate"])) return "pricing";
-      if (hasAny(["contacto", "correo", "email", "mail", "linkedin", "github"])) return "contact";
-      if (hasAny(["proyectos", "proyecto", "project", "portfolio", "trabajos"])) return "projects";
-      if (hasAny(["stack", "tecnologias", "tecnologia", "tech", "skills"])) return "stack";
-      if (hasAny(["cv", "curriculum", "resume"])) return "cv";
-      if (hasAny(["gracias", "thanks", "thank you"])) return "thanks";
-      return null;
-    };
-
-    const resolved = aliases[command] ?? aliases[normalized] ?? detectNaturalIntent();
-
-    if (!resolved) {
-      const unknown = lang === "es" ? `Comando no reconocido: ${command}. Usa "ayuda".` : `Unknown command: ${command}. Use "help".`;
-      setTerminalLines((prev) => [...prev, `$ ${command}`]);
-      enqueueTypedLines([unknown, ""]);
-      return;
-    }
-
-    if (resolved === "clear") {
-      setTerminalLines(terminalIntro);
-      typingQueueRef.current = [];
-      setTypingLine("");
-      isTypingRef.current = false;
-      if (typingTimeoutRef.current !== undefined) {
-        window.clearTimeout(typingTimeoutRef.current);
-        typingTimeoutRef.current = undefined;
-      }
-      return;
-    }
-
-    const responsesByCommand: Record<string, string[]> = {
-      help:
-        lang === "es"
-          ? ["Comandos disponibles:", "ayuda, proyectos, stack, stackwatch, contacto, servicios, sobre, cv, github, linkedin, tema, limpiar"]
-          : ["Available commands:", "help, projects, stack, stackwatch, contact, services, about, cv, github, linkedin, theme, clear"],
-      greet:
-        lang === "es"
-          ? ["Hola, soy Lucas 👋", "Puedo contarte sobre proyectos, stack o contratación."]
-          : ["Hey, I'm Lucas 👋", "I can tell you about projects, stack, or hiring."],
-      projects:
-        lang === "es"
-          ? [
-              "Proyectos destacados:",
-              "- StackWatch (monitorización de VPS)",
-              "- MD-Ingelligence (herramienta interna)",
-              "- Hytalia Web (plataforma de comunidad)",
-              "- Hytale Plugin Journey (ecosistema Java)",
-            ]
-          : [
-              "Featured projects:",
-              "- StackWatch (VPS monitoring)",
-              "- MD-Ingelligence (internal tooling)",
-              "- Hytalia Web (community platform)",
-              "- Hytale Plugin Journey (Java ecosystem)",
-            ],
-      stack:
-        lang === "es"
-          ? ["Stack principal: React, TypeScript, Next.js, Python, PostgreSQL, Docker, Cloudflare, GitHub Actions."]
-          : ["Core stack: React, TypeScript, Next.js, Python, PostgreSQL, Docker, Cloudflare, GitHub Actions."],
-      contact:
-        lang === "es"
-          ? ["Contacto:", "- Formulario: usa el botón 'Contactar' en esta página", `- LinkedIn: ${LINKS.linkedinProfile}`]
-          : ["Contact:", "- Form: use the 'Contact' button on this page", `- LinkedIn: ${LINKS.linkedinProfile}`],
-      services:
-        lang === "es"
-          ? ["Servicios:", "- Desarrollo web full-stack", "- Integraciones/automatización", "- Infraestructura y despliegue"]
-          : ["Services:", "- Full-stack web development", "- Integrations/automation", "- Infrastructure and deployment"],
-      about:
-        lang === "es"
-          ? ["Sobre mí:", "Ingeniero full-stack orientado a producto, operación e impacto real."]
-          : ["About:", "Full-stack engineer focused on product, operations, and measurable impact."],
-      hire:
-        lang === "es"
-          ? ["Perfecto, hablemos.", "Usa el formulario de contacto en esta página o escríbeme por LinkedIn."]
-          : ["Great, let's talk.", "Use the contact form on this page or reach out on LinkedIn."],
-      pricing:
-        lang === "es"
-          ? ["Depende del alcance y urgencia.", "Si me pasas contexto por el formulario de contacto, te doy propuesta cerrada o por fases."]
-          : ["It depends on scope and urgency.", "Share context via the contact form and I'll send a fixed or phased proposal."],
-      cv:
-        lang === "es"
-          ? ["CV: abriendo acceso al PDF/contacto..."]
-          : ["CV: opening PDF/contact access..."],
-      stackwatch:
-        lang === "es"
-          ? ["StackWatch: abriendo demo + repo + referencia de implementación."]
-          : ["StackWatch: opening live demo + repo + implementation reference."],
-      theme:
-        lang === "es"
-          ? ["Tema:", "Modo neón activo por defecto."]
-          : ["Theme:", "Neon mode is active by default."],
-      thanks:
-        lang === "es"
-          ? ["¡Gracias a ti!", "Si quieres, puedo abrirte ahora los enlaces clave de evidencia."]
-          : ["Thanks!", "If you want, I can open the key evidence links now."],
-      github: [LINKS.githubProfile],
-      linkedin: [LINKS.linkedinProfile],
-    };
-
-    const output = responsesByCommand[resolved];
-    setTerminalLines((prev) => [...prev, `$ ${command}`]);
-    enqueueTypedLines([...output, ""]);
-
-    if (typeof window !== "undefined") {
-      const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
-      if (resolved === "cv") {
-        setContactForm((prev) => ({ ...prev, subject: lang === "es" ? "Solicitud de CV" : "CV Request" }));
-        setShowContactForm(true);
-      }
-      if (resolved === "stackwatch") {
-        open(LINKS.statusPage);
-        open(LINKS.githubStackWatch);
-      }
-    }
-  };
-
-  const executeTerminalInput = () => {
-    runCommand(terminalInput);
-    setTerminalInput("");
-    terminalInputRef.current?.focus();
-  };
-
-  const handleTerminalKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      executeTerminalInput();
-    }
+  const handleContactDialogChange = (open: boolean) => {
+    setShowContactForm(open);
+    if (!open) setContactStatus("idle");
   };
 
   return (
-    <div className="relative isolate min-h-screen overflow-hidden bg-background text-white">
-      {showCustomCursor ? (
-        <div
-          ref={cursorRef}
-          aria-hidden="true"
-          className="pointer-events-none fixed left-0 top-0 z-[70] will-change-transform"
-          style={{ transform: "translate(-100vw, -100vh)" }}
-        >
-          <span className="block h-5 w-5 rounded-full border border-cyan-300/90 shadow-[0_0_16px_rgba(34,211,238,0.55)]" />
-          <span className="absolute left-1/2 top-1/2 block h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
-        </div>
-      ) : null}
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+        <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-5">
+          <a href="#home" className="flex items-center gap-2 text-sm font-semibold tracking-tight">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              LV
+            </span>
+            <span>Lucas Vicente</span>
+          </a>
 
-      <Suspense fallback={null}>
-        <InteractiveNebulaShader className="opacity-95" />
-      </Suspense>
-
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(56,189,248,0.12)_0%,transparent_35%,transparent_65%,rgba(16,185,129,0.12)_100%)]" />
-
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-24 pt-6 sm:px-6 lg:px-8">
-        <header className="border-y border-white/20 bg-black/35 px-3 py-3 backdrop-blur-xl">
-          <nav className="flex items-center justify-between gap-3 text-sm text-white/80">
-            <a href="#home" className="flex items-center gap-2 px-1 py-2 text-white">
-              <img src="/favicon/favicon-32x32.png" alt="Lucas Vicente logo" className="h-6 w-6 object-contain" />
-              <span className="font-semibold tracking-[0.1em]">lucasvicente.es</span>
+          <nav className="hidden items-center gap-7 text-sm text-muted-foreground sm:flex">
+            <a href="#projects" className="transition hover:text-blue-600">
+              {t.navProjects}
             </a>
+            <a href="#process" className="transition hover:text-blue-600">
+              {t.navProcess}
+            </a>
+            <a href="#hiring" className="transition hover:text-blue-600">
+              {t.navHiring}
+            </a>
+          </nav>
 
-            <div className="hidden items-center gap-6 sm:flex">
-              <a href="#projects" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
-                {t.navProjects}
-              </a>
-              <a href="#process" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
-                {t.navProcess}
-              </a>
-              <a href="#hiring" className="border-b border-transparent pb-1 transition hover:border-white/60 hover:text-white">
-                {t.navHiring}
-              </a>
+          <div className="flex items-center gap-2">
+            <div className="hidden items-center gap-1 rounded-md border p-0.5 text-xs sm:flex">
+              <button
+                type="button"
+                onClick={() => setLang("es")}
+                className={cn(
+                  "rounded px-2 py-1 font-medium transition",
+                  lang === "es"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                ES
+              </button>
+              <button
+                type="button"
+                onClick={() => setLang("en")}
+                className={cn(
+                  "rounded px-2 py-1 font-medium transition",
+                  lang === "en"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                EN
+              </button>
+            </div>
+            <Button size="sm" onClick={() => setShowContactForm(true)}>
+              {t.contactCta}
+              <ArrowRight />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main id="home" className="mx-auto w-full max-w-5xl px-5">
+        <section className="relative pt-16 pb-24 sm:pt-20 sm:pb-32">
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-72 grid-pattern opacity-60" />
+          <div className="relative">
+            <div className="flex flex-wrap items-center gap-4">
+              <img
+                src="/foto.jpg"
+                alt="Lucas Vicente"
+                className="h-20 w-20 rounded-full border-2 border-background object-cover ring-2 ring-blue-200 sm:h-24 sm:w-24"
+              />
+              <div className="flex flex-col gap-2">
+                <Badge
+                  variant="outline"
+                  className="w-fit gap-2 border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  {t.available}
+                </Badge>
+                <p className="text-sm text-muted-foreground">{t.locationPill}</p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              {onBackToSplash && (
-                <button
-                  type="button"
-                  onClick={onBackToSplash}
-                  className="hidden sm:inline-flex items-center gap-1.5 border border-white/20 bg-black/40 px-3 py-2 text-xs font-semibold text-white/70 transition hover:text-white hover:border-white/40"
-                >
-                  <ArrowRight className="h-3 w-3 rotate-180" />
-                  {lang === "es" ? "Inicio" : "Home"}
-                </button>
-              )}
-              <a
-                href="https://studio.lucasvicente.es"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 border border-purple-500/30 bg-purple-500/10 px-3 py-2 text-xs font-semibold text-purple-300 transition hover:bg-purple-500/20 hover:border-purple-500/50"
-              >
-                Studio
-                <ArrowUpRight className="h-3 w-3" />
-              </a>
-              <div className="border border-white/20 bg-black/40 p-1">
-                <button
-                  type="button"
-                  onClick={() => setLang("es")}
-                  aria-label="Cambiar idioma a español"
-                  aria-pressed={lang === "es"}
-                  className={`px-3 py-1.5 text-xs font-semibold ${lang === "es" ? "bg-white/20 text-white" : "text-white/70"}`}
-                >
-                  ES
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLang("en")}
-                  aria-label="Switch language to English"
-                  aria-pressed={lang === "en"}
-                  className={`px-3 py-1.5 text-xs font-semibold ${lang === "en" ? "bg-white/20 text-white" : "text-white/70"}`}
-                >
-                  EN
-                </button>
+            <p className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Sparkles className="h-3.5 w-3.5" />
+              {t.eyebrow}
+            </p>
+
+            <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl sm:leading-[1.1]">
+              {t.heroTitle}
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">{t.heroIntro}</p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button asChild>
+                <a href={LINKS.calendly} target="_blank" rel="noreferrer">
+                  <Calendar />
+                  {t.heroBookCall}
+                </a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="#projects">
+                  {t.heroPrimary}
+                  <ArrowRight />
+                </a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="/cv-lucas-vicente.pdf" target="_blank" rel="noreferrer">
+                  <Download />
+                  {t.heroDownloadCv}
+                </a>
+              </Button>
+              <div className="ml-1 flex items-center gap-1">
+                <Button variant="ghost" size="icon" asChild aria-label="GitHub">
+                  <a href={LINKS.githubProfile} target="_blank" rel="noreferrer">
+                    <Github />
+                  </a>
+                </Button>
+                <Button variant="ghost" size="icon" asChild aria-label="LinkedIn">
+                  <a href={LINKS.linkedinProfile} target="_blank" rel="noreferrer">
+                    <Linkedin />
+                  </a>
+                </Button>
               </div>
+            </div>
+
+            <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-4">
+              {projectStats.map((stat) => (
+                <div key={stat.label} className="bg-card px-5 py-5">
+                  <p className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10">
+              <p className="mb-4 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                {t.trustedByLabel}
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {trustedBy.map((entry) => (
+                  <div
+                    key={entry.name}
+                    className="border-l-2 border-blue-200 pl-3"
+                  >
+                    <p className="text-sm font-semibold text-foreground">{entry.name}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{entry.note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <Separator />
+
+        <section id="projects" className="py-20">
+          <div className="mb-12 flex flex-col gap-2">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {t.sectionCasesEyebrow}
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              {t.sectionCasesTitle}
+            </h2>
+            <p className="max-w-2xl text-muted-foreground">{t.sectionCasesIntro}</p>
+          </div>
+
+          <div className="space-y-6">
+            {projects.map((p, index) => (
+              <Card key={p.title} className="p-6 transition hover:border-foreground/20 sm:p-8">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-xs font-medium text-blue-600">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">{p.title}</h3>
+                    <Badge
+                      variant="secondary"
+                      className={
+                        p.tag.toLowerCase().includes("open")
+                          ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-50"
+                          : ""
+                      }
+                    >
+                      {p.tag}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {p.live ? (
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={p.live} target="_blank" rel="noreferrer">
+                          {t.viewLive}
+                          <ArrowUpRight />
+                        </a>
+                      </Button>
+                    ) : null}
+                    {p.repo ? (
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={p.repo} target="_blank" rel="noreferrer">
+                          <Github />
+                          {t.viewRepo}
+                        </a>
+                      </Button>
+                    ) : null}
+                  </div>
+                </div>
+
+                <p className="mt-2 text-sm text-muted-foreground">{p.type}</p>
+
+                <div className="mt-6 grid gap-5 sm:grid-cols-3">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      {t.challenge}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/80">{p.context}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      {t.decision}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/80">{p.decision}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      {t.result}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/80">{p.result}</p>
+                  </div>
+                </div>
+
+                {p.metrics?.length ? (
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {p.metrics.map((metric) => (
+                      <Badge key={metric} variant="outline" className="gap-1.5 font-normal">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                        {metric}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : null}
+
+                <div className="mt-5 border-t pt-4">
+                  <p className="text-xs">
+                    <span className="font-medium uppercase tracking-wide text-muted-foreground">
+                      {t.stackLabel}
+                    </span>
+                    <span className="ml-2 font-mono text-foreground/80">{p.stack}</span>
+                  </p>
+                </div>
+
+                {p.nda ? (
+                  <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    {t.ndaLabel}
+                  </p>
+                ) : null}
+
+                {p.screenshots?.length ? (
+                  <div className="mt-6">
+                    <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      {t.screenshotsLabel}
+                    </p>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {p.screenshots.map((src, shotIndex) => (
+                        <button
+                          type="button"
+                          key={`${p.title}-${src}`}
+                          onClick={() =>
+                            setActiveScreenshot({
+                              src,
+                              title: p.title,
+                              index: shotIndex + 1,
+                            })
+                          }
+                          className="group/shot relative overflow-hidden rounded-md border bg-muted transition hover:border-foreground/20"
+                          aria-label={`${lang === "es" ? "Abrir captura" : "Open screenshot"} ${shotIndex + 1} ${p.title}`}
+                        >
+                          <img
+                            src={src}
+                            alt={`${p.title} screenshot ${shotIndex + 1}`}
+                            loading="lazy"
+                            className="h-36 w-full object-cover transition duration-300 group-hover/shot:scale-[1.03]"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <Separator />
+
+        <section id="process" className="py-20">
+          <div className="mb-12 flex flex-col gap-2">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {t.sectionProcessEyebrow}
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              {t.sectionProcessTitle}
+            </h2>
+          </div>
+
+          <div className="grid gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-2">
+            {t.processItems.map((item) => (
+              <div key={item.title} className="bg-card p-6 sm:p-7">
+                <h3 className="text-base font-semibold tracking-tight">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <Separator />
+
+        <section className="py-20">
+          <div className="mb-10 flex flex-col gap-2">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {t.sectionStackEyebrow}
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              {t.sectionStackTitle}
+            </h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {stackGroups.map((group) => (
+              <Card key={group.label} className="p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {group.label}
+                </p>
+                <p className="mt-2 font-mono text-sm">{group.items}</p>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section
+          id="hiring"
+          className="my-20 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 p-8 text-white sm:p-12"
+        >
+          <div className="grid gap-8 lg:grid-cols-[2fr_1fr] lg:items-end">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-400">
+                {t.sectionHiringEyebrow}
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                {t.sectionHiringTitle}
+              </h2>
+              <p className="mt-4 max-w-2xl text-base text-neutral-300">{t.sectionHiringText}</p>
+              <ul className="mt-6 flex flex-wrap gap-2 text-sm">
+                {t.sectionHiringPoints.map((point) => (
+                  <li
+                    key={point}
+                    className="rounded-full border border-neutral-700 bg-neutral-900 px-3 py-1 text-neutral-200"
+                  >
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <Button
+                variant="secondary"
+                asChild
+                className="bg-white text-neutral-900 hover:bg-neutral-200"
+              >
+                <a href={LINKS.calendly} target="_blank" rel="noreferrer">
+                  <Calendar />
+                  {t.heroBookCall}
+                </a>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowContactForm(true)}
+                className="border-neutral-700 bg-transparent text-white hover:bg-neutral-900 hover:text-white"
+              >
+                <Send />
+                {t.contactCta}
+              </Button>
+              <Button
+                variant="outline"
+                asChild
+                className="border-neutral-700 bg-transparent text-white hover:bg-neutral-900 hover:text-white"
+              >
+                <a href={`mailto:${LINKS.email}`}>
+                  <Mail />
+                  {LINKS.email}
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <footer className="border-t py-10">
+          <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+            <p>© {new Date().getFullYear()} Lucas Vicente · Madrid, España</p>
+            <div className="flex items-center gap-5">
+              <a
+                href={LINKS.githubPortfolio}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 transition hover:text-blue-600"
+              >
+                <Github className="h-4 w-4" />
+                {t.footerSource}
+              </a>
               <a
                 href={LINKS.linkedinProfile}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 border border-white/35 bg-white px-4 py-2 font-semibold text-black transition hover:bg-white/90"
+                className="inline-flex items-center gap-1.5 transition hover:text-blue-600"
               >
                 <Linkedin className="h-4 w-4" />
                 LinkedIn
               </a>
             </div>
-          </nav>
-        </header>
+          </div>
+        </footer>
+      </main>
 
-        <main id="home" className="pt-16">
-          <section>
-            <div>
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                <p className="inline-flex h-9 items-center gap-2 border border-emerald-300/40 bg-emerald-500/10 px-3 text-xs uppercase tracking-[0.2em] text-emerald-100">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  {t.openToWork}
-                </p>
+      <Dialog open={showContactForm} onOpenChange={handleContactDialogChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t.contactFormTitle}</DialogTitle>
+            <DialogDescription>{t.contactFormSubtitle}</DialogDescription>
+          </DialogHeader>
 
-                <p className="inline-flex h-9 items-center gap-2 border border-amber-300/40 bg-amber-500/10 px-3 text-xs uppercase tracking-[0.18em] text-amber-100">
-                  {t.eyebrow}
-                </p>
-              </div>
-
-              <h1 className="max-w-4xl text-balance text-4xl font-semibold leading-tight sm:text-6xl">{t.title}</h1>
-              <p className="mt-5 max-w-3xl text-pretty text-base text-white/80 sm:text-lg">{t.intro}</p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#projects"
-                  className="inline-flex items-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_14px_rgba(16,185,129,0.28)] transition hover:bg-emerald-500/45"
-                >
-                  {t.ctaProjects}
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setShowContactForm(true)}
-                  className="border border-emerald-200/35 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
-                >
-                  {t.ctaContact}
-                </button>
-                <a
-                  href={LINKS.githubProfile}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 border border-white/25 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
-                >
-                  {t.ctaGitHub}
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
-              </div>
+          {contactStatus === "success" ? (
+            <div className="flex flex-col items-center gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-6 text-center">
+              <CheckCircle className="h-10 w-10 text-emerald-600" />
+              <p className="text-sm text-emerald-800">{t.contactFormSuccess}</p>
             </div>
-          </section>
-
-          <section id="projects" className="mt-20">
-            <div className="mb-7 flex flex-wrap items-end justify-between gap-3 border-b border-white/20 pb-3">
-              <div>
-                <p className="text-xs uppercase tracking-[0.24em] text-cyan-200/80">{t.featuredLabel}</p>
-                <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">{t.featuredTitle}</h2>
-              </div>
-              <p className="max-w-xl text-sm text-white/70">{t.featuredSubtitle}</p>
-            </div>
-
-            <div className="space-y-6">
-              {projects.map((p, index) => (
-                <article key={p.title} className="border border-white/20 bg-black/30 p-5">
-                  <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-flex border border-white/25 bg-black/35 px-2 py-1 text-xs uppercase tracking-wide text-white/85">
-                        {p.tag}
-                      </span>
-                      <h3 className="text-xl font-semibold text-card-foreground">{p.title}</h3>
-                      <span className="border border-cyan-300/35 bg-cyan-400/10 px-2 py-0.5 text-xs uppercase tracking-wide text-cyan-200">
-                        {p.type}
-                      </span>
-                    </div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/50">{String(index + 1).padStart(2, "0")}</p>
-                  </div>
-
-                  <div className="grid gap-3 md:grid-cols-3">
-                    <p className="border-t border-white/15 pt-2 text-sm text-white/80">
-                      <span className="font-semibold text-white/90">{t.challenge}:</span> {p.context}
-                    </p>
-                    <p className="border-t border-white/15 pt-2 text-sm text-white/80">
-                      <span className="font-semibold text-white/90">{t.architecture}:</span> {p.decision}
-                    </p>
-                    <p className="border-t border-white/15 pt-2 text-sm text-white/80">
-                      <span className="font-semibold text-white/90">{t.impact}:</span> {p.result}
-                    </p>
-                  </div>
-
-                  {p.nda ? (
-                    <p className="mt-3 rounded border border-amber-300/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
-                      Bajo NDA: arquitectura y decisiones compartibles; datos sensibles no públicos.
-                    </p>
-                  ) : null}
-
-                  {p.evidence?.length ? (
-                    <p className="mt-3 text-sm text-white/75">
-                      <span className="font-semibold text-white/90">Evidencia:</span> {p.evidence.join(" · ")}
-                    </p>
-                  ) : null}
-
-                  <p className="mt-3 text-sm text-white/70">
-                    <span className="font-semibold text-white/90">{t.stack}:</span> {p.stack}
-                  </p>
-
-                  {p.screenshots?.length ? (
-                    <div className="mt-3">
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/65">
-                        {lang === "es" ? "Capturas" : "Screenshots"}
-                      </p>
-                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                        {p.screenshots.map((src, shotIndex) => (
-                          <button
-                            type="button"
-                            key={`${p.title}-${src}`}
-                            onClick={() =>
-                              setActiveScreenshot({
-                                src,
-                                title: p.title,
-                                index: shotIndex + 1,
-                              })
-                            }
-                            className={`group relative overflow-hidden rounded border border-white/15 bg-black/25 shadow-[0_10px_24px_rgba(0,0,0,0.25)] transition duration-300 [transform-style:preserve-3d] ${
-                              shotIndex % 2 === 0
-                                ? "hover:[transform:perspective(900px)_rotateX(6deg)_rotateY(-7deg)_translateY(-2px)]"
-                                : "hover:[transform:perspective(900px)_rotateX(6deg)_rotateY(7deg)_translateY(-2px)]"
-                            }`}
-                            aria-label={`${lang === "es" ? "Abrir captura" : "Open screenshot"} ${shotIndex + 1} ${p.title}`}
-                          >
-                            <img
-                              src={src}
-                              alt={`${p.title} screenshot ${shotIndex + 1}`}
-                              loading="lazy"
-                              className="h-36 w-full object-cover transition duration-300 group-hover:scale-[1.05]"
-                            />
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.0)_30%,rgba(0,0,0,0.12)_100%)] opacity-35 transition duration-300 group-hover:opacity-55"
-                            />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    {p.repo ? (
-                      <a
-                        href={p.repo}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 border border-emerald-300/55 bg-emerald-500/18 px-4 py-2 text-sm font-medium text-emerald-50 transition hover:bg-emerald-500/30"
-                      >
-                        <Github className="h-4 w-4" />
-                        {t.viewRepo}
-                      </a>
-                    ) : null}
-                    {p.live ? (
-                      <a
-                        href={p.live}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 border border-cyan-300/55 bg-cyan-500/18 px-4 py-2 text-sm font-medium text-cyan-50 transition hover:bg-cyan-500/30"
-                      >
-                        <ArrowUpRight className="h-4 w-4" />
-                        {t.viewLive}
-                      </a>
-                    ) : null}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-16 border border-cyan-300/30 bg-black/40 p-4 shadow-[0_0_24px_rgba(34,211,238,0.15)] sm:p-6">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/85">{t.terminalLabel}</p>
-                <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">{t.terminalTitle}</h2>
-              </div>
-              <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1 text-xs text-white/70">
-                <Command className="h-3.5 w-3.5" />
-                <span>lucas-console</span>
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-xl border border-cyan-300/25 bg-[linear-gradient(180deg,rgba(2,6,23,0.98),rgba(2,10,28,0.96))] shadow-[0_0_28px_rgba(34,211,238,0.14)]">
-              <div className="flex items-center gap-2 border-b border-white/10 bg-slate-800/70 px-3 py-2">
-                <span className="h-3 w-3 rounded-full bg-red-400" />
-                <span className="h-3 w-3 rounded-full bg-amber-400" />
-                <span className="h-3 w-3 rounded-full bg-green-400" />
-                <span className="ml-3 text-xs text-white/60">lucas-console://ops</span>
-              </div>
-              <div
-                ref={terminalViewportRef}
-                className="h-80 overflow-y-auto px-4 py-3 font-mono text-sm text-white/90"
-                onClick={() => terminalInputRef.current?.focus()}
-              >
-                {terminalLines.map((line, index) => (
-                  <p key={`${line}-${index}`} className={`${line.startsWith("$ ") ? "text-cyan-300" : "text-white/85"}`}>
-                    {line || "\u00A0"}
-                  </p>
-                ))}
-                {typingLine ? (
-                  <p className="text-white/85">
-                    {typingLine}
-                    <span className="terminal-caret">█</span>
-                  </p>
-                ) : null}
-
-                <p className="mt-1 flex items-center gap-2 text-cyan-300">
-                  <span>$</span>
-                  <input
-                    ref={terminalInputRef}
-                    value={terminalInput}
-                    onChange={(event) => setTerminalInput(event.target.value)}
-                    onKeyDown={handleTerminalKeyDown}
-                    placeholder={t.terminalPlaceholder}
-                    className="w-full bg-transparent font-mono text-sm text-white outline-none placeholder:text-white/45"
-                    aria-label={t.terminalPlaceholder}
-                    autoComplete="off"
-                    spellCheck={false}
-                  />
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section id="process" className="mt-20 grid gap-8 lg:grid-cols-2">
-            <article className="min-w-0 border border-white/20 bg-black/30 p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-amber-200/85">{t.processLabel}</p>
-              <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.processTitle}</h2>
-
-              <ol className="mt-5 space-y-2 text-sm text-white/80">
-                {t.processItems.map((item, idx) => (
-                  <li key={item} className="flex gap-3 border-l border-white/15 pl-3">
-                    <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-amber-300/45 bg-amber-500/10 text-xs font-semibold text-amber-100">
-                      {idx + 1}
-                    </span>
-                    <span className="pt-0.5 leading-relaxed">{item}</span>
-                  </li>
-                ))}
-              </ol>
-            </article>
-
-            <article className="min-w-0 overflow-hidden border border-white/20 bg-black/30 p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">{t.toolingLabel}</p>
-              <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{t.stackTitle}</h2>
-              <p className="mt-2 text-xs text-white/60">
-                {skillsCount} {t.stackSubtitle}
-              </p>
-
-              <div className="mt-5 space-y-4">
-                <div className="border-t border-white/15 pt-3">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">Core 5</p>
-                  <div
-                    className="overflow-hidden"
-                    style={{
-                      maskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
-                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
-                    }}
-                  >
-                    <div className="animate-marquee-reverse flex w-max items-center gap-2 pr-2">
-                      {coreMarquee.map(({ label, icon: Icon }, index) => (
-                        <span
-                          key={`${label}-${index}`}
-                          className="inline-flex items-center gap-2 border border-cyan-300/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-medium text-cyan-100"
-                        >
-                          <Icon className="h-3.5 w-3.5" />
-                          {label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-white/15 pt-3">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/70">También he usado</p>
-                  <div
-                    className="overflow-hidden"
-                    style={{
-                      maskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
-                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
-                    }}
-                  >
-                    <div className="animate-marquee flex w-max items-center gap-2 pr-2">
-                      {alsoUsedMarquee.map(({ label, icon: Icon }, index) => (
-                        <span
-                          key={`${label}-${index}`}
-                          className="inline-flex items-center gap-2 border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-white"
-                        >
-                          <Icon className="h-3.5 w-3.5" />
-                          {label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </section>
-
-          <section
-            id="hiring"
-            className="mt-20 border border-emerald-300/40 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.30),transparent_45%),linear-gradient(120deg,rgba(6,20,16,0.90),rgba(4,16,12,0.92))] p-6 shadow-[0_0_35px_rgba(16,185,129,0.28)] sm:p-8"
-          >
-            <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div>
-                <p className="inline-flex items-center gap-2 border border-emerald-300/45 bg-emerald-500/15 px-3 py-1 text-xs uppercase tracking-[0.16em] text-emerald-100">
-                  <BriefcaseBusiness className="h-3.5 w-3.5" />
-                  {t.hiringBadge}
-                </p>
-                <h2 className="mt-4 text-2xl font-semibold sm:text-3xl">{t.hiringTitle}</h2>
-                <p className="mt-3 max-w-3xl text-white/75">{t.hiringText}</p>
-                <ul className="mt-4 flex flex-wrap gap-2 text-sm text-white/85">
-                  {t.hiringPoints.map((point) => (
-                    <li key={point} className="border border-emerald-300/50 bg-emerald-500/18 px-3 py-1 text-emerald-50">
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowContactForm(true)}
-                  className="inline-flex items-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_18px_rgba(16,185,129,0.35)] transition hover:bg-emerald-500/45"
-                >
-                  <Send className="h-4 w-4" />
-                  {t.sendEmail}
-                </button>
-                <a
-                  href={LINKS.linkedinProfile}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 border border-emerald-200/35 bg-black/25 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
-                >
-                  <Linkedin className="h-4 w-4" />
-                  LinkedIn
-                </a>
-                <a
-                  href={LINKS.githubProfile}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 border border-emerald-200/35 bg-black/25 px-5 py-2.5 font-medium text-emerald-50 transition hover:bg-emerald-500/20"
-                >
-                  <Github className="h-4 w-4" />
-                  GitHub
-                </a>
-              </div>
-            </div>
-          </section>
-
-          {showContactForm ? (
-            <div
-              className="fixed inset-0 z-[90] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-              onClick={() => {
-                setShowContactForm(false);
-                setContactStatus("idle");
-              }}
-            >
-              <div
-                className="relative w-full max-w-lg border border-emerald-300/40 bg-[linear-gradient(180deg,rgba(6,20,16,0.97),rgba(4,16,12,0.98))] p-6 shadow-[0_0_35px_rgba(16,185,129,0.20)]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowContactForm(false);
-                    setContactStatus("idle");
-                  }}
-                  className="absolute right-3 top-3 inline-flex items-center gap-1 border border-white/25 bg-black/40 px-2 py-1 text-xs text-white/70 hover:bg-black/60"
-                >
-                  <X className="h-3.5 w-3.5" />
-                  {t.contactFormClose}
-                </button>
-
-                <div className="mb-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">{t.hiringBadge}</p>
-                  <h2 className="mt-1 text-xl font-semibold sm:text-2xl">{t.contactFormTitle}</h2>
-                </div>
-
-                {contactStatus === "success" ? (
-                  <div className="border border-emerald-300/40 bg-emerald-500/15 p-6 text-center text-sm text-emerald-100">
-                    <CheckCircle className="mx-auto mb-3 h-10 w-10 text-emerald-300" />
-                    <p>{t.contactFormSuccess}</p>
-                  </div>
-                ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4">
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormName}</label>
-                      <input
-                        type="text"
-                        required
-                        maxLength={100}
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm((prev) => ({ ...prev, name: e.target.value }))}
-                        className="w-full border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormEmail}</label>
-                      <input
-                        type="email"
-                        required
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm((prev) => ({ ...prev, email: e.target.value }))}
-                        className="w-full border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormSubject}</label>
-                      <input
-                        type="text"
-                        required
-                        maxLength={200}
-                        value={contactForm.subject}
-                        onChange={(e) => setContactForm((prev) => ({ ...prev, subject: e.target.value }))}
-                        className="w-full border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-white/70">{t.contactFormMessage}</label>
-                      <textarea
-                        required
-                        rows={4}
-                        maxLength={5000}
-                        value={contactForm.message}
-                        onChange={(e) => setContactForm((prev) => ({ ...prev, message: e.target.value }))}
-                        className="w-full resize-none border border-white/20 bg-black/40 px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-emerald-300/50"
-                      />
-                    </div>
-
-                    <div ref={turnstileContainerRef} />
-
-                    {contactStatus === "error" ? (
-                      <p className="text-xs text-red-400">{t.contactFormError}</p>
-                    ) : null}
-
-                    <button
-                      type="submit"
-                      disabled={contactStatus === "sending" || !turnstileToken}
-                      className="inline-flex w-full items-center justify-center gap-2 border border-emerald-300/70 bg-emerald-500/30 px-5 py-2.5 font-semibold text-emerald-50 shadow-[0_0_18px_rgba(16,185,129,0.35)] transition hover:bg-emerald-500/45 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <Send className="h-4 w-4" />
-                      {contactStatus === "sending" ? t.contactFormSending : t.contactFormSend}
-                    </button>
-                  </form>
-                )}
-              </div>
-            </div>
-          ) : null}
-
-          {activeScreenshot ? (
-            <div
-              className="fixed inset-0 z-[90] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-              onClick={() => setActiveScreenshot(null)}
-              role="presentation"
-            >
-              <div
-                className="relative w-full max-w-6xl"
-                onClick={(event) => event.stopPropagation()}
-                role="dialog"
-                aria-modal="true"
-                aria-label={`${activeScreenshot.title} screenshot ${activeScreenshot.index}`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setActiveScreenshot(null)}
-                  className="absolute right-2 top-2 z-10 inline-flex items-center gap-2 rounded border border-white/30 bg-black/60 px-3 py-1.5 text-xs font-medium text-white hover:bg-black/80"
-                >
-                  <X className="h-4 w-4" />
-                  {lang === "es" ? "Cerrar" : "Close"}
-                </button>
-                <img
-                  src={activeScreenshot.src}
-                  alt={`${activeScreenshot.title} screenshot ${activeScreenshot.index}`}
-                  className="max-h-[88vh] w-full rounded border border-white/20 object-contain"
+          ) : (
+            <form onSubmit={handleContactSubmit} className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="contact-name">{t.contactFormName}</Label>
+                <Input
+                  id="contact-name"
+                  type="text"
+                  required
+                  maxLength={100}
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm((prev) => ({ ...prev, name: e.target.value }))}
                 />
               </div>
-            </div>
-          ) : null}
-
-          <footer className="mt-14 border-t border-white/20 py-8 text-sm text-white/70">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-white/55">{t.portfolioSourceLabel}</p>
-                <p className="mt-1 inline-flex items-center gap-2">
-                  <CircleHelp className="h-4 w-4 text-amber-200" />
-                  {t.portfolioSourceText}
-                </p>
+              <div className="space-y-1.5">
+                <Label htmlFor="contact-email">{t.contactFormEmail}</Label>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  required
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm((prev) => ({ ...prev, email: e.target.value }))}
+                />
               </div>
-              <a
-                href={LINKS.githubPortfolio}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 border border-rose-300/60 bg-rose-500/22 px-4 py-2 font-medium text-rose-50 shadow-[0_0_14px_rgba(244,63,94,0.24)] transition duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-rose-500/36 hover:shadow-[0_0_22px_rgba(244,63,94,0.34)] active:translate-y-0 active:scale-100"
+              <div className="space-y-1.5">
+                <Label htmlFor="contact-subject">{t.contactFormSubject}</Label>
+                <Input
+                  id="contact-subject"
+                  type="text"
+                  required
+                  maxLength={200}
+                  value={contactForm.subject}
+                  onChange={(e) =>
+                    setContactForm((prev) => ({ ...prev, subject: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="contact-message">{t.contactFormMessage}</Label>
+                <Textarea
+                  id="contact-message"
+                  required
+                  rows={4}
+                  maxLength={5000}
+                  value={contactForm.message}
+                  onChange={(e) =>
+                    setContactForm((prev) => ({ ...prev, message: e.target.value }))
+                  }
+                />
+              </div>
+
+              <div ref={turnstileContainerRef} />
+
+              {contactStatus === "error" ? (
+                <p className="text-xs text-destructive">{t.contactFormError}</p>
+              ) : null}
+
+              <Button
+                type="submit"
+                disabled={contactStatus === "sending" || !turnstileToken}
+                className="w-full"
               >
-                <Github className="h-4 w-4" />
-                {t.portfolioSourceCta}
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
-            </div>
-          </footer>
-        </main>
-      </div>
+                <Send />
+                {contactStatus === "sending" ? t.contactFormSending : t.contactFormSend}
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {activeScreenshot ? (
+        <div
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-neutral-900/80 p-4 backdrop-blur-sm"
+          onClick={() => setActiveScreenshot(null)}
+          role="presentation"
+        >
+          <div
+            className="relative w-full max-w-6xl"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${activeScreenshot.title} screenshot ${activeScreenshot.index}`}
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveScreenshot(null)}
+              className="absolute right-2 top-2 z-10 border-white/30 bg-white/10 text-white backdrop-blur hover:bg-white/20 hover:text-white"
+            >
+              <X />
+              {lang === "es" ? "Cerrar" : "Close"}
+            </Button>
+            <img
+              src={activeScreenshot.src}
+              alt={`${activeScreenshot.title} screenshot ${activeScreenshot.index}`}
+              className="max-h-[88vh] w-full rounded-md object-contain"
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
 
 export default App;
-
-
-
-
-
-
-
-
-
-

@@ -1,51 +1,67 @@
-﻿# Portfolio profesional orientado a reclutadores técnicos
+# Portfolio · Lucas Vicente
 
-Portfolio de Lucas Vicente (`lucasvicentec`) enfocado en demostrar ejecución real, criterio técnico y ownership end-to-end.
+Portfolio personal de [Lucas Vicente](https://lucasvicente.es). Diseño limpio enfocado a recruiters técnicos: casos reales con métricas verificables, decisiones técnicas explícitas y CTA de contacto sin fricción.
 
-## Este proyecto demuestra
+**Producción**: [lucasvicente.es](https://lucasvicente.es)
 
-- Diseño de arquitectura frontend con enfoque de producto y conversión.
-- Integración CI/CD real con despliegue continuo en Cloudflare Workers.
-- Optimización de rendimiento (lazy loading del shader con Three.js).
-- Internacionalización funcional ES/EN.
-- Mantenimiento iterativo en producción (UX, copy, SEO técnico).
+## Stack
 
-## Ver portfolio
+- **Frontend**: React 19, TypeScript, Vite 7
+- **UI**: Tailwind CSS, [shadcn/ui](https://ui.shadcn.com/) (Radix), Lucide icons
+- **Backend**: Cloudflare Workers (formulario de contacto + Turnstile anti-spam)
+- **CI/CD**: GitHub Actions → Cloudflare Workers
 
-- Producción: `https://lucasvicente.es`
+## Estructura
 
-## Stack principal
-
-- `React 19` + `TypeScript` + `Vite`
-- `Tailwind CSS`
-- `Three.js`
-- `Cloudflare Workers`
-- `GitHub Actions`
-
-## Detalle técnico (engineering)
-
-- `src/App.tsx`: layout principal, i18n ES/EN, casos de proyectos y CTA de contratación.
-- `src/components/ui/liquid-shader.tsx`: shader de fondo con carga diferida.
-- `index.html`: metadatos SEO + OpenGraph + JSON-LD.
-- `.github/workflows/deploy-cloudflare-worker.yml`: pipeline de build/deploy.
-- `wrangler.toml`: configuración de runtime/deploy en Cloudflare.
+```
+src/
+  App.tsx                 Layout principal, casos, copy bilingüe ES/EN
+  main.tsx                Entry point
+  index.css               Tema claro (white + neutrals + acento azul)
+  components/ui/          Componentes shadcn/ui (Button, Card, Dialog, ...)
+  lib/utils.ts            Helper cn() (clsx + tailwind-merge)
+worker/
+  index.ts                Endpoint /api/contact con verificación Turnstile
+public/
+  cv-lucas-vicente.pdf    CV descargable
+  foto.jpg                Avatar
+  images/                 Capturas de proyectos
+.github/workflows/        Pipeline de despliegue a Cloudflare
+```
 
 ## Desarrollo local
 
+Requiere Node 20+ (recomendado 22). Hay un `.nvmrc`.
+
 ```bash
 npm install
-npm run dev -- --host 0.0.0.0 --port 3000
+npm run dev
+```
+
+App disponible en `http://localhost:5173/`.
+
+## Build y deploy
+
+```bash
+npm run build         # tsc + vite build
+npm run preview       # preview del build
+npm run cf:dev        # build + wrangler dev (worker local)
+npm run deploy:cf     # build + wrangler deploy (producción)
 ```
 
 ## Calidad
 
 ```bash
 npm run lint
-npm run build
 ```
 
 ## Contacto
 
-- Email: `contacto@lucasvicente.es`
-- GitHub: `https://github.com/lucasvicentec`
-- LinkedIn: `https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/`
+- Email: [contacto@lucasvicente.es](mailto:contacto@lucasvicente.es)
+- LinkedIn: [Lucas Esteban Vicente Cerri](https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/)
+- GitHub: [@lucasvicentec](https://github.com/lucasvicentec)
+- Reservar 30 min: [Calendly](https://calendly.com/lucasvicentecerri6/30min)
+
+## Licencia
+
+MIT — ver [LICENSE](./LICENSE).
