@@ -143,11 +143,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       decision:
         "PostgreSQL + worker interno (vs cron externo) para mantener histórico consistente y controlar reintentos en un solo punto. Open source para que cualquiera lo despliegue.",
       result:
-        "Sistema autoalojable que cualquier persona puede usar para sus VPS o dedicados. Checks cada 60s, histórico, gestión de incidentes y status page pública.",
+        "Sistema autoalojable que cualquier persona puede usar para sus VPS o dedicados. Checks cada 60s, histórico, gestión de incidentes y status page configurable.",
       metrics: ["Open source", "Checks cada 60s", "VPS y dedicados"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker Swarm, REST API",
       repo: LINKS.githubStackWatch,
-      live: LINKS.statusPage,
       screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
     },
     {
@@ -251,11 +250,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       decision:
         "PostgreSQL + an internal worker (vs external cron) to keep history consistent and retry logic centralized. Open source so anyone can self-host.",
       result:
-        "Self-hostable system anyone can run on their VPS or dedicated servers. 60s checks, history, incident management, and a public status page.",
+        "Self-hostable system anyone can run on their VPS or dedicated servers. 60s checks, history, incident management, and a configurable status page.",
       metrics: ["Open source", "60s checks", "VPS & dedicated"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker Swarm, REST API",
       repo: LINKS.githubStackWatch,
-      live: LINKS.statusPage,
       screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
     },
     {
