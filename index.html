@@ -3,10 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lucas Vicente | Full-Stack Engineer (Automation, Infra, Product)</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <title>Lucas Vicente | Full-Stack & AI Engineer (Madrid)</title>
     <meta
       name="description"
-      content="Portfolio de Lucas Vicente: ingeniero full-stack enfocado en automatización, infraestructura, sistemas en producción y productos técnicos end-to-end."
+      content="Portfolio de Lucas Vicente: ingeniero full-stack y de IA en Madrid. Construyo agentes de IA con tool-calling, voz en tiempo real y automatización conversacional, además de paneles, billing, compliance e infraestructura en producción."
     />
     <meta name="author" content="Lucas Vicente" />
     <meta name="robots" content="index, follow" />
@@ -14,21 +24,24 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Lucas Vicente Portfolio" />
-    <meta property="og:title" content="Lucas Vicente | Full-Stack Engineer" />
+    <meta property="og:title" content="Lucas Vicente | Full-Stack & AI Engineer" />
     <meta
       property="og:description"
-      content="Sistemas reales: frontend, backend, automatización e infraestructura para entornos de producción."
+      content="Agentes de IA, voz en tiempo real y automatización conversacional, además de producto, billing e infraestructura para entornos de producción."
     />
     <meta property="og:url" content="https://lucasvicente.es/" />
-    <meta property="og:image" content="https://lucasvicente.es/favicon/logo.png" />
+    <meta property="og:image" content="https://lucasvicente.es/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Lucas Vicente — Full-Stack & AI Engineer" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Lucas Vicente | Full-Stack Engineer" />
+    <meta name="twitter:title" content="Lucas Vicente | Full-Stack & AI Engineer" />
     <meta
       name="twitter:description"
-      content="Ingeniero de software con foco en automatización, infra y productos técnicos con ownership end-to-end."
+      content="Ingeniero full-stack y de IA: agentes con tool-calling, voz, automatización, infra y productos técnicos con ownership end-to-end."
     />
-    <meta name="twitter:image" content="https://lucasvicente.es/favicon/logo.png" />
+    <meta name="twitter:image" content="https://lucasvicente.es/og-image.png" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
@@ -44,12 +57,17 @@
             "@type": "Person",
             "name": "Lucas Vicente",
             "url": "https://lucasvicente.es/",
-            "jobTitle": "Full-Stack Engineer",
+            "jobTitle": "Full-Stack & AI Engineer",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Madrid",
+              "addressCountry": "ES"
+            },
             "sameAs": [
               "https://github.com/lucasvicentec",
               "https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/"
             ],
-            "knowsAbout": ["React", "TypeScript", "Python", "PostgreSQL", "Docker", "Nginx", "Automation", "Infrastructure"]
+            "knowsAbout": ["AI Agents", "LLMs", "RAG", "Prompt Engineering", "Voice AI", "React", "Next.js", "TypeScript", "Node.js", "Go", "PostgreSQL", "Docker", "Nginx", "Automation", "Infrastructure"]
           },
           {
             "@type": "WebSite",

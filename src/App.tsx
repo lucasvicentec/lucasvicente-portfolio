@@ -8,7 +8,9 @@ import {
   Github,
   Linkedin,
   Mail,
+  Moon,
   Send,
+  Sun,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -69,7 +71,6 @@ const LINKS = {
   email: "contacto@lucasvicente.es",
   calendly: "https://calendly.com/lucasvicentecerri6/30min",
   statusPage: "https://status.lucasvicente.es/",
-  hytaliaSite: "https://www.hytalia.net",
 } as const;
 
 const projectsByLocale: Record<Locale, Project[]> = {
@@ -93,6 +94,25 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "/images/riftpanel_3.png",
         "/images/riftpanel_4.png",
       ],
+    },
+    {
+      title: "Farmacenter",
+      tag: "Producción",
+      type: "Agentes IA · Atención multicanal",
+      context:
+        "Una farmacia en Colombia necesitaba atención automatizada 24/7 y digitalizar pedidos, consultas y cotizaciones a proveedores sin ampliar plantilla.",
+      decision:
+        "Un único 'cerebro' (agente con tool-calling sobre LLM) compartido por WhatsApp, Messenger, Telegram y voz. Tools con acceso real a catálogo y pedidos, guardrails sanitarios y derivación a humano. Voz en tiempo real speech-to-speech.",
+      result:
+        "Agente en producción que busca productos, crea pedidos y deriva a un operador cuando hace falta. Panel con RBAC, vault de claves cifradas (AES-256-GCM) y configuración en caliente. Pedidos por voz creados end-to-end.",
+      metrics: [
+        "Agente con 12 tools",
+        "4 canales: WhatsApp, Messenger, Telegram, voz",
+        "Voz speech-to-speech en tiempo real",
+        "Desplegado en Docker Swarm",
+      ],
+      stack: "Fastify, Node.js, TypeScript, OpenAI, Gemini Live, Supabase, PostgreSQL, Docker Swarm, WhatsApp Cloud API, Twilio",
+      nda: true,
     },
     {
       title: "Informo",
@@ -126,7 +146,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Infra gestionada sobre VPS/dedicados (EU), provisión automatizada y soporte continuo.",
       metrics: ["+60 clientes activos", "98% uptime histórico", "Provisión automatizada"],
       stack: "Pterodactyl, WHMCS, APIs REST, Linux, Docker, Nginx",
-      live: "https://varynhost.com/",
       screenshots: [
         "/images/varynhost_1.png",
         "/images/varynhost_2.png",
@@ -176,7 +195,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Producto en producción con despliegue continuo y módulos reutilizables.",
       metrics: ["+5.000 usuarios totales", "+3.000 registrados", "Récord de concurrencia"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
-      live: LINKS.hytaliaSite,
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
     },
   ],
@@ -200,6 +218,25 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "/images/riftpanel_3.png",
         "/images/riftpanel_4.png",
       ],
+    },
+    {
+      title: "Farmacenter",
+      tag: "Production",
+      type: "AI agents · Multichannel support",
+      context:
+        "A pharmacy in Colombia needed 24/7 automated support and to digitize orders, queries, and supplier quotes without growing headcount.",
+      decision:
+        "A single 'brain' (LLM agent with tool-calling) shared across WhatsApp, Messenger, Telegram, and voice. Tools with real catalog and order access, healthcare guardrails, and human handoff. Real-time speech-to-speech voice.",
+      result:
+        "Production agent that searches products, creates orders, and hands off to an operator when needed. Admin panel with RBAC, an encrypted secrets vault (AES-256-GCM), and hot config. Voice orders created end-to-end.",
+      metrics: [
+        "Agent with 12 tools",
+        "4 channels: WhatsApp, Messenger, Telegram, voice",
+        "Real-time speech-to-speech voice",
+        "Deployed on Docker Swarm",
+      ],
+      stack: "Fastify, Node.js, TypeScript, OpenAI, Gemini Live, Supabase, PostgreSQL, Docker Swarm, WhatsApp Cloud API, Twilio",
+      nda: true,
     },
     {
       title: "Informo",
@@ -233,7 +270,6 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Infrastructure on EU VPS/dedicated nodes with automated provisioning and continuous support.",
       metrics: ["60+ active clients", "98% historical uptime", "Automated provisioning"],
       stack: "Pterodactyl, WHMCS, REST APIs, Linux, Docker, Nginx",
-      live: "https://varynhost.com/",
       screenshots: [
         "/images/varynhost_1.png",
         "/images/varynhost_2.png",
@@ -283,31 +319,76 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Production app with continuous deploys and reusable modules.",
       metrics: ["5,000+ total users", "3,000+ registered", "Peak concurrency record"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
-      live: LINKS.hytaliaSite,
       screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
     },
   ],
 };
 
 const stackGroups = [
+  { label: "IA / Agentes", items: "LLMs · Tool-calling · RAG · Voice AI · Prompt Engineering" },
   { label: "Frontend", items: "React · Next.js · TypeScript · Tailwind" },
-  { label: "Backend", items: "Go · Node · PostgreSQL · Supabase · Redis" },
+  { label: "Backend", items: "Go · Node · Fastify · PostgreSQL · Supabase · Redis" },
   { label: "Infra", items: "Docker · Docker Swarm · Linux · Nginx · Cloudflare" },
-  { label: "Tooling", items: "GitHub Actions · Vite · Stripe · Paddle · AI Tools" },
 ];
 
 const stats = {
   es: [
-    { value: "6", label: "productos lanzados" },
+    { value: "7", label: "productos lanzados" },
     { value: "60+", label: "clientes en VarynHost" },
     { value: "5K+", label: "usuarios atendidos" },
   ],
   en: [
-    { value: "6", label: "products shipped" },
+    { value: "7", label: "products shipped" },
     { value: "60+", label: "VarynHost clients" },
     { value: "5K+", label: "users served" },
   ],
 } as const;
+
+type Certification = {
+  name: string;
+  issuer: string;
+  year: string;
+  verify?: string;
+};
+
+const certifications: Certification[] = [
+  {
+    name: "Claude Code in Action",
+    issuer: "Anthropic",
+    year: "2026",
+    verify: "http://verify.skilljar.com/c/8qrsg8pwzoce",
+  },
+  {
+    name: "Claude 101",
+    issuer: "Anthropic",
+    year: "2026",
+    verify: "http://verify.skilljar.com/c/ro59rxgrzzy4",
+  },
+  {
+    name: "Prompt Engineering for Everyone",
+    issuer: "Cognitive Class (IBM)",
+    year: "2026",
+    verify: "https://courses.cognitiveclass.ai/certificates/a9d3b7c95cb94194a154caeae6840704",
+  },
+  {
+    name: "Docker Essentials: A Developer Introduction",
+    issuer: "Cognitive Class (IBM)",
+    year: "2026",
+    verify: "https://courses.cognitiveclass.ai/certificates/86aea31fd8ca4d629393b249b4a41df1",
+  },
+  {
+    name: "Ask Questions to Make Data-Driven Decisions",
+    issuer: "Google",
+    year: "2026",
+    verify: "https://coursera.org/verify/YHNZJC3PK7SK",
+  },
+  {
+    name: "Foundations: Data, Data, Everywhere",
+    issuer: "Google",
+    year: "2025",
+    verify: "https://coursera.org/verify/WWMBN4FX5SCP",
+  },
+];
 
 const trustedBy = [
   { name: "Hytalia Network", note: "Partner & Director" },
@@ -319,14 +400,15 @@ const trustedBy = [
 const copy = {
   es: {
     navProjects: "Casos",
+    navAi: "IA",
     navProcess: "Cómo trabajo",
     navHiring: "Contratación",
     contactCta: "Contactar",
     available: "Disponible · 15 días de aviso",
     locationPill: "Madrid · Full-time · Remoto desde Madrid",
-    heroTitle: "Diseño, monto y mantengo producto en producción.",
+    heroTitle: "Diseño, monto y mantengo producto en producción — con IA de por medio.",
     heroIntro:
-      "Mi trabajo va desde infraestructura de gaming hasta paneles, herramientas internas, plataformas de comunidad y servicios online. Producto, billing, compliance e infra bajo el mismo techo cuando hace falta.",
+      "Construyo agentes de IA con tool-calling, voz en tiempo real y automatización conversacional multicanal, además de paneles, billing, compliance e infraestructura. Producto end-to-end bajo el mismo techo cuando hace falta.",
     heroPrimary: "Ver casos",
     heroSecondary: "Hablemos",
     heroDownloadCv: "Descargar CV",
@@ -365,7 +447,33 @@ const copy = {
       {
         title: "Comunicación en castellano",
         body:
-          "Soy nativo en español; mi inglés es B1-B2 escrito (puedo leer docs y comunicar por escrito). Encaje natural en empresas españolas o equipos hispanohablantes.",
+          "Soy nativo en español; mi inglés es B1 escrito (leo documentación técnica y me comunico por escrito). Encaje natural en empresas españolas o equipos hispanohablantes.",
+      },
+    ],
+    sectionAiEyebrow: "Agentes IA",
+    sectionAiTitle: "Lo que construyo con IA",
+    sectionAiIntro:
+      "No solo uso IA para programar más rápido: diseño y despliego agentes que trabajan en producción.",
+    aiCapabilities: [
+      {
+        title: "Agentes con tool-calling",
+        body:
+          "Agentes LLM con acceso real al negocio (catálogo, pedidos, derivación a humano), guardrails y un único 'cerebro' compartido entre canales.",
+      },
+      {
+        title: "Voz en tiempo real",
+        body:
+          "Voz speech-to-speech (Gemini Live / OpenAI Realtime sobre Twilio) que conduce el flujo, crea pedidos y responde con baja latencia.",
+      },
+      {
+        title: "Automatización conversacional",
+        body:
+          "Bots multicanal en WhatsApp, Messenger y Telegram con FSM determinista para el checkout y auto-derivación a un operador humano.",
+      },
+      {
+        title: "RAG y contexto estructurado",
+        body:
+          "Documentación .md de contexto, prompts estructurados y recuperación de información para que el agente entienda el producto y responda con datos reales.",
       },
     ],
     sectionStackEyebrow: "Stack",
@@ -373,12 +481,12 @@ const copy = {
     sectionHiringEyebrow: "Contratación",
     sectionHiringTitle: "Si tu equipo necesita ejecutar rápido sin perder calidad",
     sectionHiringText:
-      "Abierto a roles de Full-Stack Engineer, Solutions Engineer, Founding Engineer o Platform Engineer en SaaS, hosting, plataformas o startups AI-first. Madrid presencial, híbrido o remoto desde Madrid. Full-time, 15 días de aviso.",
+      "Abierto a roles de AI Engineer, Full-Stack Engineer, Arquitecto de Soluciones o Product Owner en SaaS, plataformas, hosting o startups AI-first. Madrid presencial, híbrido o remoto desde Madrid. Full-time, 15 días de aviso.",
     sectionHiringPoints: [
+      "AI Engineer",
       "Full-Stack Engineer",
-      "Solutions / Sales Engineer",
-      "Founding / Early Engineer",
-      "Platform / DevOps",
+      "Arquitecto de Soluciones",
+      "Product Owner",
     ],
     contactFormTitle: "Hablemos",
     contactFormSubtitle: "Cuéntame qué buscas. Respondo en menos de 24h.",
@@ -392,17 +500,23 @@ const copy = {
     contactFormError: "Error al enviar. Inténtalo de nuevo.",
     footerSource: "Código fuente de este portfolio",
     screenshotsLabel: "Capturas",
+    sectionCertsEyebrow: "Credenciales",
+    sectionCertsTitle: "Certificaciones",
+    sectionCertsIntro:
+      "Formación verificable en IA, prompting e infraestructura.",
+    certVerify: "Verificar",
   },
   en: {
     navProjects: "Cases",
+    navAi: "AI",
     navProcess: "How I work",
     navHiring: "Hiring",
     contactCta: "Contact",
     available: "Available · 15-day notice",
     locationPill: "Madrid · Full-time · Remote from Madrid",
-    heroTitle: "I design, build, and maintain product in production.",
+    heroTitle: "I design, build, and maintain product in production — with AI in the loop.",
     heroIntro:
-      "My work spans gaming infrastructure, dashboards, internal tools, community platforms, and online services. Product, billing, compliance, and infra under one roof when needed.",
+      "I build AI agents with tool-calling, real-time voice, and multichannel conversational automation, plus dashboards, billing, compliance, and infrastructure. End-to-end product under one roof when needed.",
     heroPrimary: "View cases",
     heroSecondary: "Let's talk",
     heroDownloadCv: "Download CV",
@@ -441,7 +555,33 @@ const copy = {
       {
         title: "Spanish-first communication",
         body:
-          "Native Spanish speaker; B1-B2 written English (I can read docs and communicate fine in writing). Natural fit for Spanish companies or Spanish-speaking teams.",
+          "Native Spanish speaker; B1 written English (I read technical docs and communicate fine in writing). Natural fit for Spanish companies or Spanish-speaking teams.",
+      },
+    ],
+    sectionAiEyebrow: "AI agents",
+    sectionAiTitle: "What I build with AI",
+    sectionAiIntro:
+      "I don't just use AI to code faster: I design and ship agents that run in production.",
+    aiCapabilities: [
+      {
+        title: "Tool-calling agents",
+        body:
+          "LLM agents with real business access (catalog, orders, human handoff), guardrails, and a single 'brain' shared across channels.",
+      },
+      {
+        title: "Real-time voice",
+        body:
+          "Speech-to-speech voice (Gemini Live / OpenAI Realtime over Twilio) that drives the flow, creates orders, and replies with low latency.",
+      },
+      {
+        title: "Conversational automation",
+        body:
+          "Multichannel bots on WhatsApp, Messenger, and Telegram with a deterministic checkout FSM and automatic handoff to a human operator.",
+      },
+      {
+        title: "RAG and structured context",
+        body:
+          "Context .md docs, structured prompts, and retrieval so the agent understands the product and answers with real data.",
       },
     ],
     sectionStackEyebrow: "Stack",
@@ -449,12 +589,12 @@ const copy = {
     sectionHiringEyebrow: "Hiring",
     sectionHiringTitle: "If your team needs to execute fast without losing quality",
     sectionHiringText:
-      "Open to Full-Stack Engineer, Solutions Engineer, Founding Engineer, or Platform Engineer roles at SaaS, hosting, platforms, or AI-first startups. Madrid on-site, hybrid, or remote from Madrid. Full-time, 15-day notice.",
+      "Open to AI Engineer, Full-Stack Engineer, Solutions Architect, or Product Owner roles at SaaS, platforms, hosting, or AI-first startups. Madrid on-site, hybrid, or remote from Madrid. Full-time, 15-day notice.",
     sectionHiringPoints: [
+      "AI Engineer",
       "Full-Stack Engineer",
-      "Solutions / Sales Engineer",
-      "Founding / Early Engineer",
-      "Platform / DevOps",
+      "Solutions Architect",
+      "Product Owner",
     ],
     contactFormTitle: "Let's talk",
     contactFormSubtitle: "Tell me what you're looking for. I reply within 24h.",
@@ -468,6 +608,11 @@ const copy = {
     contactFormError: "Failed to send. Please try again.",
     footerSource: "Source code for this portfolio",
     screenshotsLabel: "Screenshots",
+    sectionCertsEyebrow: "Credentials",
+    sectionCertsTitle: "Certifications",
+    sectionCertsIntro:
+      "Verifiable training in AI, prompting, and infrastructure.",
+    certVerify: "Verify",
   },
 } as const;
 
@@ -477,6 +622,13 @@ function App() {
   const projects = projectsByLocale[lang];
   const projectStats = stats[lang];
 
+  const [theme, setTheme] = useState<"light" | "dark">(() =>
+    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light",
+  );
+  const [activeSection, setActiveSection] = useState<string>("");
+
   const [activeScreenshot, setActiveScreenshot] = useState<ScreenshotModal | null>(null);
   const [showContactForm, setShowContactForm] = useState(false);
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -484,6 +636,39 @@ function App() {
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetIdRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const root = document.documentElement;
+    root.classList.toggle("dark", theme === "dark");
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {
+      /* ignore */
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const ids = ["projects", "ai", "process", "hiring"];
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActiveSection(visible[0].target.id);
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25, 0.5, 1] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -518,7 +703,7 @@ function App() {
       if (!turnstileContainerRef.current || !window.turnstile) return false;
       turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
         sitekey: TURNSTILE_SITE_KEY,
-        theme: "light",
+        theme: "auto",
         callback: (token: string) => setTurnstileToken(token),
         "expired-callback": () => setTurnstileToken(""),
       });
@@ -573,23 +758,31 @@ function App() {
             <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
               LV
             </span>
-            <span>Lucas Vicente</span>
+            <span className="hidden sm:inline">Lucas Vicente</span>
           </a>
 
           <nav className="hidden items-center gap-7 text-sm text-muted-foreground sm:flex">
-            <a href="#projects" className="transition hover:text-blue-600">
-              {t.navProjects}
-            </a>
-            <a href="#process" className="transition hover:text-blue-600">
-              {t.navProcess}
-            </a>
-            <a href="#hiring" className="transition hover:text-blue-600">
-              {t.navHiring}
-            </a>
+            {[
+              { id: "projects", label: t.navProjects },
+              { id: "ai", label: t.navAi },
+              { id: "process", label: t.navProcess },
+              { id: "hiring", label: t.navHiring },
+            ].map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className={cn(
+                  "transition hover:text-blue-600",
+                  activeSection === item.id && "font-medium text-blue-600",
+                )}
+              >
+                {item.label}
+              </a>
+            ))}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-1 rounded-md border p-0.5 text-xs sm:flex">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 rounded-md border p-0.5 text-xs">
               <button
                 type="button"
                 onClick={() => setLang("es")}
@@ -615,6 +808,14 @@ function App() {
                 EN
               </button>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+              aria-label={theme === "dark" ? "Activar tema claro" : "Activar tema oscuro"}
+            >
+              {theme === "dark" ? <Sun /> : <Moon />}
+            </Button>
             <Button size="sm" onClick={() => setShowContactForm(true)}>
               {t.contactCta}
               <ArrowRight />
@@ -631,12 +832,12 @@ function App() {
               <img
                 src="/foto.jpg"
                 alt="Lucas Vicente"
-                className="h-20 w-20 rounded-full border-2 border-background object-cover ring-2 ring-blue-200 sm:h-24 sm:w-24"
+                className="h-20 w-20 rounded-full border-2 border-background object-cover ring-2 ring-blue-200 dark:ring-blue-900 sm:h-24 sm:w-24"
               />
               <div className="flex flex-col gap-2">
                 <Badge
                   variant="outline"
-                  className="w-fit gap-2 border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50"
+                  className="w-fit gap-2 border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-950"
                 >
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
@@ -706,7 +907,7 @@ function App() {
                 {trustedBy.map((entry) => (
                   <div
                     key={entry.name}
-                    className="border-l-2 border-blue-200 pl-3"
+                    className="border-l-2 border-blue-200 pl-3 dark:border-blue-900"
                   >
                     <p className="text-sm font-semibold text-foreground">{entry.name}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{entry.note}</p>
@@ -743,7 +944,7 @@ function App() {
                       variant="secondary"
                       className={
                         p.tag.toLowerCase().includes("open")
-                          ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-50"
+                          ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-50 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-950"
                           : ""
                       }
                     >
@@ -814,7 +1015,7 @@ function App() {
                 </div>
 
                 {p.nda ? (
-                  <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                  <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
                     {t.ndaLabel}
                   </p>
                 ) : null}
@@ -851,6 +1052,29 @@ function App() {
                   </div>
                 ) : null}
               </Card>
+            ))}
+          </div>
+        </section>
+
+        <Separator />
+
+        <section id="ai" className="py-20">
+          <div className="mb-12 flex flex-col gap-2">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {t.sectionAiEyebrow}
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              {t.sectionAiTitle}
+            </h2>
+            <p className="max-w-2xl text-muted-foreground">{t.sectionAiIntro}</p>
+          </div>
+
+          <div className="grid gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-2">
+            {t.aiCapabilities.map((item) => (
+              <div key={item.title} className="bg-card p-6 sm:p-7">
+                <h3 className="text-base font-semibold tracking-tight">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </div>
             ))}
           </div>
         </section>
@@ -901,9 +1125,47 @@ function App() {
           </div>
         </section>
 
+        <Separator />
+
+        <section id="certs" className="py-20">
+          <div className="mb-10 flex flex-col gap-2">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {t.sectionCertsEyebrow}
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              {t.sectionCertsTitle}
+            </h2>
+            <p className="max-w-2xl text-muted-foreground">{t.sectionCertsIntro}</p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {certifications.map((cert) => (
+              <Card key={cert.name} className="flex flex-col justify-between gap-3 p-5">
+                <div>
+                  <p className="text-sm font-semibold leading-snug">{cert.name}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {cert.issuer} · {cert.year}
+                  </p>
+                </div>
+                {cert.verify ? (
+                  <a
+                    href={cert.verify}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-fit items-center gap-1 text-xs font-medium text-blue-600 transition hover:text-blue-700"
+                  >
+                    {t.certVerify}
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </a>
+                ) : null}
+              </Card>
+            ))}
+          </div>
+        </section>
+
         <section
           id="hiring"
-          className="my-20 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 p-8 text-white sm:p-12"
+          className="my-20 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 p-8 text-white dark:bg-neutral-900 sm:p-12"
         >
           <div className="grid gap-8 lg:grid-cols-[2fr_1fr] lg:items-end">
             <div>
@@ -994,9 +1256,9 @@ function App() {
           </DialogHeader>
 
           {contactStatus === "success" ? (
-            <div className="flex flex-col items-center gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-6 text-center">
-              <CheckCircle className="h-10 w-10 text-emerald-600" />
-              <p className="text-sm text-emerald-800">{t.contactFormSuccess}</p>
+            <div className="flex flex-col items-center gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-6 text-center dark:border-emerald-900 dark:bg-emerald-950">
+              <CheckCircle className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
+              <p className="text-sm text-emerald-800 dark:text-emerald-300">{t.contactFormSuccess}</p>
             </div>
           ) : (
             <form onSubmit={handleContactSubmit} className="space-y-3">
