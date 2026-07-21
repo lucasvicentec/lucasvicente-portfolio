@@ -24,8 +24,10 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Los secretos se suben cifrados con `wrangler secret`, no como [vars]:
-      # las vars de Cloudflare se leen en claro desde el dashboard.
+      # El deploy va antes que los secretos a propósito: wrangler.toml ya no
+      # define [vars], así que este paso elimina las variables en claro que
+      # había. Sin eso, subir un secreto con el mismo nombre falla con
+      # "Binding name already in use".
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
@@ -33,9 +35,15 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4"
           command: deploy
-          secrets: |
-            RESEND_API_KEY
-            TURNSTILE_SECRET_KEY
+
+      # Se suben cifrados con `wrangler secret bulk`. Persisten entre despliegues.
+      - name: Upload encrypted secrets
+        run: |
+          jq -n --arg resend "$RESEND_API_KEY" --arg turnstile "$TURNSTILE_SECRET_KEY" \
+            '{RESEND_API_KEY: $resend, TURNSTILE_SECRET_KEY: $turnstile}' \
+            | npx wrangler secret bulk
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
