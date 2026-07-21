@@ -30,7 +30,7 @@ Más allá de ser una web bonita, estas son las decisiones que merecen mención:
 - **Diagrama de arquitectura anonimizado** para el caso bajo NDA: se comparte la forma del sistema sin exponer datos del cliente.
 - **Formulario de contacto serverless** con Cloudflare Turnstile, validación en servidor y cabeceras de seguridad (CSP incluida).
 - **Scroll-spy** con `IntersectionObserver` y navegación accesible por teclado.
-- **Imágenes generadas por script** (Open Graph y diagrama), versionadas y reproducibles.
+- **Imágenes generadas y optimizadas por script** (Open Graph, diagrama y conversión a WebP): las capturas pesan un 89% menos.
 
 ## Stack
 
@@ -81,6 +81,7 @@ npm run dev          # http://localhost:5173
 | `npm run deploy:cf` | Build + `wrangler deploy` (producción) |
 | `node scripts/generate-og.mjs` | Regenera la imagen Open Graph |
 | `node scripts/generate-arch-diagram.mjs` | Regenera el diagrama de arquitectura |
+| `node scripts/optimize-images.mjs` | Convierte los PNG de `public/images` a WebP |
 
 ### Regenerar el CV en PDF
 

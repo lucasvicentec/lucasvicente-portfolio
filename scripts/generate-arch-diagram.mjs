@@ -1,4 +1,4 @@
-// Genera public/images/farmacenter-arquitectura.png
+// Genera public/images/farmacenter-arquitectura.webp
 // Diagrama de arquitectura ANONIMIZADO (NDA-safe): solo la forma del sistema.
 // NO incluye: nombre del cliente, repos, dominios, variables de entorno,
 // tokens, terceros ni datos de negocio.
@@ -9,7 +9,7 @@ import { dirname, resolve } from "node:path";
 
 const OUT = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  "..", "public", "images", "farmacenter-arquitectura.png"
+  "..", "public", "images", "farmacenter-arquitectura.webp"
 );
 
 const F = "Inter, 'Segoe UI', system-ui, -apple-system, sans-serif";
@@ -87,5 +87,5 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" v
   <text x="68" y="738" font-family="${F}" font-size="12.5" fill="#5A5A63">Flujo crítico: cotización (precios congelados en servidor) → pedido → decremento de stock, en transacción atómica.</text>
 </svg>`;
 
-await sharp(Buffer.from(svg)).png().toFile(OUT);
+await sharp(Buffer.from(svg)).webp({ quality: 90 }).toFile(OUT);
 console.log("Diagrama generado ->", OUT);

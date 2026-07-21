@@ -4,10 +4,12 @@ import {
   ArrowUpRight,
   Calendar,
   CheckCircle,
+  ChevronDown,
   Download,
   Github,
   Linkedin,
   Mail,
+  Menu,
   Moon,
   Send,
   Sun,
@@ -74,6 +76,9 @@ const LINKS = {
   statusPage: "https://status.lucasvicente.es/",
 } as const;
 
+// Casos que se muestran sin desplegar; el resto va tras el boton "ver mas".
+const VISIBLE_CASES = 3;
+
 const projectsByLocale: Record<Locale, Project[]> = {
   es: [
     {
@@ -90,10 +95,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, WebSocket",
       live: "https://riftpanel.net",
       screenshots: [
-        "/images/riftpanel_1.png",
-        "/images/riftpanel_2.png",
-        "/images/riftpanel_3.png",
-        "/images/riftpanel_4.png",
+        "/images/riftpanel_1.webp",
+        "/images/riftpanel_2.webp",
+        "/images/riftpanel_3.webp",
+        "/images/riftpanel_4.webp",
       ],
     },
     {
@@ -113,7 +118,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Desplegado en Docker Swarm",
       ],
       stack: "Fastify, Node.js, TypeScript, OpenAI, Gemini Live, Supabase, PostgreSQL, Docker Swarm, WhatsApp Cloud API, Twilio",
-      diagram: "/images/farmacenter-arquitectura.png",
+      diagram: "/images/farmacenter-arquitectura.webp",
       nda: true,
     },
     {
@@ -130,10 +135,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Next.js 15, React 19, TypeScript, Tailwind, Supabase, AES-256, Docker, Zod",
       live: "https://informo.es",
       screenshots: [
-        "/images/informo_1.png",
-        "/images/informo_2.png",
-        "/images/informo_3.png",
-        "/images/informo_4.png",
+        "/images/informo_1.webp",
+        "/images/informo_2.webp",
+        "/images/informo_3.webp",
+        "/images/informo_4.webp",
       ],
     },
     {
@@ -149,10 +154,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       metrics: ["+60 clientes activos", "Provisión automatizada", "Vendido a otra empresa"],
       stack: "Pterodactyl, WHMCS, APIs REST, Linux, Docker, Nginx",
       screenshots: [
-        "/images/varynhost_1.png",
-        "/images/varynhost_2.png",
-        "/images/varynhost_3.png",
-        "/images/varynhost_4.png",
+        "/images/varynhost_1.webp",
+        "/images/varynhost_2.webp",
+        "/images/varynhost_3.webp",
+        "/images/varynhost_4.webp",
       ],
     },
     {
@@ -168,7 +173,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       metrics: ["Open source", "Checks cada 60s", "VPS y dedicados"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker Swarm, REST API",
       repo: LINKS.githubStackWatch,
-      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
+      screenshots: ["/images/stackwatch_1.webp", "/images/stackwatch_2.webp"],
     },
     {
       title: "Finesse",
@@ -183,7 +188,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       metrics: ["216 usuarios activos", "500+ gastos registrados", "248 grupos creados"],
       stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
       live: "https://finesseapp.es",
-      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
+      screenshots: ["/images/finesse_1.webp", "/images/finesse_2.webp", "/images/finesse_3.webp"],
     },
     {
       title: "Hytalia Web",
@@ -197,7 +202,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Producto en producción con despliegue continuo y módulos reutilizables.",
       metrics: ["+5.000 usuarios totales", "+3.000 registrados", "Récord de concurrencia"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
-      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
+      screenshots: ["/images/hytalia_1.webp", "/images/hytalia_2.webp", "/images/hytalia_3.webp"],
     },
   ],
   en: [
@@ -215,10 +220,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, WebSocket",
       live: "https://riftpanel.net",
       screenshots: [
-        "/images/riftpanel_1.png",
-        "/images/riftpanel_2.png",
-        "/images/riftpanel_3.png",
-        "/images/riftpanel_4.png",
+        "/images/riftpanel_1.webp",
+        "/images/riftpanel_2.webp",
+        "/images/riftpanel_3.webp",
+        "/images/riftpanel_4.webp",
       ],
     },
     {
@@ -238,7 +243,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Deployed on Docker Swarm",
       ],
       stack: "Fastify, Node.js, TypeScript, OpenAI, Gemini Live, Supabase, PostgreSQL, Docker Swarm, WhatsApp Cloud API, Twilio",
-      diagram: "/images/farmacenter-arquitectura.png",
+      diagram: "/images/farmacenter-arquitectura.webp",
       nda: true,
     },
     {
@@ -255,10 +260,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       stack: "Next.js 15, React 19, TypeScript, Tailwind, Supabase, AES-256, Docker, Zod",
       live: "https://informo.es",
       screenshots: [
-        "/images/informo_1.png",
-        "/images/informo_2.png",
-        "/images/informo_3.png",
-        "/images/informo_4.png",
+        "/images/informo_1.webp",
+        "/images/informo_2.webp",
+        "/images/informo_3.webp",
+        "/images/informo_4.webp",
       ],
     },
     {
@@ -274,10 +279,10 @@ const projectsByLocale: Record<Locale, Project[]> = {
       metrics: ["60+ active clients", "Automated provisioning", "Sold to another company"],
       stack: "Pterodactyl, WHMCS, REST APIs, Linux, Docker, Nginx",
       screenshots: [
-        "/images/varynhost_1.png",
-        "/images/varynhost_2.png",
-        "/images/varynhost_3.png",
-        "/images/varynhost_4.png",
+        "/images/varynhost_1.webp",
+        "/images/varynhost_2.webp",
+        "/images/varynhost_3.webp",
+        "/images/varynhost_4.webp",
       ],
     },
     {
@@ -293,7 +298,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       metrics: ["Open source", "60s checks", "VPS & dedicated"],
       stack: "Next.js 16, TypeScript, PostgreSQL, Docker Swarm, REST API",
       repo: LINKS.githubStackWatch,
-      screenshots: ["/images/stackwatch_1.png", "/images/stackwatch_2.png"],
+      screenshots: ["/images/stackwatch_1.webp", "/images/stackwatch_2.webp"],
     },
     {
       title: "Finesse",
@@ -308,7 +313,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       metrics: ["216 active users", "500+ expenses tracked", "248 groups"],
       stack: "Next.js 16, React 19, TypeScript, Tailwind, Supabase, Framer Motion, PWA",
       live: "https://finesseapp.es",
-      screenshots: ["/images/finesse_1.png", "/images/finesse_2.png", "/images/finesse_3.png"],
+      screenshots: ["/images/finesse_1.webp", "/images/finesse_2.webp", "/images/finesse_3.webp"],
     },
     {
       title: "Hytalia Web",
@@ -322,7 +327,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Production app with continuous deploys and reusable modules.",
       metrics: ["5,000+ total users", "3,000+ registered", "Peak concurrency record"],
       stack: "Next.js 14, React 18, TypeScript, Tailwind, NextAuth, Docker Swarm",
-      screenshots: ["/images/hytalia_1.png", "/images/hytalia_2.png", "/images/hytalia_3.png"],
+      screenshots: ["/images/hytalia_1.webp", "/images/hytalia_2.webp", "/images/hytalia_3.webp"],
     },
   ],
 };
@@ -336,11 +341,13 @@ const stackGroups = [
 
 const stats = {
   es: [
+    { value: "2", label: "productos construidos y vendidos" },
     { value: "7", label: "productos lanzados" },
     { value: "60+", label: "clientes gestionados en VarynHost" },
     { value: "5K+", label: "usuarios en productos lanzados" },
   ],
   en: [
+    { value: "2", label: "products built and sold" },
     { value: "7", label: "products shipped" },
     { value: "60+", label: "clients managed at VarynHost" },
     { value: "5K+", label: "users across shipped products" },
@@ -415,6 +422,9 @@ const copy = {
     contactCta: "Contactar",
     available: "Disponible · 15 días de aviso",
     locationPill: "Madrid · Full-time · Remoto desde Madrid",
+    heroEyebrow: "AI Solutions Builder",
+    showMoreCases: "Ver más casos",
+    showLessCases: "Ver menos casos",
     heroTitle: "Diseño, monto y mantengo producto en producción — con IA de por medio.",
     heroIntro:
       "Construyo agentes de IA con tool-calling, voz en tiempo real y automatización conversacional multicanal, además de paneles, billing, compliance e infraestructura. Producto end-to-end bajo el mismo techo cuando hace falta.",
@@ -524,6 +534,9 @@ const copy = {
     contactCta: "Contact",
     available: "Available · 15-day notice",
     locationPill: "Madrid · Full-time · Remote from Madrid",
+    heroEyebrow: "AI Solutions Builder",
+    showMoreCases: "Show more cases",
+    showLessCases: "Show fewer cases",
     heroTitle: "I design, build, and maintain product in production — with AI in the loop.",
     heroIntro:
       "I build AI agents with tool-calling, real-time voice, and multichannel conversational automation, plus dashboards, billing, compliance, and infrastructure. End-to-end product under one roof when needed.",
@@ -641,6 +654,8 @@ function App() {
   const [activeSection, setActiveSection] = useState<string>("");
 
   const [activeScreenshot, setActiveScreenshot] = useState<ScreenshotModal | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showAllCases, setShowAllCases] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -756,6 +771,14 @@ function App() {
     [contactForm, turnstileToken, contactStatus],
   );
 
+  const navItems = [
+    { id: "projects", label: t.navProjects },
+    { id: "ai", label: t.navAi },
+    { id: "process", label: t.navProcess },
+    { id: "hiring", label: t.navHiring },
+  ];
+  const visibleProjects = showAllCases ? projects : projects.slice(0, VISIBLE_CASES);
+
   const handleContactDialogChange = (open: boolean) => {
     setShowContactForm(open);
     if (!open) setContactStatus("idle");
@@ -773,12 +796,7 @@ function App() {
           </a>
 
           <nav className="hidden items-center gap-7 text-sm text-muted-foreground sm:flex">
-            {[
-              { id: "projects", label: t.navProjects },
-              { id: "ai", label: t.navAi },
-              { id: "process", label: t.navProcess },
-              { id: "hiring", label: t.navHiring },
-            ].map((item) => (
+            {navItems.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
@@ -831,8 +849,40 @@ function App() {
               {t.contactCta}
               <ArrowRight />
             </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="sm:hidden"
+              onClick={() => setMenuOpen((prev) => !prev)}
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            >
+              {menuOpen ? <X /> : <Menu />}
+            </Button>
           </div>
         </div>
+
+        {menuOpen ? (
+          <nav className="border-t sm:hidden">
+            <div className="mx-auto flex max-w-5xl flex-col px-5 py-2">
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={"#" + item.id}
+                  onClick={() => setMenuOpen(false)}
+                  className={cn(
+                    "py-2.5 text-sm transition hover:text-blue-600",
+                    activeSection === item.id
+                      ? "font-medium text-blue-600"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+        ) : null}
       </header>
 
       <main id="home" className="mx-auto w-full max-w-5xl px-5">
@@ -860,7 +910,11 @@ function App() {
               </div>
             </div>
 
-            <h1 className="mt-10 max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl sm:leading-[1.1]">
+            <p className="mt-10 text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+              {t.heroEyebrow}
+            </p>
+
+            <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl sm:leading-[1.1]">
               {t.heroTitle}
             </h1>
 
@@ -899,7 +953,7 @@ function App() {
               </div>
             </div>
 
-            <div className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-3">
+            <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border lg:grid-cols-4">
               {projectStats.map((stat) => (
                 <div key={stat.label} className="bg-card px-5 py-5">
                   <p className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
@@ -943,7 +997,7 @@ function App() {
           </div>
 
           <div className="space-y-6">
-            {projects.map((p, index) => (
+            {visibleProjects.map((p, index) => (
               <Card key={p.title} className="p-6 transition hover:border-foreground/20 sm:p-8">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
@@ -1091,6 +1145,17 @@ function App() {
                 ) : null}
               </Card>
             ))}
+
+            {projects.length > VISIBLE_CASES ? (
+              <div className="flex justify-center pt-2">
+                <Button variant="outline" onClick={() => setShowAllCases((prev) => !prev)}>
+                  {showAllCases
+                    ? t.showLessCases
+                    : t.showMoreCases + " (" + (projects.length - VISIBLE_CASES) + ")"}
+                  <ChevronDown className={cn("transition", showAllCases && "rotate-180")} />
+                </Button>
+              </div>
+            ) : null}
           </div>
         </section>
 
