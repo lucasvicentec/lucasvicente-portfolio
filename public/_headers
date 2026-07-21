@@ -1,0 +1,12 @@
+# Cabeceras de seguridad para los assets estáticos.
+# Necesario porque Cloudflare sirve los assets SIN invocar al Worker, así que
+# las cabeceras que añade worker/index.ts solo aplican a /api/contact.
+# CSP: 'unsafe-inline' es obligado por el script anti-FOUC del tema y por los
+# estilos inline de React/Radix. Externos permitidos: Turnstile y Google Fonts.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
