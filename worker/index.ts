@@ -185,8 +185,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   }
 
   // El asunto viaja a una cabecera de email: fuera saltos de linea.
-  const safeSubject = subject.replace(/[
-]+/g, " ").trim();
+  const safeSubject = subject.replace(/[\r\n]+/g, " ").trim();
 
   const turnstileValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY, ip);
   if (!turnstileValid) {

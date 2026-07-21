@@ -76,6 +76,7 @@ npm run dev          # http://localhost:5173
 | `npm run build` | `tsc -b` + build de producción |
 | `npm run preview` | Preview del build |
 | `npm run lint` | ESLint |
+| `npm run check:worker` | Compila el Worker sin desplegar (`npm run build` **no** lo cubre) |
 | `npm run cf:dev` | Build + `wrangler dev` (Worker en local) |
 | `npm run deploy:cf` | Build + `wrangler deploy` (producción) |
 | `node scripts/generate-og.mjs` | Regenera la imagen Open Graph |
