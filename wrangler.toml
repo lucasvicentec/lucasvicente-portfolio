@@ -11,5 +11,8 @@ routes = [
 [assets]
 directory = "./dist"
 binding = "ASSETS"
+# Obliga a que el Worker atienda cada peticion. Sin esto Cloudflare sirve los
+# assets directamente y las cabeceras de seguridad del Worker nunca se aplican.
+run_worker_first = true
 
 # [vars] — se inyectan como secrets desde GitHub Actions (ver workflow)
