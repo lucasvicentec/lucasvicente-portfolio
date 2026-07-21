@@ -337,12 +337,12 @@ const stackGroups = [
 const stats = {
   es: [
     { value: "7", label: "productos lanzados" },
-    { value: "60+", label: "clientes en VarynHost" },
+    { value: "60+", label: "clientes gestionados en VarynHost" },
     { value: "5K+", label: "usuarios en productos lanzados" },
   ],
   en: [
     { value: "7", label: "products shipped" },
-    { value: "60+", label: "VarynHost clients" },
+    { value: "60+", label: "clients managed at VarynHost" },
     { value: "5K+", label: "users across shipped products" },
   ],
 } as const;
@@ -403,7 +403,7 @@ const trustedBy = [
   { name: "Hytalia Network", note: "Partner & Director" },
   { name: "Peyleth & Mood Studios", note: "Joint Venture · USA" },
   { name: "Madrid Digital", note: "Cliente vía Ayesa" },
-  { name: "VarynHost", note: "Co-fundador" },
+  { name: "VarynHost", note: "Co-fundador · vendido" },
 ];
 
 const copy = {

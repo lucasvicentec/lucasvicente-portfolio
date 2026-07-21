@@ -56,7 +56,7 @@ scripts/
 public/
   cv-lucas-vicente.pdf    CV descargable (exportado desde cv-lucas-vicente.html)
   images/                 Capturas y diagramas de los casos
-cv-lucas-vicente.html     Fuente del CV → imprimir a PDF con Ctrl+P
+cv-lucas-vicente.html     Fuente del CV (ver "Regenerar el CV en PDF")
 ```
 
 ## Desarrollo
@@ -80,6 +80,15 @@ npm run dev          # http://localhost:5173
 | `npm run deploy:cf` | Build + `wrangler deploy` (producción) |
 | `node scripts/generate-og.mjs` | Regenera la imagen Open Graph |
 | `node scripts/generate-arch-diagram.mjs` | Regenera el diagrama de arquitectura |
+
+### Regenerar el CV en PDF
+
+El CV se edita en `cv-lucas-vicente.html` y se exporta con Chrome headless (sin encabezados
+ni pies de página, que es lo que añade el diálogo de impresión del navegador):
+
+```bash
+chrome --headless=new --disable-gpu --no-pdf-header-footer \n  --print-to-pdf="public/cv-lucas-vicente.pdf" \n  "file:///ruta/absoluta/a/cv-lucas-vicente.html"
+```
 
 ## Seguridad
 
