@@ -22,11 +22,46 @@ const CONTACT_EMAIL = "lucasvicentecerri6@gmail.com";
 // Cambiar a "Portfolio Lucas Vicente <noreply@lucasvicente.es>" cuando verifiques el dominio en Resend
 const FROM_EMAIL = "onboarding@resend.dev";
 
+// CSP: 'unsafe-inline' es necesario por el script inline anti-FOUC del tema y
+// por los estilos inline de React/Radix. El resto queda restringido a origenes
+// concretos (Turnstile y Google Fonts son los unicos externos del sitio).
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: blob:",
+  "connect-src 'self'",
+  "frame-src https://challenges.cloudflare.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+// Origenes permitidos para POST /api/contact.
+const ALLOWED_ORIGINS = new Set([
+  "https://lucasvicente.es",
+  "https://www.lucasvicente.es",
+  "http://localhost:5173",
+  "http://localhost:8787",
+]);
+
+function isAllowedOrigin(request: Request): boolean {
+  const origin = request.headers.get("Origin");
+  // Sin cabecera Origin no podemos decidir; Turnstile sigue siendo la barrera real.
+  if (!origin) return true;
+  return ALLOWED_ORIGINS.has(origin);
+}
+
 const SECURITY_HEADERS: Record<string, string> = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "Content-Security-Policy": CSP,
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
 };
 
 function addSecurityHeaders(response: Response): Response {
@@ -84,13 +119,23 @@ async function sendEmail(
   return { ok: true };
 }
 
-// Rate limiting básico por IP (en memoria del isolate)
+// Rate limiting best-effort por IP.
+// OJO: vive en la memoria del isolate y los isolates de Workers son efimeros y
+// distribuidos, asi que NO es una barrera fuerte (solo frena abuso trivial).
+// La proteccion real es Turnstile + reglas de Rate Limiting de Cloudflare.
 const rateLimitMap = new Map<string, number[]>();
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
   const windowMs = 60_000;
   const maxRequests = 10;
+
+  // Purga de IPs sin actividad reciente para que el Map no crezca sin limite.
+  if (rateLimitMap.size > 5_000) {
+    for (const [key, times] of rateLimitMap) {
+      if (times.every((t) => now - t >= windowMs)) rateLimitMap.delete(key);
+    }
+  }
 
   const timestamps = (rateLimitMap.get(ip) ?? []).filter((t) => now - t < windowMs);
   if (timestamps.length >= maxRequests) return true;
@@ -102,6 +147,10 @@ function isRateLimited(ip: string): boolean {
 
 async function handleContact(request: Request, env: Env): Promise<Response> {
   const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Forbidden origin." }, 403);
+  }
 
   if (isRateLimited(ip)) {
     return jsonResponse({ error: "Too many requests. Try again later." }, 429);
@@ -135,14 +184,20 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     return jsonResponse({ error: "Field too long." }, 400);
   }
 
+  // El asunto viaja a una cabecera de email: fuera saltos de linea.
+  const safeSubject = subject.replace(/[
+]+/g, " ").trim();
+
   const turnstileValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY, ip);
   if (!turnstileValid) {
     return jsonResponse({ error: "CAPTCHA verification failed." }, 403);
   }
 
-  const result = await sendEmail(env, name, email, subject, message);
+  const result = await sendEmail(env, name, email, safeSubject, message);
   if (!result.ok) {
-    return jsonResponse({ error: `Failed to send email: ${result.error}` }, 500);
+    // El detalle solo a logs; al cliente un mensaje generico.
+    console.error("Resend error:", result.error);
+    return jsonResponse({ error: "No se pudo enviar el mensaje. Intentalo de nuevo mas tarde." }, 500);
   }
 
   return jsonResponse({ ok: true }, 200);
@@ -158,8 +213,8 @@ export default {
         try {
           return await handleContact(request, env);
         } catch (err) {
-          const msg = err instanceof Error ? err.message : String(err);
-          return jsonResponse({ error: `Unhandled: ${msg}` }, 500);
+          console.error("Unhandled contact error:", err);
+          return jsonResponse({ error: "Error interno." }, 500);
         }
       }
       return jsonResponse({ error: "Method not allowed." }, 405);

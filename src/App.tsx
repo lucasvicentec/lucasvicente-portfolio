@@ -54,6 +54,7 @@ type Project = {
   repo?: string;
   live?: string;
   nda?: boolean;
+  diagram?: string;
   screenshots?: string[];
 };
 
@@ -77,15 +78,15 @@ const projectsByLocale: Record<Locale, Project[]> = {
   es: [
     {
       title: "RiftPanel",
-      tag: "Producción",
+      tag: "Vendido",
       type: "Panel SaaS para hosting de juegos",
       context:
         "Los proveedores de hosting necesitan Pterodactyl + WHMCS + portal de cliente. Tres herramientas separadas, alto coste y complejidad.",
       decision:
         "Backend en Go (Fiber) en lugar de PHP por rendimiento. Integración directa con Wings para compatibilidad total con nodos existentes.",
       result:
-        "Plataforma todo-en-uno con facturación integrada (Stripe/Paddle), 40+ plantillas, 31 módulos, sistema de licencias propio. Salió a producción en 2 semanas vs 3-4 meses estimados a desarrollo tradicional.",
-      metrics: ["7 clientes pagando", "22 instalaciones free", "29 servidores activos", "Lanzado en 2 semanas"],
+        "Plataforma todo-en-uno con facturación integrada (Stripe/Paddle), 40+ plantillas, 31 módulos, sistema de licencias propio. Salió a producción en 2 semanas vs 3-4 meses estimados a desarrollo tradicional. El producto y el código fueron vendidos a un tercero.",
+      metrics: ["De 0 a producción en 2 semanas", "29 servidores · 7 clientes de pago", "Producto y código vendidos"],
       stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, WebSocket",
       live: "https://riftpanel.net",
       screenshots: [
@@ -102,7 +103,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       context:
         "Una farmacia en Colombia necesitaba atención automatizada 24/7 y digitalizar pedidos, consultas y cotizaciones a proveedores sin ampliar plantilla.",
       decision:
-        "Un único 'cerebro' (agente con tool-calling sobre LLM) compartido por WhatsApp, Messenger, Telegram y voz. Tools con acceso real a catálogo y pedidos, guardrails sanitarios y derivación a humano. Voz en tiempo real speech-to-speech.",
+        "Un único 'cerebro' (agente con tool-calling sobre LLM) compartido por WhatsApp, Messenger, Telegram y voz. Tools con acceso real a catálogo y pedidos, guardrails sanitarios y derivación a humano. Voz en tiempo real speech-to-speech. Proveedor de LLM elegido por caso de uso: Gemini Live por latencia en voz, OpenAI para el agente de texto con tool-calling y Claude como copiloto de construcción.",
       result:
         "Agente en producción que busca productos, crea pedidos y deriva a un operador cuando hace falta. Panel con RBAC, vault de claves cifradas (AES-256-GCM) y configuración en caliente. Pedidos por voz creados end-to-end.",
       metrics: [
@@ -112,6 +113,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Desplegado en Docker Swarm",
       ],
       stack: "Fastify, Node.js, TypeScript, OpenAI, Gemini Live, Supabase, PostgreSQL, Docker Swarm, WhatsApp Cloud API, Twilio",
+      diagram: "/images/farmacenter-arquitectura.png",
       nda: true,
     },
     {
@@ -136,15 +138,15 @@ const projectsByLocale: Record<Locale, Project[]> = {
     },
     {
       title: "VarynHost",
-      tag: "Producción",
+      tag: "Vendido",
       type: "Hosting · Infra y automatización",
       context:
         "Servicio de hosting con paneles custom, automatización y operación diaria para clientes reales.",
       decision:
         "Pterodactyl + WHMCS + APIs propias para balancear velocidad de entrega y operación mantenible.",
       result:
-        "Infra gestionada sobre VPS/dedicados (EU), provisión automatizada y soporte continuo.",
-      metrics: ["+60 clientes activos", "98% uptime histórico", "Provisión automatizada"],
+        "Infra gestionada sobre VPS/dedicados (EU), provisión automatizada y soporte continuo. El servicio fue vendido a otra empresa, que lo opera actualmente.",
+      metrics: ["+60 clientes activos", "Provisión automatizada", "Vendido a otra empresa"],
       stack: "Pterodactyl, WHMCS, APIs REST, Linux, Docker, Nginx",
       screenshots: [
         "/images/varynhost_1.png",
@@ -201,15 +203,15 @@ const projectsByLocale: Record<Locale, Project[]> = {
   en: [
     {
       title: "RiftPanel",
-      tag: "Production",
+      tag: "Acquired",
       type: "Game hosting SaaS panel",
       context:
         "Hosting providers need Pterodactyl + WHMCS + a customer portal. Three separate tools with high cost and complexity.",
       decision:
         "Go backend (Fiber) instead of PHP for performance. Direct Wings integration for full compatibility with existing nodes.",
       result:
-        "All-in-one platform with built-in billing (Stripe/Paddle), 40+ templates, 31 modules, custom license system. Shipped to production in 2 weeks vs 3-4 months estimated for traditional development.",
-      metrics: ["7 paying customers", "22 free installs", "29 active servers", "Shipped in 2 weeks"],
+        "All-in-one platform with built-in billing (Stripe/Paddle), 40+ templates, 31 modules, custom license system. Shipped to production in 2 weeks vs 3-4 months estimated for traditional development. The product and codebase were later sold to a third party.",
+      metrics: ["0 to production in 2 weeks", "29 servers · 7 paying customers", "Product and codebase sold"],
       stack: "Go 1.25, Fiber, React 18, TypeScript, Tailwind, PostgreSQL, Docker, Stripe, Paddle, WebSocket",
       live: "https://riftpanel.net",
       screenshots: [
@@ -226,7 +228,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
       context:
         "A pharmacy in Colombia needed 24/7 automated support and to digitize orders, queries, and supplier quotes without growing headcount.",
       decision:
-        "A single 'brain' (LLM agent with tool-calling) shared across WhatsApp, Messenger, Telegram, and voice. Tools with real catalog and order access, healthcare guardrails, and human handoff. Real-time speech-to-speech voice.",
+        "A single 'brain' (LLM agent with tool-calling) shared across WhatsApp, Messenger, Telegram, and voice. Tools with real catalog and order access, healthcare guardrails, and human handoff. Real-time speech-to-speech voice. LLM provider chosen per use case: Gemini Live for voice latency, OpenAI for the tool-calling text agent, and Claude as the build copilot.",
       result:
         "Production agent that searches products, creates orders, and hands off to an operator when needed. Admin panel with RBAC, an encrypted secrets vault (AES-256-GCM), and hot config. Voice orders created end-to-end.",
       metrics: [
@@ -236,6 +238,7 @@ const projectsByLocale: Record<Locale, Project[]> = {
         "Deployed on Docker Swarm",
       ],
       stack: "Fastify, Node.js, TypeScript, OpenAI, Gemini Live, Supabase, PostgreSQL, Docker Swarm, WhatsApp Cloud API, Twilio",
+      diagram: "/images/farmacenter-arquitectura.png",
       nda: true,
     },
     {
@@ -260,15 +263,15 @@ const projectsByLocale: Record<Locale, Project[]> = {
     },
     {
       title: "VarynHost",
-      tag: "Production",
+      tag: "Acquired",
       type: "Hosting · Infra and automation",
       context:
         "Hosting service with custom panels, automation, and day-to-day operations for real clients.",
       decision:
         "Pterodactyl + WHMCS + custom APIs to balance delivery speed with maintainable operations.",
       result:
-        "Infrastructure on EU VPS/dedicated nodes with automated provisioning and continuous support.",
-      metrics: ["60+ active clients", "98% historical uptime", "Automated provisioning"],
+        "Infrastructure on EU VPS/dedicated nodes with automated provisioning and continuous support. The service was sold to another company, which runs it today.",
+      metrics: ["60+ active clients", "Automated provisioning", "Sold to another company"],
       stack: "Pterodactyl, WHMCS, REST APIs, Linux, Docker, Nginx",
       screenshots: [
         "/images/varynhost_1.png",
@@ -335,12 +338,12 @@ const stats = {
   es: [
     { value: "7", label: "productos lanzados" },
     { value: "60+", label: "clientes en VarynHost" },
-    { value: "5K+", label: "usuarios atendidos" },
+    { value: "5K+", label: "usuarios en productos lanzados" },
   ],
   en: [
     { value: "7", label: "products shipped" },
     { value: "60+", label: "VarynHost clients" },
-    { value: "5K+", label: "users served" },
+    { value: "5K+", label: "users across shipped products" },
   ],
 } as const;
 
@@ -352,6 +355,12 @@ type Certification = {
 };
 
 const certifications: Certification[] = [
+  {
+    name: "EF SET English Certificate — C2 Proficient (74/100)",
+    issuer: "EF Standard English Test",
+    year: "2026",
+    verify: "https://cert.efset.org/en/NyH1tG",
+  },
   {
     name: "Claude Code in Action",
     issuer: "Anthropic",
@@ -392,7 +401,7 @@ const certifications: Certification[] = [
 
 const trustedBy = [
   { name: "Hytalia Network", note: "Partner & Director" },
-  { name: "Mood Studios", note: "Joint Venture · USA" },
+  { name: "Peyleth & Mood Studios", note: "Joint Venture · USA" },
   { name: "Madrid Digital", note: "Cliente vía Ayesa" },
   { name: "VarynHost", note: "Co-fundador" },
 ];
@@ -445,9 +454,9 @@ const copy = {
           "Diseño, despliego, monitorizo y mantengo. He gestionado +60 servidores, billing real con Stripe/Paddle y cumplimiento regulatorio (AES-256, AIPI, Ley 2/2023).",
       },
       {
-        title: "Comunicación en castellano",
+        title: "Idiomas y comunicación",
         body:
-          "Soy nativo en español; mi inglés es B1 escrito (leo documentación técnica y me comunico por escrito). Encaje natural en empresas españolas o equipos hispanohablantes.",
+          "Nativo en español. Comprensión de inglés certificada C2 (EF SET 74/100, jul 2026): leo documentación, specs y código técnico sin fricción, y sigo contenido y reuniones en inglés. Expresión escrita funcional; la hablada, en progreso. Encaje directo en equipos españoles y en entornos con documentación en inglés.",
       },
     ],
     sectionAiEyebrow: "Agentes IA",
@@ -481,10 +490,10 @@ const copy = {
     sectionHiringEyebrow: "Contratación",
     sectionHiringTitle: "Si tu equipo necesita ejecutar rápido sin perder calidad",
     sectionHiringText:
-      "Abierto a roles de AI Engineer, Full-Stack Engineer, Arquitecto de Soluciones o Product Owner en SaaS, plataformas, hosting o startups AI-first. Madrid presencial, híbrido o remoto desde Madrid. Full-time, 15 días de aviso.",
+      "Abierto a roles de AI Solutions Builder, automatización con IA, implementación e integración de soluciones, arquitectura de producto SaaS o Customer Success técnico, y perfiles híbridos entre tecnología, producto y negocio. Madrid presencial, híbrido o remoto desde Madrid. Full-time, 15 días de aviso.",
     sectionHiringPoints: [
-      "AI Engineer",
-      "Full-Stack Engineer",
+      "AI Solutions Builder",
+      "Automatización con IA",
       "Arquitecto de Soluciones",
       "Product Owner",
     ],
@@ -499,6 +508,7 @@ const copy = {
     contactFormSuccess: "Mensaje enviado. Te respondo en menos de 24h.",
     contactFormError: "Error al enviar. Inténtalo de nuevo.",
     footerSource: "Código fuente de este portfolio",
+    diagramLabel: "Arquitectura",
     screenshotsLabel: "Capturas",
     sectionCertsEyebrow: "Credenciales",
     sectionCertsTitle: "Certificaciones",
@@ -553,9 +563,9 @@ const copy = {
           "I design, deploy, monitor, and maintain. I've managed 60+ servers, real Stripe/Paddle billing, and regulatory compliance (AES-256, AIPI, Spanish Law 2/2023).",
       },
       {
-        title: "Spanish-first communication",
+        title: "Languages and communication",
         body:
-          "Native Spanish speaker; B1 written English (I read technical docs and communicate fine in writing). Natural fit for Spanish companies or Spanish-speaking teams.",
+          "Native Spanish speaker. Certified C2 English comprehension (EF SET 74/100, Jul 2026): I read documentation, specs, and technical code with no friction, and follow English content and meetings. Functional written English; spoken still improving. Direct fit for Spanish teams and for environments working in English.",
       },
     ],
     sectionAiEyebrow: "AI agents",
@@ -589,10 +599,10 @@ const copy = {
     sectionHiringEyebrow: "Hiring",
     sectionHiringTitle: "If your team needs to execute fast without losing quality",
     sectionHiringText:
-      "Open to AI Engineer, Full-Stack Engineer, Solutions Architect, or Product Owner roles at SaaS, platforms, hosting, or AI-first startups. Madrid on-site, hybrid, or remote from Madrid. Full-time, 15-day notice.",
+      "Open to AI Solutions Builder, AI automation, solution implementation and integration, SaaS product architecture, or technical Customer Success roles, plus hybrid profiles across tech, product, and business. Madrid on-site, hybrid, or remote from Madrid. Full-time, 15-day notice.",
     sectionHiringPoints: [
-      "AI Engineer",
-      "Full-Stack Engineer",
+      "AI Solutions Builder",
+      "AI automation",
       "Solutions Architect",
       "Product Owner",
     ],
@@ -607,6 +617,7 @@ const copy = {
     contactFormSuccess: "Message sent. I'll get back within 24h.",
     contactFormError: "Failed to send. Please try again.",
     footerSource: "Source code for this portfolio",
+    diagramLabel: "Architecture",
     screenshotsLabel: "Screenshots",
     sectionCertsEyebrow: "Credentials",
     sectionCertsTitle: "Certifications",
@@ -1018,6 +1029,33 @@ function App() {
                   <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
                     {t.ndaLabel}
                   </p>
+                ) : null}
+
+                {p.diagram ? (
+                  <div className="mt-6">
+                    <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      {t.diagramLabel}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveScreenshot({
+                          src: p.diagram ?? "",
+                          title: p.title,
+                          index: 1,
+                        })
+                      }
+                      className="group/diag block w-full overflow-hidden rounded-md border bg-muted transition hover:border-foreground/20"
+                      aria-label={`${lang === "es" ? "Ampliar diagrama de arquitectura" : "Open architecture diagram"} ${p.title}`}
+                    >
+                      <img
+                        src={p.diagram}
+                        alt={`${p.title} architecture diagram`}
+                        loading="lazy"
+                        className="w-full object-contain transition duration-300 group-hover/diag:scale-[1.01]"
+                      />
+                    </button>
+                  </div>
                 ) : null}
 
                 {p.screenshots?.length ? (

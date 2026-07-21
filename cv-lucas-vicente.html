@@ -1,648 +1,159 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CV - Lucas Vicente</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      color: #1a1a1a;
-      font-size: 10pt;
-      line-height: 1.45;
-      background: #e8e8e8;
-    }
-
-    @page {
-      size: A4;
-      margin: 0;
-    }
-
-    .cv {
-      max-width: 210mm;
-      min-height: 297mm;
-      margin: 0 auto;
-      padding: 0;
-      background: #fff;
-      position: relative;
-    }
-
-    @media print {
-      body { background: #fff; }
-      .cv { box-shadow: none; }
-    }
-
-    @media screen {
-      .cv {
-        box-shadow: 0 2px 24px rgba(0,0,0,0.14);
-        margin: 20px auto;
-      }
-    }
-
-    /* ── Accent bar top ── */
-    .accent-bar {
-      height: 5px;
-      background: linear-gradient(90deg, #111 0%, #2563eb 50%, #111 100%);
-    }
-
-    .cv-inner {
-      padding: 12mm 18mm 8mm;
-    }
-
-    /* ── Header ── */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
-      border-bottom: 2px solid #111;
-    }
-
-    .header-main {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .photo {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #f0f0f0;
-      border: 2px solid #ddd;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .photo-placeholder {
-      font-size: 7pt;
-      color: #aaa;
-      text-align: center;
-      line-height: 1.2;
-    }
-
-    .header-left h1 {
-      font-size: 22pt;
-      font-weight: 800;
-      letter-spacing: -0.8px;
-      color: #111;
-      line-height: 1.1;
-    }
-
-    .header-left .subtitle {
-      font-size: 10.5pt;
-      font-weight: 500;
-      color: #444;
-      margin-top: 2px;
-    }
-
-    .header-right {
-      text-align: right;
-      font-size: 8.5pt;
-      color: #333;
-      line-height: 1.8;
-      flex-shrink: 0;
-    }
-
-    .header-right a {
-      color: #2563eb;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .header-right .contact-line {
-      color: #444;
-    }
-
-    .badge-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 5px;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 7pt;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      padding: 2px 7px;
-      border-radius: 3px;
-    }
-
-    .badge-green {
-      background: #ecfdf5;
-      color: #065f46;
-    }
-
-    .badge-blue {
-      background: #eff6ff;
-      color: #1e40af;
-    }
-
-    /* ── Sections ── */
-    .section {
-      margin-bottom: 8px;
-    }
-
-    .section-title {
-      font-size: 8pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #2563eb;
-      border-bottom: 1.5px solid #e5e7eb;
-      padding-bottom: 2px;
-      margin-bottom: 5px;
-    }
-
-    /* ── Profile ── */
-    .profile p {
-      font-size: 9.5pt;
-      color: #222;
-      line-height: 1.55;
-    }
-
-    .profile p strong {
-      font-weight: 600;
-      color: #111;
-    }
-
-    /* ── Experience ── */
-    .exp-item {
-      margin-bottom: 5px;
-    }
-
-    .exp-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-
-    .exp-role {
-      font-weight: 700;
-      font-size: 10pt;
-      color: #111;
-    }
-
-    .exp-date {
-      font-size: 8.5pt;
-      color: #2563eb;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .exp-company {
-      font-size: 9pt;
-      color: #555;
-      font-weight: 500;
-      margin-top: 1px;
-    }
-
-    .exp-bullets {
-      list-style: none;
-      margin-top: 2px;
-      padding: 0;
-    }
-
-    .exp-bullets li {
-      font-size: 8.5pt;
-      color: #333;
-      padding-left: 12px;
-      position: relative;
-      margin-bottom: 0px;
-      line-height: 1.4;
-    }
-
-    .exp-bullets li::before {
-      content: "▪";
-      position: absolute;
-      left: 0;
-      color: #2563eb;
-      font-size: 7pt;
-      top: 2px;
-    }
-
-    .exp-bullets li strong {
-      font-weight: 600;
-      color: #111;
-    }
-
-    /* ── Projects ── */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 4px 10px;
-    }
-
-    .project {
-      padding: 4px 7px;
-      border-left: 2.5px solid #2563eb;
-      background: #fafbff;
-      border-radius: 0 4px 4px 0;
-    }
-
-    .project-title {
-      font-weight: 700;
-      font-size: 9pt;
-      color: #111;
-    }
-
-    .project-type {
-      font-size: 7pt;
-      color: #666;
-      display: block;
-      margin-top: 1px;
-    }
-
-    .project-stack {
-      font-size: 7pt;
-      color: #999;
-      margin-top: 1px;
-      letter-spacing: 0.2px;
-    }
-
-    .project-desc {
-      font-size: 7.5pt;
-      color: #333;
-      margin-top: 1px;
-      line-height: 1.3;
-    }
-
-    /* ── Skills ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 4px 10px;
-    }
-
-    .skill-card {
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
-      padding: 3px 7px;
-    }
-
-    .skill-label {
-      font-size: 7.5pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: #2563eb;
-      margin-bottom: 2px;
-    }
-
-    .skill-value {
-      font-size: 7.5pt;
-      color: #222;
-      line-height: 1.35;
-    }
-
-    /* ── Education ── */
-    .edu-title {
-      font-weight: 600;
-      font-size: 9.5pt;
-      color: #111;
-    }
-
-    .edu-place {
-      font-size: 8.5pt;
-      color: #555;
-      margin-top: 1px;
-    }
-
-    .edu-date {
-      font-size: 8pt;
-      color: #2563eb;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    /* ── Certifications ── */
-    .certs-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3px 12px;
-    }
-
-    .cert-item {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .cert-item strong {
-      font-size: 8.5pt;
-      font-weight: 600;
-      color: #111;
-    }
-
-    .cert-org {
-      font-size: 7.5pt;
-      color: #666;
-      margin-top: 1px;
-    }
-
-    /* ── Languages ── */
-    .lang-grid {
-      display: flex;
-      gap: 24px;
-    }
-
-    .lang-item {
-      font-size: 9pt;
-      color: #222;
-    }
-
-    .lang-item strong {
-      font-weight: 600;
-    }
-
-    .lang-level {
-      color: #666;
-      font-size: 8.5pt;
-    }
-
-    /* ── Footer ── */
-    .footer {
-      margin-top: 6px;
-      padding-top: 4px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 7.5pt;
-      color: #aaa;
-      text-align: center;
-    }
-
-    .footer a {
-      color: #999;
-      text-decoration: none;
-    }
-  </style>
-</head>
-<body>
-  <div class="cv">
-    <div class="accent-bar"></div>
-    <div class="cv-inner">
-
-    <!-- Header -->
-    <header class="header">
-      <div class="header-main">
-        <div class="photo">
-          <img src="foto.jpg" alt="Lucas Vicente">
-        </div>
-        <div class="header-left">
-          <h1>Lucas Vicente</h1>
-          <div class="subtitle">Full-Stack Developer &amp; DevOps &mdash; AI-Augmented Product Builder</div>
-          <div class="badge-row">
-            <span class="badge badge-green">Disponible para incorporaci&oacute;n inmediata</span>
-          </div>
-        </div>
-      </div>
-      <div class="header-right">
-        <span class="contact-line">contacto@lucasvicente.es</span><br>
-        <span class="contact-line">+34 644 089 042</span><br>
-        <span class="contact-line">Madrid, Espa&ntilde;a</span><br>
-        <a href="https://lucasvicente.es">lucasvicente.es</a> &middot;
-        <a href="https://github.com/lucasvicentec">GitHub</a> &middot;
-        <a href="https://www.linkedin.com/in/lucas-esteban-vicente-cerri-3073a8330/">LinkedIn</a>
-      </div>
-    </header>
-
-    <!-- Profile -->
-    <section class="section profile">
-      <h2 class="section-title">Perfil Profesional</h2>
-      <p>
-        Desarrollo productos web full-stack que funcionan en <strong>producci&oacute;n con usuarios reales</strong>.
-        Experiencia en administraci&oacute;n de <strong>infraestructura Linux</strong>, despliegue con Docker
-        y soporte IT en la <strong>Comunidad de Madrid</strong>.
-      </p>
-    </section>
-
-    <!-- Experience -->
-    <section class="section">
-      <h2 class="section-title">Experiencia</h2>
-
-      <div class="exp-item">
-        <div class="exp-header">
-          <span class="exp-role">Partner &amp; Director de Servidor y Comunidad</span>
-          <span class="exp-date">Dic. 2025 &ndash; Presente</span>
-        </div>
-        <div class="exp-company">Hytalia Network (Joint Venture) &mdash; Mood Studios LLC (US) / Peyleth Solutions SL (ES)</div>
-        <ul class="exp-bullets">
-          <li>Dirijo la <strong>operaci&oacute;n diaria</strong> del ecosistema Hytalia como socio con capacidad de decisi&oacute;n ejecutiva</li>
-          <li>Defino el roadmap de producto y coordino la evoluci&oacute;n de funcionalidades con equipos en US y ES</li>
-          <li>Automatizo procesos internos reduciendo tareas manuales recurrentes e incidencias operativas</li>
-          <li>Garantizo <strong>continuidad del servicio 24/7</strong> mediante monitorizaci&oacute;n, alertas y planes de contingencia</li>
-        </ul>
-      </div>
-
-      <div class="exp-item">
-        <div class="exp-header">
-          <span class="exp-role">T&eacute;cnico Inform&aacute;tico</span>
-          <span class="exp-date">Oct. 2024 &ndash; Presente</span>
-        </div>
-        <div class="exp-company">Ayesa &mdash; Comunidad de Madrid (Madrid Digital) &middot; Presencial</div>
-        <ul class="exp-bullets">
-          <li>Gestiono incidencias t&eacute;cnicas para empleados y directivos en las <strong>consejer&iacute;as de la Comunidad de Madrid</strong></li>
-          <li>Diagnostico, clasifico y escalo incidencias, asegurando <strong>resoluci&oacute;n en SLA</strong></li>
-          <li>Proporciono soporte especializado a <strong>personal directivo y cargos de alto nivel</strong></li>
-          <li>Sirvo como enlace t&eacute;cnico entre Ayesa (proveedor) y la gerencia de Madrid Digital</li>
-        </ul>
-      </div>
-
-      <div class="exp-item">
-        <div class="exp-header">
-          <span class="exp-role">T&eacute;cnico de Montaje de TPV</span>
-          <span class="exp-date">Ene. 2023 &ndash; Feb. 2024</span>
-        </div>
-        <div class="exp-company">Negori Benidorm SA &middot; H&iacute;brido</div>
-        <ul class="exp-bullets">
-          <li>Instal&eacute;, configur&eacute; y mantuve terminales punto de venta (TPV) en establecimientos de hosteler&iacute;a</li>
-          <li>Ejecut&eacute; cableado, montaje de perif&eacute;ricos y puesta en marcha de software de gesti&oacute;n</li>
-          <li>Form&eacute; al personal de los establecimientos en el uso del sistema y resolv&iacute; incidencias in situ</li>
-        </ul>
-      </div>
-
-      <div class="exp-item">
-        <div class="exp-header">
-          <span class="exp-role">T&eacute;cnico de Sistemas</span>
-          <span class="exp-date">Feb. 2016 &ndash; Jun. 2022</span>
-        </div>
-        <div class="exp-company">Creatiums &middot; Remoto &middot; <strong>6 a&ntilde;os</strong></div>
-        <ul class="exp-bullets">
-          <li>Administr&eacute; y despliegu&eacute; <strong>servidores dedicados y virtuales</strong> optimizados para infraestructura de gaming</li>
-          <li>Implement&eacute; seguridad perimetral y mitigaci&oacute;n DDoS con <strong>Cloudflare</strong>, reduciendo ataques exitosos</li>
-          <li>Cre&eacute; entornos aislados con <strong>Docker</strong> para bases de datos, APIs y paneles de control</li>
-          <li>Automatizo despliegues, backups diarios y monitorizaci&oacute;n de rendimiento del sistema</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section class="section">
-      <h2 class="section-title">Proyectos Destacados</h2>
-      <div class="projects-grid">
-        <div class="project">
-          <span class="project-title">Finesse</span>
-          <span class="project-type">PWA &middot; Finanzas compartidas &middot; Producci&oacute;n</span>
-          <div class="project-stack">Next.js 16, React 19, TypeScript, Tailwind, Supabase, Service Worker</div>
-          <div class="project-desc">
-            Desarroll&eacute; alternativa a Splitwise con OAuth, modo offline, importaci&oacute;n CSV y asistente financiero IA. App instalable con sync autom&aacute;tico.
-          </div>
-        </div>
-
-        <div class="project">
-          <span class="project-title">StackWatch</span>
-          <span class="project-type">Monitorizaci&oacute;n &middot; Producci&oacute;n</span>
-          <div class="project-stack">Next.js 16, TypeScript, PostgreSQL, Docker Swarm, REST API</div>
-          <div class="project-desc">
-            Constru&iacute; sistema de monitorizaci&oacute;n con health checks cada 60s, gesti&oacute;n de incidentes, alertas y status page p&uacute;blica. Pipeline CI/CD automatizado.
-          </div>
-        </div>
-
-        <div class="project">
-          <span class="project-title">MD-Intelligence</span>
-          <span class="project-type">Herramienta interna (NDA) &middot; MadridDigital</span>
-          <div class="project-stack">Next.js 15, React 19, TypeScript, Tailwind, PostgreSQL</div>
-          <div class="project-desc">
-            Dise&ntilde;&eacute; plataforma de consultas operativas diarias. Arquitectura h&iacute;brida PostgreSQL + fallback JSON para continuidad sin downtime.
-          </div>
-        </div>
-
-        <div class="project">
-          <span class="project-title">VarynHost</span>
-          <span class="project-type">Hosting &amp; Infra &middot; +60 clientes &middot; Producci&oacute;n</span>
-          <div class="project-stack">Pterodactyl, WHMCS, Linux, Docker, Nginx, APIs REST</div>
-          <div class="project-desc">
-            Cofund&eacute; servicio de hosting con <strong>+60 servidores activos</strong> en EU. Automatizaci&oacute;n de provisioning, paneles custom y facturaci&oacute;n.
-          </div>
-        </div>
-
-        <div class="project">
-          <span class="project-title">Informo</span>
-          <span class="project-type">SaaS &middot; Canal de denuncias &middot; Producci&oacute;n</span>
-          <div class="project-stack">Next.js 15, React 19, TypeScript, Tailwind, Supabase, AES-256, Docker, Zod</div>
-          <div class="project-desc">
-            Plataforma SaaS de canal de denuncias para cumplimiento de la Ley 2/2023. Cifrado AES-256-GCM e2e, panel de gesti&oacute;n, seguimiento an&oacute;nimo y exportaci&oacute;n Libro-Registro AIPI.
-          </div>
-        </div>
-
-        <div class="project">
-          <span class="project-title">Hytalia Web</span>
-          <span class="project-type">Plataforma de comunidad &middot; Producci&oacute;n</span>
-          <div class="project-stack">Next.js 14, React 18, TypeScript, NextAuth, Docker Swarm</div>
-          <div class="project-desc">
-            Implement&eacute; plataforma con autenticaci&oacute;n, panel admin y m&oacute;dulos de producto. Despliegue continuo con GitHub Actions.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tech Stack -->
-    <section class="section">
-      <h2 class="section-title">Competencias T&eacute;cnicas</h2>
-      <div class="skills-grid">
-        <div class="skill-card">
-          <div class="skill-label">Frontend</div>
-          <div class="skill-value">React, Next.js, TypeScript, JavaScript, Tailwind CSS, HTML5, CSS3</div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-label">Backend</div>
-          <div class="skill-value">Node.js, REST API, PostgreSQL, Supabase, SQLite, Redis</div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-label">DevOps</div>
-          <div class="skill-value">Docker, Docker Swarm, Linux, Nginx, GitHub Actions, CI/CD, Cloudflare</div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-label">Otros</div>
-          <div class="skill-value">Python, Java 21, Git, Vite, Framer Motion, PWA, OAuth, AI Tools (Claude, Copilot)</div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-label">Metodolog&iacute;a</div>
-          <div class="skill-value">Agile, Scrum, Git Flow, Code Review, Testing, Documentaci&oacute;n t&eacute;cnica</div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-label">Soft Skills</div>
-          <div class="skill-value">Autonom&iacute;a, comunicaci&oacute;n t&eacute;cnica, resoluci&oacute;n de problemas, gesti&oacute;n de prioridades</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Education -->
-    <section class="section">
-      <h2 class="section-title">Formaci&oacute;n</h2>
-      <div style="display:flex; justify-content:space-between; align-items:baseline;">
-        <span class="edu-title">CFGS Ingenier&iacute;a Inform&aacute;tica</span>
-        <span class="edu-date">2014 &ndash; 2018</span>
-      </div>
-      <div class="edu-place">IES Marcos Zaragoza</div>
-    </section>
-
-    <!-- Certifications -->
-    <section class="section">
-      <h2 class="section-title">Certificaciones</h2>
-      <div class="certs-grid">
-        <div class="cert-item">
-          <strong>Docker Essentials: A Developer Introduction</strong>
-          <span class="cert-org">Cognitive Class &middot; Mar. 2026</span>
-        </div>
-        <div class="cert-item">
-          <strong>Prompt Engineering for Everyone</strong>
-          <span class="cert-org">Cognitive Class &middot; Mar. 2026</span>
-        </div>
-        <div class="cert-item">
-          <strong>Claude 101 &amp; Claude Code in Action</strong>
-          <span class="cert-org">Anthropic &middot; Mar. 2026</span>
-        </div>
-        <div class="cert-item">
-          <strong>Fundamentos: Datos, Datos, en Todas Partes</strong>
-          <span class="cert-org">Google &middot; Nov. 2025</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Languages -->
-    <section class="section">
-      <h2 class="section-title">Idiomas</h2>
-      <div class="lang-grid">
-        <div class="lang-item">
-          <strong>Espa&ntilde;ol</strong> <span class="lang-level">&mdash; Nativo</span>
-        </div>
-        <div class="lang-item">
-          <strong>Ingl&eacute;s</strong> <span class="lang-level">&mdash; B2 (Intermedio alto)</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <div class="footer">
-      Actualizado: Marzo 2026 &middot; Portfolio y proyectos en <a href="https://lucasvicente.es">lucasvicente.es</a>
-    </div>
-
-    </div>
+<meta charset="utf-8">
+<title>CV · Lucas Esteban Vicente Cerri</title>
+<style>
+  @page { size: A4; margin: 13mm 14mm; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 10pt; line-height: 1.42; color:#1a1a1a;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .sheet{ max-width: 190mm; margin: 0 auto; padding: 10mm 6mm; }
+  @media print { .sheet{ padding:0; max-width:none; } .noprint{ display:none !important; } }
+
+  h1{ font-size: 21pt; margin:0 0 2px; letter-spacing:-.3px; }
+  .role{ color:#1a5fb4; font-weight:bold; font-size:10.5pt; margin:0 0 3px; }
+  .contact{ color:#5a5a5a; font-size:9.2pt; margin:0 0 2px; }
+  .contact a{ color:#1a5fb4; text-decoration:none; }
+
+  h2{ font-size:10.5pt; text-transform:uppercase; letter-spacing:.3px;
+      margin:14px 0 6px; padding-bottom:3px; border-bottom:1px solid #d9d9d9; }
+  p{ margin:0 0 6px; text-align:justify; }
+
+  ul{ margin:4px 0 6px; padding-left:15px; }
+  li{ margin:0 0 3px; }
+
+  .job{ margin-bottom:9px; page-break-inside:avoid; }
+  .job h3{ font-size:10.5pt; margin:0 0 1px; }
+  .meta{ color:#6a6a6a; font-size:9pt; margin:0 0 4px; }
+  .tech{ font-size:9pt; font-style:italic; color:#444; margin:2px 0 0; }
+  .tech b{ font-style:normal; }
+
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid #dcdcdc; }
+  .cell{ padding:8px 10px; border-right:1px solid #dcdcdc; border-bottom:1px solid #dcdcdc; }
+  .cell:nth-child(2n){ border-right:0; }
+  .cell:nth-child(n+3){ border-bottom:0; }
+  .cell b{ display:block; margin-bottom:2px; font-size:10pt; }
+  .cell span{ font-size:9.3pt; color:#333; }
+
+  .tip{ background:#eef4fd; border:1px solid #c9dcf7; color:#123a6b;
+        padding:10px 13px; border-radius:6px; font-size:9.5pt; margin:0 0 14px; }
+  .tip b{ color:#0d2b52; }
+</style>
+
+<div class="sheet">
+
+  <div class="tip noprint">
+    <b>Para exportar a PDF:</b> pulsa <b>Ctrl + P</b> → Destino <b>“Guardar como PDF”</b> → Márgenes <b>Predeterminados</b> →
+    <b>desactiva</b> “Encabezados y pies de página” y <b>activa</b> “Gráficos de fondo”. Este aviso no se imprime.
   </div>
-</body>
-</html>
+
+  <h1>Lucas Esteban Vicente Cerri</h1>
+  <p class="role">AI Solutions Builder · Automatización e IA · SaaS &amp; Hosting · Operaciones IT</p>
+  <p class="contact">Madrid, España · 644 089 042 · lucasvicentecerri6@gmail.com · <a href="https://lucasvicente.es">lucasvicente.es</a></p>
+
+  <h2>Perfil</h2>
+  <p>Construyo y opero soluciones digitales completas asistidas por IA: agentes LLM con tool-calling, voz en tiempo real,
+  automatización conversacional multicanal (WhatsApp, Messenger, Telegram), paneles de administración, APIs e
+  infraestructura. Mi fortaleza no es programar línea a línea, sino diseñar la arquitectura, montar el producto end-to-end
+  con flujos AI-Augmented (Claude, GitHub Copilot, prompts estructurados y documentación contextual) y llevarlo a
+  producción con Docker, CI/CD y monitorización. En los últimos 18 meses he lanzado 7 productos en producción, entre ellos
+  <b>RiftPanel</b> (panel SaaS de hosting, de 0 a producción en 2 semanas) y <b>VarynHost</b> (hosting con más de 60 clientes
+  activos): <b>ambos vendidos posteriormente</b>. Todo se apoya en más de 8 años de base en sistemas, soporte e
+  infraestructura, que me permite operar lo que construyo, no solo prototiparlo. Portfolio con casos, decisiones técnicas y
+  métricas: <a href="https://lucasvicente.es" style="color:#1a5fb4;text-decoration:none"><b>lucasvicente.es</b></a></p>
+
+  <h2>Encaje profesional</h2>
+  <ul>
+    <li>Automatización e IA aplicada: agentes LLM con tool-calling, agentes de voz en tiempo real, RAG, prompts estructurados y bots multicanal en producción.</li>
+    <li>Construcción de producto: web, paneles de administración, APIs, billing (Stripe/Paddle), CI/CD e integración de servicios.</li>
+    <li>Operación de infraestructura: Linux, Docker, Nginx, Cloudflare, VPS/dedicados, monitorización y backups.</li>
+    <li>Soporte técnico avanzado: gestión de incidencias, SLA, atención a usuarios VIP y comunicación con cliente.</li>
+  </ul>
+
+  <h2>Objetivo</h2>
+  <p>Roles de AI Solutions Builder, automatización con IA, implementación e integración de soluciones, arquitectura de
+  producto SaaS, Customer Success técnico o perfiles híbridos entre tecnología, producto y negocio. Madrid presencial,
+  híbrido o remoto.</p>
+
+  <h2>Experiencia profesional</h2>
+
+  <div class="job">
+    <h3>AI-Augmented Full-Stack Builder &amp; Creador de Agentes IA</h3>
+    <p class="meta">Farmacenter Cereté · Sep. 2025 — May. 2026 · Freelance en remoto (Colombia), compatible con empleo principal</p>
+    <ul>
+      <li>Desarrollo completo de la solución digital de la farmacia: web pública, panel de administración con RBAC y API backend con Fastify.</li>
+      <li>Agente de IA con 12 tools y acceso real a catálogo y pedidos, compartido entre WhatsApp, Messenger, Telegram y voz speech-to-speech en tiempo real, con derivación a operador humano.</li>
+      <li>Selección del proveedor de LLM por caso de uso (voz de baja latencia frente a agente de texto con tool-calling) y construcción del producto con flujo AI-Augmented.</li>
+      <li>Automatización de flujos de atención, consultas y procesos internos; despliegue en Docker Swarm y preparación de CI/CD.</li>
+      <li>Coordinación directa con el cliente, documentación técnica y pruebas funcionales.</li>
+    </ul>
+    <p class="tech"><b>Tecnologías:</b> LLMs (Claude, OpenAI, Gemini Live) · Fastify · Node.js · TypeScript · React · Next.js · Docker · CI/CD · APIs REST</p>
+  </div>
+
+  <div class="job">
+    <h3>Co-fundador | Operaciones Técnicas e Infraestructura — VarynHost</h3>
+    <p class="meta">VarynHost / Peyleth &amp; Mood Studios · Dic. 2025 — Abr. 2026 · Remoto · Proyecto propio compatible con empleo principal</p>
+    <ul>
+      <li>Servicio de hosting para servidores de juego y servicios online con más de 60 clientes activos.</li>
+      <li>Gestión de infraestructura sobre VPS y dedicados en Europa: Linux, paneles, dominios y servicios asociados.</li>
+      <li>Aprovisionamiento automatizado mediante APIs y herramientas internas; soporte, incidencias y seguimiento de disponibilidad.</li>
+      <li><b>El servicio fue vendido a otra empresa</b>, que lo opera actualmente.</li>
+    </ul>
+    <p class="tech"><b>Tecnologías:</b> Linux · Docker · Nginx · Cloudflare · Pterodactyl · WHMCS · APIs REST · VPS · Monitorización</p>
+  </div>
+
+  <div class="job">
+    <h3>Técnico Informático | Atención presencial al funcionario</h3>
+    <p class="meta">Madrid Digital — Ayesa · Oct. 2024 — Actualidad · Madrid · Presencial</p>
+    <ul>
+      <li>Gestión de incidencias técnicas para empleados, responsables y directivos en consejerías de la Comunidad de Madrid.</li>
+      <li>Diagnóstico, clasificación, escalado y seguimiento de incidencias, asegurando resolución dentro de SLA.</li>
+      <li>Soporte especializado a personal directivo y enlace operativo entre Ayesa y la gerencia de Madrid Digital.</li>
+    </ul>
+    <p class="tech"><b>Competencias:</b> Soporte técnico · SLA · Gestión de incidencias · Sistemas · Redes · Comunicación</p>
+  </div>
+
+  <div class="job">
+    <h3>Técnico de TPV y Soporte en Hostelería</h3>
+    <p class="meta">Negori Benidorm · Ene. 2023 — Jun. 2024 · Benidorm · Híbrido</p>
+    <ul>
+      <li>Instalación, configuración y mantenimiento de terminales TPV en restaurantes, bares y negocios de hostelería.</li>
+      <li>Configuración de software de gestión y periféricos (impresoras, cajones, lectores, pantallas táctiles) y redes básicas.</li>
+      <li>Soporte presencial, resolución de incidencias in situ y formación básica a usuarios.</li>
+    </ul>
+    <p class="tech"><b>Competencias:</b> TPV · Hardware · Software · Redes básicas · Soporte presencial · Atención al cliente</p>
+  </div>
+
+  <div class="job">
+    <h3>Técnico de Sistemas | Infraestructura Gaming y Hosting</h3>
+    <p class="meta">Creatiums · 2018 — Jun. 2022 (colaborador del proyecto desde 2016) · Alicante · Remoto</p>
+    <ul>
+      <li>Administración y despliegue de servidores dedicados y VPS para entornos gaming (proyecto Server Games).</li>
+      <li>Servicios Linux, bases de datos, APIs, paneles de control y backend; entornos aislados con Docker.</li>
+      <li>Cloudflare, mitigación DDoS, automatización de despliegues, backups, monitorización y resolución de incidencias.</li>
+    </ul>
+    <p class="tech"><b>Tecnologías:</b> Linux · Docker · Cloudflare · VPS · Servidores dedicados · APIs · Backups · Monitorización</p>
+  </div>
+
+  <h2>Competencias clave</h2>
+  <div class="grid">
+    <div class="cell"><b>IA y automatización</b><span>Agentes LLM con tool-calling, agentes de voz, RAG, prompt engineering, Claude, GitHub Copilot, automatización de procesos.</span></div>
+    <div class="cell"><b>Producto y web</b><span>Next.js, React, TypeScript, Node.js, Fastify, PostgreSQL, Supabase, APIs REST, Git, CI/CD, Stripe/Paddle, Telegram, WhatsApp/Messenger.</span></div>
+    <div class="cell"><b>Sistemas e infraestructura</b><span>Linux, Docker y Docker Swarm, Nginx, Cloudflare, VPS y dedicados, monitorización, backups, redes básicas.</span></div>
+    <div class="cell"><b>Soporte y operaciones</b><span>Soporte técnico avanzado, helpdesk, SLA, resolución de incidencias, usuarios VIP, documentación técnica, testing funcional.</span></div>
+  </div>
+
+  <h2>Formación y certificaciones</h2>
+  <p><b>Formación:</b> Técnico Superior en Administración de Sistemas Informáticos — Marcos Zaragoza (2014 — 2018)</p>
+  <p><b>Certificaciones:</b> EF SET English Certificate — C2 Proficient, 74/100 (2026) · Claude Code in Action — Anthropic (2026) ·
+  Claude 101 — Anthropic (2026) · Prompt Engineering for Everyone — Cognitive Class, IBM (2026) ·
+  Docker Essentials: A Developer Introduction — Cognitive Class, IBM (2026) ·
+  Ask Questions to Make Data-Driven Decisions — Google (2026) · Fundamentos: datos, datos, en todas partes — Google (2025)</p>
+
+  <h2>Idiomas y otros datos</h2>
+  <p>Español nativo · Inglés B2, con <b>comprensión C2 certificada</b> (EF SET 74/100, 2026) · Permiso B · Vehículo propio ·
+  Remoto / híbrido en Madrid · Incorporación con 15 días de aviso</p>
+
+</div>
